@@ -513,7 +513,7 @@ case "$1" in
   ;;
   "upgrade")
     if [[ ! $2 ]]; then echo "You must choose at least one package to update."; exit 1; fi
-    _update
+    #_update
     _upgrade "$@"
     exit 0
   ;;
