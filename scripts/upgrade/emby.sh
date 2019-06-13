@@ -10,8 +10,8 @@ rm emby.dpkg
 username=$(cat /root/.master.info | cut -d: -f1)
 echo '...'
 sleep 30
-echo 'emby user changing to "$username" '
-echo $username
+echo "emby user changing to "${username}" "
+echo ${username}
 systemctl disable emby-server --now
-chown -R username:username /var/lib/emby
-systemctl enable emby-server@username --now
+chown -R $username:$username /var/lib/emby
+systemctl enable emby-server@$username --now
