@@ -7,9 +7,11 @@ wget -q -O emby.dpkg https://github.com/MediaBrowser/Emby.Releases/releases/down
 dpkg -i emby.dpkg >> /dev/null 2>&1
 rm emby.dpkg
 
+username=$(cat /root/.master.info | cut -d: -f1)
 echo '...'
 sleep 30
-echo 'emby user changing to current'
+echo 'emby user changing to "$username" '
+echo $username
 systemctl disable emby-server --now
-chown -R server:server /var/lib/emby
-systemctl enable emby-server@server --now
+chown -R username:username /var/lib/emby
+systemctl enable emby-server@username --now
