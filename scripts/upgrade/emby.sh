@@ -7,9 +7,9 @@ wget -q -O emby.dpkg https://github.com/MediaBrowser/Emby.Releases/releases/down
 dpkg -i emby.dpkg >> /dev/null 2>&1
 rm emby.dpkg
 
-echo 'Espero 30 seg'
+echo '...'
 sleep 30
-echo 'cambio usuario de emby'
+echo 'emby user changing to current'
 systemctl disable emby-server --now
 chown -R server:server /var/lib/emby
 systemctl enable emby-server@server --now
