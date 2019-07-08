@@ -2,7 +2,6 @@
 # rtorrent upgrade/downgrade/reinstall script
 # Author: liara
 
-
 if [[ ! -f /install/.rtorrent.lock ]]; then
   echo "rTorrent doesn't appear to be installed. What do you hope to accomplish by running this script?"
   exit 1
@@ -18,7 +17,6 @@ fi
 . /etc/swizzin/sources/functions/rtorrent
 whiptail_rtorrent
 
-
 user=$(cat /root/.master.info | cut -d: -f1)
 rutorrent="/srv/rutorrent/"
 users=($(cat /etc/htpasswd | cut -d ":" -f 1))
@@ -31,7 +29,8 @@ if [[ -n $noexec ]]; then
 	mount -o remount,exec /tmp
 	noexec=1
 fi
-	isdeb=$(dpkg -l | grep rtorrent)
+
+isdeb=$(dpkg -l | grep rtorrent)
 if [[ -z $isdeb ]]; then
 	echo "Removing old rTorrent binaries and libraries ... ";remove_rtorrent_legacy
 fi
@@ -39,6 +38,7 @@ fi
 	echo "Building xmlrpc-c from source ... ";build_xmlrpc-c
 	echo "Building libtorrent from source ... ";build_libtorrent_rakshasa
 	echo "Building rtorrent from source ... ";build_rtorrent
+  
 if [[ -n $noexec ]]; then
 	mount -o remount,noexec /tmp
 fi
