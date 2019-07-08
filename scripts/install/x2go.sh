@@ -37,7 +37,7 @@ if [[ $release == "jessie" ]]; then
 	gpg --keyserver keys.gnupg.net --recv E1F958385BFE2B6E >/dev/null 2>&1
 	gpg --export E1F958385BFE2B6E > /etc/apt/trusted.gpg.d/x2go.gpg
 else
-  apt-key --keyring /etc/apt/trusted.gpg.d/x2go.gpg adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E1F958385BFE2B6E > /dev/null 2>&1
+apt-key --keyring /etc/apt/trusted.gpg.d/x2go.gpg adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E1F958385BFE2B6E > /dev/null 2>&1
 fi
 
 apt-get -y update >/dev/null 2>&1

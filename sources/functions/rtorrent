@@ -11,7 +11,7 @@ function whiptail_rtorrent () {
                 feature-bind "" \
                 0.9.7 "" \
                 0.9.6 "" 3>&1 1>&2 2>&3)
-    
+
 
       if [[ $function == 0.9.7 ]]; then
         export rtorrentver='0.9.7'
@@ -180,4 +180,4 @@ function remove_rtorrent_legacy () {
   make uninstall >>$log 2>&1
   cd -
   rm -rf /tmp/libtorrent
-}
+} 

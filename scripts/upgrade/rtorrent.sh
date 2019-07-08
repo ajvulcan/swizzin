@@ -29,14 +29,16 @@ if [[ -n $noexec ]]; then
 	mount -o remount,exec /tmp
 	noexec=1
 fi
+
 isdeb=$(dpkg -l | grep rtorrent)
 if [[ -z $isdeb ]]; then
 	echo "Removing old rTorrent binaries and libraries ... ";remove_rtorrent_legacy
 fi
-echo "Checking rTorrent Dependencies ... ";depends_rtorrent
-echo "Building xmlrpc-c from source ... ";build_xmlrpc-c
-echo "Building libtorrent from source ... ";build_libtorrent_rakshasa
-echo "Building rtorrent from source ... ";build_rtorrent
+	echo "Checking rTorrent Dependencies ... ";depends_rtorrent
+	echo "Building xmlrpc-c from source ... ";build_xmlrpc-c
+	echo "Building libtorrent from source ... ";build_libtorrent_rakshasa
+	echo "Building rtorrent from source ... ";build_rtorrent
+  
 if [[ -n $noexec ]]; then
 	mount -o remount,noexec /tmp
 fi
