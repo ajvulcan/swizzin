@@ -18,15 +18,15 @@ else
 fi
 
 cd /srv/
-git clone https://github.com/liaralabs/quickbox_dashboard.git panel >>$log 2>&1
+git clone https://github.com/ajvulcan/quickbox_dashboard.git panel >>$log 2>&1
 
 chown -R www-data: /srv/panel
 
 touch /srv/panel/db/output.log
 printf "${IFACE}" > /srv/panel/db/interface.txt
 printf "${user}" > /srv/panel/db/master.txt
-LOCALE=en_GB.UTF-8
-LANG=lang_en
+LOCALE=es_ES.UTF-8
+LANG=lang_es
 sed -i "s/LOCALE/${LOCALE}/g" /srv/panel/inc/localize.php
 sed -i "s/LANG/${LANG}/g" /srv/panel/inc/localize.php
 echo "*/1 * * * * root bash /usr/local/bin/swizzin/panel/set_interface" > /etc/cron.d/set_interface
