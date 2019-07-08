@@ -1,1 +1,2 @@
 systemctl restart php7.0-fpm.service
+echo 'PHP reiniciado'
