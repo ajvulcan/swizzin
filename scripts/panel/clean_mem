@@ -21,16 +21,16 @@
 OUTTO=/srv/panel/db/output.log
 
 function _cleanmemcache() {
-  echo "Cleaning system memory cache ... " >>"${OUTTO}" 2>&1;
+  echo "Limpiando la cache de memoria del sistema ... " >>"${OUTTO}" 2>&1;
   echo 1 > /proc/sys/vm/drop_caches
   sleep 5
 
-  echo "System memory cache cleared!" >>"${OUTTO}" 2>&1;
+  echo "¡Cache de memoria del sistema liberada!" >>"${OUTTO}" 2>&1;
   sleep 5
 
   echo >>"${OUTTO}" 2>&1;
   echo >>"${OUTTO}" 2>&1;
-  echo "Close this dialog box to refresh your browser" >>"${OUTTO}" 2>&1;
+  echo "Cierra este cuadro de diálogo para actualizar tu explorador" >>"${OUTTO}" 2>&1;
 
   exit
 }
