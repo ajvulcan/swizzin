@@ -45,7 +45,7 @@ function _installSonarr2() {
     if [[ $version == "jessie" ]]; then
       apt-key adv --keyserver keyserver.ubuntu.com --recv-keys FDA5DFFC >/dev/null 2>&1
     else
-	 #buster friendly
+#buster friendly
       apt-key --keyring /etc/apt/trusted.gpg.d/nzbdrone.gpg adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys FDA5DFFC
       #older style -- buster friendly should work on stretch
       #gpg --keyserver http://keyserver.ubuntu.com --recv FDA5DFFC >/dev/null 2>&1
