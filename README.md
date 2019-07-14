@@ -1,4 +1,4 @@
-![swizzin](https://github.com/ajvulcan/quickbox_dashboard/blob/master/img/logo3.png?raw=true)
+SERVIDOR HD ![swizzin](https://hosting.photobucket.com/images/ag473/ajteleco/0/2a4cffda-8092-446a-8686-06be9d4e97bb-original.png?width=1920&height=1080&fit=bounds)
 
 
 # 1.4.0 Stable :tada:
