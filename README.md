@@ -76,6 +76,8 @@ Box functions:
 * rtx - starts the r(u)Torrent extras management interface (`rtx` alone will also do)
   * Usage: `box rtx` or `rtx`
 
+Other commands:
+> reload - Restarts php and nginx
 
 #### TODO
 - [ ] Better readme/docs
