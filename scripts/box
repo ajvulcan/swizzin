@@ -283,6 +283,21 @@ if [[ -f /install/.nginx.lock ]]; then
   systemctl reload nginx
 fi
 
+#Enlace a carpeta de descargas central
+administrador="$(awk '{print $1; exit}' /etc/sudoers.d/swizzin)"
+echo "/home/${administrador}/DESCARGAS  /home/${user}/DESCARGAS   none    bind    0       0" >> /etc/fstab
+
+#Crea carpeta personal de admin
+ mkdir /home/${user}/PERSONAL
+ chmod 750 /home/${user}/PERSONAL
+ chown $user:$user /home/${user}/PERSONAL
+
+#Añado usuario a acceso emby
+htpasswd -b /etc/htpasswd.d/htpasswd.emby $user $pass
+
+#Mensaje recordatorio
+echo "Recuerda reiniciar el sistema para enlazar la carpeta descargas en el fstab"
+
 #echo "export PATH=$PATH:/usr/local/bin/swizzin" >> /home/$user/.profile
 #chown $user: /home/$user/.profile
 }
@@ -345,6 +360,9 @@ function _deluser {
   rm -rf /home/${user}
   rm /root/${user}.info
   service nginx reload
+
+sed -i '/${user}/d' /etc/fstab
+
 }
 
 function _chpasswd {

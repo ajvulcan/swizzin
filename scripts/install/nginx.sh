@@ -149,6 +149,38 @@ mkdir -p /etc/nginx/ssl/
 mkdir -p /etc/nginx/snippets/
 mkdir -p /etc/nginx/apps/
 
+#Añado la carpeta de descargas básica común
+if [[ ! -f /etc/nginx/apps/descargas.conf ]]; then
+  cat > /etc/nginx/apps/descargas.conf <<DESIN
+location /descargas {
+  alias /home/\$remote_user/DESCARGAS;
+  include /etc/nginx/snippets/fancyindex.conf;
+  auth_basic "What's the password?";
+  auth_basic_user_file /etc/htpasswd;
+
+  location ~* \.php$ {
+
+  }
+}
+DESIN
+fi
+
+#Añado la carpeta personal de administador.
+if [[ ! -f /etc/nginx/apps/personal.conf ]]; then
+  cat > /etc/nginx/apps/personal.conf <<PERIN
+location /personal {
+  alias /home/\$remote_user/PERSONAL;
+  include /etc/nginx/snippets/fancyindex.conf;
+  auth_basic "What's the password?";
+  auth_basic_user_file /etc/htpasswd;
+
+  location ~* \.php$ {
+
+  }
+}
+PERIN
+fi
+
 cd /etc/nginx/ssl
 openssl dhparam -out dhparam.pem 2048 >>$log 2>&1
 
