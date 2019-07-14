@@ -1,4 +1,4 @@
-![swizzin](https://github.com/ajvulcan/quickbox_dashboard/blob/master/img/logo3.png?raw=true)
+![swizzin](https://hosting.photobucket.com/images/ag473/ajteleco/0/92411c85-c3f5-4ced-86bb-bda11d7333ff-original.png?width=1920&height=1080&fit=bounds)
 
 
 # 1.4.0 Stable :tada:
