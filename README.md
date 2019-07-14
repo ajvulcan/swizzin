@@ -1,4 +1,4 @@
-![swizzin](https://hosting.photobucket.com/images/ag473/ajteleco/0/92411c85-c3f5-4ced-86bb-bda11d7333ff-original.png)
+![swizzin](https://github.com/ajvulcan/swizzin/raw/master/logo.png)
 
 
 # 1.4.0 Stable :tada:
