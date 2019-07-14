@@ -1,4 +1,4 @@
-![swizzin](http://i.imgur.com/JZlDKP1.png)
+![swizzin](https://github.com/ajvulcan/quickbox_dashboard/blob/master/img/logo3.png?raw=true)
 
 
 # 1.4.0 Stable :tada:
