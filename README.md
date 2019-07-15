@@ -19,7 +19,7 @@ bash <(curl -s  https://github.com/ajvulcan/swizzin/blob/master/setup.sh)
 Si quieres hacer el setup a través del sudo en ubuntu:
 
 ```
-sudo -H su -c 'bash <(wget -O- -q https://raw.githubusercontent.com/liaralabs/swizzin/master/setup.sh)'
+sudo -H su -c 'bash <(wget -O- -q https://raw.githubusercontent.com/ajvulcan/swizzin/master/setup.sh)'
 ```
 
 #### Soporte
