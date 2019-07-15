@@ -181,4 +181,4 @@ function remove_rtorrent_legacy () {
   make uninstall >>$log 2>&1
   cd -
   rm -rf /tmp/libtorrent
-} 
+}
