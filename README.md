@@ -57,7 +57,8 @@ Box:
 * rtx - configura los plugins de rutorrent.
   * Uso: `box rtx` or `rtx`
 
-Otros comandos:
-> reload - Reinicia php y nginx entre otros.
-> setdisk - establece cuotas en disco.
-> showspace - muestra el uso de disco por parte de cada usuario.
+### Otros comandos:
+
+ reload - Reinicia php y nginx entre otros.
+ setdisk - establece cuotas en disco.
+ showspace - muestra el uso de disco por parte de cada usuario.
