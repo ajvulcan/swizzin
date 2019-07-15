@@ -1,9 +1,8 @@
 #!/bin/bash
 # rtorrent upgrade/downgrade/reinstall script
-# Author: liara
 
 if [[ ! -f /install/.rtorrent.lock ]]; then
-  echo "rTorrent doesn't appear to be installed. What do you hope to accomplish by running this script?"
+  echo "rTorrent no está instalado."
   exit 1
 fi
 
@@ -32,12 +31,12 @@ fi
 
 isdeb=$(dpkg -l | grep rtorrent)
 if [[ -z $isdeb ]]; then
-	echo "Removing old rTorrent binaries and libraries ... ";remove_rtorrent_legacy
+	echo "Borrando binarios y librerías viejas de rTorrent ... ";remove_rtorrent_legacy
 fi
-	echo "Checking rTorrent Dependencies ... ";depends_rtorrent
-	echo "Building xmlrpc-c from source ... ";build_xmlrpc-c
-	echo "Building libtorrent from source ... ";build_libtorrent_rakshasa
-	echo "Building rtorrent from source ... ";build_rtorrent
+	echo "Comprobar dependencias rTorrent ... ";depends_rtorrent
+	echo "Compilando xmlrpc-c desde la fuente ... ";build_xmlrpc-c
+	echo "Compilando libtorrent desde la fuente ... ";build_libtorrent_rakshasa
+	echo "Compilando rtorrent desde la fuente ... ";build_rtorrent
   
 if [[ -n $noexec ]]; then
 	mount -o remount,noexec /tmp
