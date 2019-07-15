@@ -111,7 +111,7 @@ function _clr() {
 function _update() {
   echo -e "Automatic update DISABLED"
 
-#  echo -e "Updating swizzin local repository"
+#  echo -e "Actualizando el repositorio local de Servidor HD"
 #  cd /etc/swizzin
 #  git checkout master
 #  git reset --hard origin/master
@@ -241,7 +241,7 @@ function _adduser {
   htpasswd -b /etc/htpasswd $user $pass
   mkdir -p /etc/htpasswd.d/
   htpasswd -b -c /etc/htpasswd.d/htpasswd.${user} $user $pass
-  chmod 750 /home/${user}
+  chmod 550 /home/${user}
   echo "D /var/run/${user} 0750 ${user} ${user} -" >> /etc/tmpfiles.d/${user}.conf
   systemd-tmpfiles /etc/tmpfiles.d/${user}.conf --create
 
@@ -282,6 +282,21 @@ SUD
 if [[ -f /install/.nginx.lock ]]; then
   systemctl reload nginx
 fi
+
+#Enlace a carpeta de descargas central
+administrador="$(awk '{print $1; exit}' /etc/sudoers.d/swizzin)"
+echo "/home/${administrador}/DESCARGAS  /home/${user}/DESCARGAS   none    bind    0       0" >> /etc/fstab
+
+#Crea carpeta personal de usuario
+ mkdir /home/${user}/PERSONAL
+ chmod 550 /home/${user}/PERSONAL
+ chown $user:$user /home/${user}/PERSONAL
+
+#Añado usuario a acceso emby
+htpasswd -b /etc/htpasswd.d/htpasswd.emby $user $pass
+
+#Mensaje recordatorio
+echo "Recuerda reiniciar el sistema para enlazar la carpeta descargas en el fstab"
 
 #echo "export PATH=$PATH:/usr/local/bin/swizzin" >> /home/$user/.profile
 #chown $user: /home/$user/.profile
@@ -345,6 +360,9 @@ function _deluser {
   rm -rf /home/${user}
   rm /root/${user}.info
   service nginx reload
+
+sed -i '/${user}/d' /etc/fstab
+
 }
 
 function _chpasswd {
@@ -515,7 +533,7 @@ case "$1" in
   ;;
   "upgrade")
     if [[ ! $2 ]]; then echo "You must choose at least one package to update."; exit 1; fi
-    #_update
+    _update
     _upgrade "$@"
     exit 0
   ;;
@@ -528,4 +546,3 @@ case "$1" in
     exit 1
   ;;
 esac
-

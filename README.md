@@ -1,6 +1,5 @@
 ![swizzin](https://github.com/ajvulcan/swizzin/raw/master/logo.png)
 
-
 # 1.5.0 Estable
 
 Servidor HD es una solución seedbox modular para Ubuntu 16.04+ con posibilidad de instalar multitud aplicaciones todo en uno.

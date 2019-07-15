@@ -2,7 +2,7 @@
 #################################################################################
 # Installation script for swizzin
 # Many credits to QuickBox for the package repo
-# 
+#
 # Package installers copyright QuickBox.io (2017) where applicable.
 # All other work copyright Swizzin (2017)
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
@@ -57,7 +57,7 @@ function _preparation() {
   nofile=$(grep "DefaultLimitNOFILE=500000" /etc/systemd/system.conf)
   if [[ ! "$nofile" ]]; then echo "DefaultLimitNOFILE=500000" >> /etc/systemd/system.conf; fi
   echo "Cloning swizzin repo to localhost"
-  git clone https://github.com/liaralabs/swizzin.git /etc/swizzin >> ${log} 2>&1
+  git clone https://github.com/ajvulcan/swizzin.git /etc/swizzin >> ${log} 2>&1
   ln -s /etc/swizzin/scripts/ /usr/local/bin/swizzin
   chmod -R 700 /etc/swizzin/scripts
 }
@@ -150,10 +150,25 @@ function _adduser() {
     mkdir -p /etc/htpasswd.d/
     htpasswd -b -c /etc/htpasswd.d/htpasswd.${user} $user $pass
   fi
-  chmod 750 /home/${user}
+
   if grep ${user} /etc/sudoers.d/swizzin >/dev/null 2>&1 ; then echo "No sudoers modification made ... " ; else	echo "${user}	ALL=(ALL:ALL) ALL" >> /etc/sudoers.d/swizzin ; fi
   echo "D /var/run/${user} 0750 ${user} ${user} -" >> /etc/tmpfiles.d/${user}.conf
   systemd-tmpfiles /etc/tmpfiles.d/${user}.conf --create
+
+  chmod 750 /home/${user}
+
+  #añade usuario a lista emby
+  htpasswd -b -c /etc/htpasswd.d/htpasswd.emby $user $pass
+
+  #Crea carpeta de descargas para usuario administrador
+  mkdir /home/${user}/DESCARGAS
+  chmod 777 /home/${user}/DESCARGAS
+  chown $user:$user /home/${user}/DESCARGAS
+  #Crea carpeta personal de admin
+  mkdir /home/${user}/PERSONAL
+  chmod 750 /home/${user}/PERSONAL
+  chown $user:$user /home/${user}/PERSONAL
+
 }
 
 function _choices() {

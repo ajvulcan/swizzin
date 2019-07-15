@@ -20,6 +20,12 @@ fi
 apt-get -y update >> $log 2>&1
 apt-get -y install vsftpd ssl-cert>> $log 2>&1
 
+user=$(cat /root/.master.info | cut -d: -f1)
+
+cat > /etc/vsftpd.chroot_list <<VSCHROOT
+${user}
+VSCHROOT
+
 cat > /etc/vsftpd.conf <<VSC
 listen=NO
 listen_ipv6=YES
@@ -41,7 +47,7 @@ secure_chroot_dir=/var/run/vsftpd/empty
 
 #ascii_upload_enable=YES
 #ascii_download_enable=YES
-#ftpd_banner=Welcome to blah FTP service.
+ftpd_banner=Bienvenido al servicio FTP.
 
 #############################################
 #Uncomment these lines to enable FXP support#
@@ -52,7 +58,22 @@ secure_chroot_dir=/var/run/vsftpd/empty
 ###################
 #Set a custom port#
 ###################
-#listen_port=
+listen_port=990
+
+#Enjaular
+chroot_local_user=YES
+chroot_list_enable=YES
+# (default follows)
+chroot_list_file=/etc/vsftpd.chroot_list
+
+#Otros
+ssl_ciphers=HIGH
+hide_ids=YES
+allow_writeable_chroot=YES
+
+#PARA MONITORIZAR
+setproctitle_enable=YES
+
 VSC
 
 # Check for LE cert, and copy it if available.

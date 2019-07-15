@@ -14,7 +14,7 @@ function _string() { perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15
 function _rconf() {
 cat >/home/${user}/.rtorrent.rc<<EOF
 # -- START HERE --
-directory.default.set = /home/${user}/torrents/rtorrent
+directory.default.set = /home/${user}/DESCARGAS
 encoding.add = UTF-8
 encryption = allow_incoming,try_outgoing,enable_retry
 execute.nothrow = chmod,777,/home/${user}/.config/rpc.socket
@@ -37,19 +37,29 @@ throttle.min_peers.normal.set = 1
 throttle.min_peers.seed.set = -1
 trackers.use_udp.set = yes
 
+#otros
+dht.mode.set = disable
+#pieces.memory.max.set = 8000M
+
+# Preallocate files; reduces defragmentation on filesystems.
+system.file.allocate.set = yes
+
+#Cambio de permisos.
+method.set_key = event.download.finished,change_permission,"execute=chmod,-R,g-rwx,$d.get_base_path="
+
 execute = {sh,-c,/usr/bin/php /srv/rutorrent/php/initplugins.php ${user} &}
 
 # -- END HERE --
 EOF
 chown ${user}.${user} -R /home/${user}/.rtorrent.rc
+chmod 444 /home/${user}/.rtorrent.rc
 }
 
-
 function _makedirs() {
-	mkdir -p /home/${user}/torrents/rtorrent 2>> $log
+	mkdir -p /home/${user}/DESCARGAS 2>> $log
 	mkdir -p /home/${user}/.sessions
 	mkdir -p /home/${user}/rwatch
-	chown -R ${user}.${user} /home/${user}/{torrents,.sessions,rwatch} 2>> $log
+	chown -R ${user}.${user} /home/${user}/{DESCARGAS,.sessions,rwatch} 2>> $log
 	usermod -a -G www-data ${user} 2>> $log
 	usermod -a -G ${user} www-data 2>> $log
 }

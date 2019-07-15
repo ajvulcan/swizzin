@@ -149,6 +149,38 @@ mkdir -p /etc/nginx/ssl/
 mkdir -p /etc/nginx/snippets/
 mkdir -p /etc/nginx/apps/
 
+#Añado la carpeta de descargas básica común
+if [[ ! -f /etc/nginx/apps/descargas.conf ]]; then
+  cat > /etc/nginx/apps/descargas.conf <<DESIN
+location /descargas {
+  alias /home/\$remote_user/DESCARGAS;
+  include /etc/nginx/snippets/fancyindex.conf;
+  auth_basic "What's the password?";
+  auth_basic_user_file /etc/htpasswd;
+
+  location ~* \.php$ {
+
+  }
+}
+DESIN
+fi
+
+#Añado la carpeta personal de administador.
+if [[ ! -f /etc/nginx/apps/personal.conf ]]; then
+  cat > /etc/nginx/apps/personal.conf <<PERIN
+location /personal {
+  alias /home/\$remote_user/PERSONAL;
+  include /etc/nginx/snippets/fancyindex.conf;
+  auth_basic "What's the password?";
+  auth_basic_user_file /etc/htpasswd;
+
+  location ~* \.php$ {
+
+  }
+}
+PERIN
+fi
+
 cd /etc/nginx/ssl
 openssl dhparam -out dhparam.pem 2048 >>$log 2>&1
 
@@ -201,7 +233,7 @@ proxy_no_cache \$cookie_session;
 proxy_buffers 32 4k;
 PROX
 
-svn export https://github.com/Naereen/Nginx-Fancyindex-Theme/trunk/Nginx-Fancyindex-Theme-dark /srv/fancyindex >> $log 2>&1
+svn export https://github.com/ajvulcan/Nginx-Fancyindex-Theme /srv/fancyindex >> $log 2>&1
 cat > /etc/nginx/snippets/fancyindex.conf <<FIC
 fancyindex on;
 fancyindex_localtime on;
@@ -227,37 +259,7 @@ done
 
 systemctl restart nginx
 
-if [[ -f /lib/systemd/system/php7.3-fpm.service ]]; then
-  systemctl restart php7.3-fpm
-  if [[ $(systemctl is-active php7.2-fpm) == "active" ]]; then
-    systemctl stop php7.2-fpm
-    systemctl disable php7.2-fpm
-  fi
-  if [[ $(systemctl is-active php7.1-fpm) == "active" ]]; then
-    systemctl stop php7.1-fpm
-    systemctl disable php7.1-fpm
-  fi
-  if [[ $(systemctl is-active php7.0-fpm) == "active" ]]; then
-    systemctl stop php7.0-fpm
-    systemctl disable php7.0-fpm
-  fi
-elif [[ -f /lib/systemd/system/php7.2-fpm.service ]]; then
-  systemctl restart php7.2-fpm
-  if [[ $(systemctl is-active php7.2-fpm) == "active" ]]; then
-    systemctl stop php7.2-fpm
-    systemctl disable php7.2-fpm
-  fi
-  if [[ $(systemctl is-active php7.0-fpm) == "active" ]]; then
-    systemctl stop php7.0-fpm
-    systemctl disable php7.0-fpm
-  fi
-elif [[ -f /lib/systemd/system/php7.1-fpm.service ]]; then
-  systemctl restart php7.1-fpm
-  if [[ $(systemctl is-active php7.0-fpm) == "active" ]]; then
-    systemctl stop php7.0-fpm
-    systemctl disable php7.0-fpm
-  fi
-else
-  systemctl restart php7.0-fpm
-fi
+. /etc/swizzin/sources/functions/php
+restart_php_fpm
+
 touch /install/.nginx.lock
