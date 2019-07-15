@@ -2,3 +2,5 @@ systemctl restart php7.0-fpm.service
 echo 'PHP reiniciado'
 systemctl restart nginx
 echo 'NGINX reiniciado'
+#systemctl stop shellinabox
+#echo 'shellinabox reiniciado'

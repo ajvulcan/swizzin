@@ -241,7 +241,7 @@ function _adduser {
   htpasswd -b /etc/htpasswd $user $pass
   mkdir -p /etc/htpasswd.d/
   htpasswd -b -c /etc/htpasswd.d/htpasswd.${user} $user $pass
-  chmod 750 /home/${user}
+  chmod 550 /home/${user}
   echo "D /var/run/${user} 0750 ${user} ${user} -" >> /etc/tmpfiles.d/${user}.conf
   systemd-tmpfiles /etc/tmpfiles.d/${user}.conf --create
 
@@ -287,9 +287,9 @@ fi
 administrador="$(awk '{print $1; exit}' /etc/sudoers.d/swizzin)"
 echo "/home/${administrador}/DESCARGAS  /home/${user}/DESCARGAS   none    bind    0       0" >> /etc/fstab
 
-#Crea carpeta personal de admin
+#Crea carpeta personal de usuario
  mkdir /home/${user}/PERSONAL
- chmod 750 /home/${user}/PERSONAL
+ chmod 550 /home/${user}/PERSONAL
  chown $user:$user /home/${user}/PERSONAL
 
 #Añado usuario a acceso emby
@@ -546,4 +546,3 @@ case "$1" in
     exit 1
   ;;
 esac
-

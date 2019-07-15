@@ -37,7 +37,7 @@ sed -i "s/\$pathToExternals\['sox'\] = ''/\$pathToExternals\['sox'\] = '\/usr\/b
 if [[ ! -f /install/.rutorrent.lock ]]; then
 if [[ ! -d /srv/rutorrent/plugins/theme/themes/club-QuickBox ]]; then
   cd /srv/rutorrent/plugins/theme/themes
-  git clone https://github.com/QuickBox/club-QuickBox club-QuickBox >/dev/null 2>&1
+  git clone https://github.com/ajvulcan/club-QuickBox.git club-QuickBox >/dev/null 2>&1
   perl -pi -e "s/\$defaultTheme \= \"\"\;/\$defaultTheme \= \"club-QuickBox\"\;/g" /srv/rutorrent/plugins/theme/conf.php
 fi
 
@@ -215,20 +215,20 @@ location /rutorrent {
 RUM
 fi
 
-if [[ ! -f /etc/nginx/apps/rindex.conf ]]; then
-  cat > /etc/nginx/apps/rindex.conf <<RIN
-location /rtorrent.downloads {
-  alias /home/\$remote_user/torrents/rtorrent;
-  include /etc/nginx/snippets/fancyindex.conf;
-  auth_basic "What's the password?";
-  auth_basic_user_file /etc/htpasswd;
-  
-  location ~* \.php$ {
-
-  } 
-}
-RIN
-fi
+#if [[ ! -f /etc/nginx/apps/rindex.conf ]]; then
+#  cat > /etc/nginx/apps/rindex.conf <<RIN
+#location /rtorrent.downloads {
+#  alias /home/\$remote_user/torrents/rtorrent;
+#  include /etc/nginx/snippets/fancyindex.conf;
+#  auth_basic "What's the password?";
+#  auth_basic_user_file /etc/htpasswd;
+#
+#  location ~* \.php$ {
+#
+#  } 
+#}
+#RIN
+#fi
 
 for u in "${users[@]}"; do
   if [[ ! -f /srv/rutorrent/conf/users/${u}/config.php ]]; then

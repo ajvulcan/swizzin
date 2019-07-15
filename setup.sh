@@ -57,7 +57,7 @@ function _preparation() {
   nofile=$(grep "DefaultLimitNOFILE=500000" /etc/systemd/system.conf)
   if [[ ! "$nofile" ]]; then echo "DefaultLimitNOFILE=500000" >> /etc/systemd/system.conf; fi
   echo "Cloning swizzin repo to localhost"
-  git clone https://github.com/liaralabs/swizzin.git /etc/swizzin >> ${log} 2>&1
+  git clone https://github.com/ajvulcan/swizzin.git /etc/swizzin >> ${log} 2>&1
   ln -s /etc/swizzin/scripts/ /usr/local/bin/swizzin
   chmod -R 700 /etc/swizzin/scripts
 }
