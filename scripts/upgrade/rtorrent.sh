@@ -31,7 +31,7 @@ fi
 
 isdeb=$(dpkg -l | grep rtorrent)
 if [[ -z $isdeb ]]; then
-	echo "Borrando binarios y librerías viejas de rTorrent ... ";remove_rtorrent_legacy
+	echo "Borrando binarios y librerias viejas de rTorrent ... ";remove_rtorrent_legacy
 fi
 	echo "Comprobar dependencias rTorrent ... ";depends_rtorrent
 	echo "Compilando xmlrpc-c desde la fuente ... ";build_xmlrpc-c
