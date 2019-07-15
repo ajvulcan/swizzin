@@ -5,7 +5,7 @@
 
 Servidor HD es una solución seedbox modular para Ubuntu 16.04+ con posibilidad de instalar multitud aplicaciones todo en uno.
 
-### Quick Start:
+### Inicio rápido:
 
 wget
 ```
