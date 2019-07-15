@@ -11,7 +11,7 @@
 - Manejo de procesos a través de variable global para optimización de rendimiento.
 - Carpetas de descarga común compartida y personal privada.
 
-### Changed
+### Cambios
 
 - Datos reales de uso de cpu y de frecuencia del microprocesador.
 - Traducción total al español (trabajo en proceso).
