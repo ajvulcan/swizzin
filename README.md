@@ -8,18 +8,18 @@ Servidor HD es una solución seedbox modular para Ubuntu 16.04+ con posibilidad 
 
 wget
 ```
-bash <(wget -O- -q  https://github.com/ajvulcan/swizzin/blob/master/setup.sh)
+bash <(wget -O- -q  https://raw.githubusercontent.com/ajvulcan/swizzin/master/setup.sh)
 ```
 
 curl
 ```
-bash <(curl -s  https://github.com/ajvulcan/swizzin/blob/master/setup.sh)
+bash <(curl -s  https://raw.githubusercontent.com/ajvulcan/swizzin/master/setup.sh)
 ```
 
 Si quieres hacer el setup a través del sudo en ubuntu:
 
 ```
-sudo -H su -c 'bash <(wget -O- -q https://raw.githubusercontent.com/liaralabs/swizzin/master/setup.sh)'
+sudo -H su -c 'bash <(wget -O- -q https://raw.githubusercontent.com/ajvulcan/swizzin/master/setup.sh)'
 ```
 
 #### Soporte
