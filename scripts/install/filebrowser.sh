@@ -59,10 +59,12 @@ cat > "/etc/systemd/system/filebrowser.service" <<-SERVICE
 [Unit]
 Description=filebrowser
 After=network.target
+
 [Service]
 User=${username}
 Group=${username}
 UMask=002
+
 Type=simple
 WorkingDirectory=/home/${username}
 ExecStart=/home/${username}/bin/filebrowser -d /home/${username}/.config/Filebrowser/filebrowser.db
@@ -70,6 +72,7 @@ TimeoutStopSec=20
 KillMode=process
 Restart=always
 RestartSec=2
+
 [Install]
 WantedBy=multi-user.target
 SERVICE
