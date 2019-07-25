@@ -149,6 +149,8 @@ mkdir -p /etc/nginx/ssl/
 mkdir -p /etc/nginx/snippets/
 mkdir -p /etc/nginx/apps/
 
+chmod 700 /etc/nginx/ssl
+
 #Añado la carpeta de descargas básica común
 if [[ ! -f /etc/nginx/apps/descargas.conf ]]; then
   cat > /etc/nginx/apps/descargas.conf <<DESIN
