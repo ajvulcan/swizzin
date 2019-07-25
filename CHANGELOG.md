@@ -10,6 +10,11 @@
 - Manejo de aplicaciones dentro del mismo workflow.
 - Manejo de procesos a través de variable global para optimización de rendimiento.
 - Carpetas de descarga común compartida y personal privada.
+- Soporte a Debian 10
+- Soporte a PHP 7.3
+- Añadido Filebrowser 2
+- Bazarr
+- Lidarr
 
 ### Cambios
 
@@ -19,6 +24,7 @@
 - Cambio gráfico de menú de ajustes.
 - Cambio de theme en shellinabox.
 - traducción de fancyindex y aplicación a las nuevas carpetas compartida y privada.
+- Algunos otros cambios
 
 ## [1.4.0]
 
