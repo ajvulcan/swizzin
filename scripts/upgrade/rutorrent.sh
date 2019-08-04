@@ -2,6 +2,8 @@
 # ruTorrent upgrade wrapper
 # Author: liara
 # Does not update from git remote at this time...
+#
+# servidor HD
 
 if [[ -d /srv/rutorrent ]] && [[ ! -f /install/.rutorrent.lock ]]; then
   touch /install/.rutorrent.lock

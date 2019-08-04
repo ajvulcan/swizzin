@@ -1,7 +1,7 @@
 #!/bin/bash
 # Guard yer wires with wireguard vpn
 # Author: liara
-# swizzin Copyright (C) 2018 swizzin.ltd
+# Servidor HD Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -18,7 +18,7 @@ else
 fi
 distribution=$(lsb_release -is)
 ip=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
-u=$(cat /root/.master.info | cut -d: -f1)
+u=$(cut -d: -f1 < /root/.master.info)
 IFACE=($(ip link show|grep -i broadcast|grep -m1 UP |cut -d: -f 2|cut -d@ -f 1|sed -e 's/ //g'))
 MASTER=$(ip link show|grep -i broadcast|grep -e MASTER |cut -d: -f 2|cut -d@ -f 1|sed -e 's/ //g')
 
@@ -28,7 +28,17 @@ else
   iface=${IFACE[0]}
 fi
 
-echo "Setup has detected that $iface is your main interface, is this correct?"
+function _selectiface () {
+  echo "Por favor, selecciona el interfaz correcto de la lista siguiente:"
+  select seliface in "${IFACE[@]}"; do
+    case $seliface in
+      *) iface=$seliface; break;;
+    esac
+  done
+  echo "Tu interfaz se ha establecido como $iface"
+}
+
+echo "El instalador ha detectado que $iface es tu interfaz principal, ¿es correcto?"
   select yn in "yes" "no"; do
     case $yn in
         yes ) break;;
@@ -36,17 +46,7 @@ echo "Setup has detected that $iface is your main interface, is this correct?"
     esac
 done
 
-function _selectiface () {
-  echo "Please choose the correct interface from the following list:"
-  select seliface in "${IFACE[@]}"; do
-    case $seliface in
-      *) iface=$seliface; break;;
-    esac
-  done
-  echo "Your interface has been set as $iface"
-}
-
-echo "Groovy. Please wait a few moments while wireguard is installed ..."
+echo "Perfecto. Espera un poco a que Wireguard se instale ..."
 
 if [[ $distribution == "Debian" ]]; then
     echo "deb http://deb.debian.org/debian/ unstable main" > /etc/apt/sources.list.d/unstable.list
@@ -64,7 +64,6 @@ if [[ ! -d /etc/wireguard ]]; then
 fi
 
 mkdir -p /home/$u/.wireguard/{server,client}
-
 
 cd /home/$u/.wireguard/server
 wg genkey | tee wg$(id -u $u).key | wg pubkey > wg$(id -u $u).pub
@@ -138,14 +137,14 @@ systemctl daemon-reload
 systemctl enable --now wg-quick@wg$(id -u $u)
 systemctl start wg-quick@wg$(id -u $u)
 
-echo "Wireguard has been enabled (wg$(id -u $u)). Your client configuration is:"
+echo "Wireguard se ha habilitado (wg$(id -u $u)). Tu configuración de cliente es:"
 echo ""
 cat /home/$u/.wireguard/$u.conf
 
 echo ""
-echo "You can access this configuration at any time at ~/.wireguard/$u.conf"
+echo "Puedes acceder a esta configuración en cualquier momento en ~/.wireguard/$u.conf"
 echo ""
-echo "To generate a QR code of this configuration automatically for the android client, use the command:"
+echo "Puedes generar un código QR para configurar tu VPN en dispositivos móviles con este comando:"
 echo "qrencode -t ansiutf8 < ~/.wireguard/$u.conf"
 
 echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf

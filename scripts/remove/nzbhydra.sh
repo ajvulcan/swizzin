@@ -1,15 +1,10 @@
 #!/bin/bash
 #
-# [Quick Box :: Remove nzbhydra package]
+# [Servidor HD :: Remove nzbhydra package]
 #
-# GITHUB REPOS
-# GitHub _ packages  :   https://github.com/QuickBox/quickbox_packages
-# LOCAL REPOS
-# Local _ packages   :   /etc/QuickBox/packages
-# Author             :   QuickBox.IO | liara
-# URL                :   https://quickbox.io
+# Author             :   liara
 #
-# QuickBox Copyright (C) 2017 QuickBox.io
+# Servidor HD Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -18,7 +13,7 @@
 #   under the GPL along with build & install instructions.
 #
 
-MASTER=$(cat /root/.master.info | cut -d: -f1)
+MASTER=$(cut -d: -f1 < /root/.master.info)
   systemctl stop nzbhydra@${MASTER}
   systemctl disable nzbhydra@${MASTER}
   rm /etc/systemd/system/nzbhydra@.service

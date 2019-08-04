@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Servidor HD
+#
 if [[ -f /tmp/.install.lock ]]; then
   OUTTO="/root/logs/install.log"
 elif [[ -f /install/.panel.lock ]]; then
@@ -6,7 +9,7 @@ elif [[ -f /install/.panel.lock ]]; then
 else
   OUTTO="/dev/null"
 fi
-USERNAME=$(cat /root/.master.info | cut -d: -f1)
+USERNAME=$(cut -d: -f1 < /root/.master.info)
 APPNAME='headphones'
 APPPATH='/home/'$USERNAME'/.headphones'
 APPTITLE='Headphones'

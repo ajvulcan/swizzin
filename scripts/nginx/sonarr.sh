@@ -1,6 +1,6 @@
 #!/bin/bash
 # Nginx Configuration for Sonarr
-# Author: liara
+# Author: liara9 Servidor HD
 # Copyright (C) 2017 Swizzin
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
@@ -8,7 +8,7 @@
 #   changes/dates in source files. Any modifications to our software
 #   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
-MASTER=$(cat /root/.master.info | cut -d: -f1)
+MASTER=$(cut -d: -f1 < /root/.master.info)
 isactive=$(systemctl is-active sonarr@$MASTER)
 
 if [[ $isactive == "active" ]]; then

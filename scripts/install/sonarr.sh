@@ -1,15 +1,10 @@
 #!/bin/bash
 #
-# [Quick Box :: Install Sonarr-NzbDrone package]
+# [Servidor HD :: Install Sonarr-NzbDrone package]
 #
-# GITHUB REPOS
-# GitHub _ packages  :   https://github.com/QuickBox/quickbox_packages
-# LOCAL REPOS
-# Local _ packages   :   /etc/QuickBox/packages
-# Author             :   QuickBox.IO | JMSolo
-# URL                :   https://quickbox.io
+# Author             :   JMSolo
 #
-# QuickBox Copyright (C) 2016
+# QuickBox Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -120,7 +115,7 @@ else
   OUTTO="/dev/null"
 fi
 . /etc/swizzin/sources/functions/mono
-username=$(cat /root/.master.info | cut -d: -f1)
+username=$(cut -d: -f1 < /root/.master.info)
 distribution=$(lsb_release -is)
 version=$(lsb_release -cs)
 

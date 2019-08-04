@@ -1,15 +1,10 @@
 #!/bin/bash
 #
-# [Quick Box :: Install plexmediaserver package]
+# [Servidor HD :: Install plexmediaserver package]
 #
-# GITHUB REPOS
-# GitHub _ packages  :   https://github.com/PastaGringo/scripts
-# LOCAL REPOS        :
-# Local _ packages   :   /etc/QuickBox/packages
 # Author             :   PastaGringo
-# URL                :   https://plaza.quickbox.io
 #
-# QuickBox Copyright (C) 2017 QuickBox.io
+# Servidor HD Copyright (C) 2019 Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -28,7 +23,7 @@ HOSTNAME1=$(hostname -s)
 PUBLICIP=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
 DISTRO=$(lsb_release -is)
 CODENAME=$(lsb_release -cs)
-master=$(cat /root/.master.info | cut -d: -f1)
+master=$(cut -d: -f1 < /root/.master.info)
 
 #versions=https://plex.tv/api/downloads/1.json
 #wgetresults="$(wget "${versions}" -O -)"

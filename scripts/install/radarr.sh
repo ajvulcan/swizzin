@@ -1,15 +1,10 @@
 #!/bin/bash
 #
-# [Quick Box :: Install Radarr package]
+# [Servidor HD :: Install Radarr package]
 #
-# GITHUB REPOS
-# GitHub _ packages  :   https://github.com/QuickBox/QB
-# LOCAL REPOS
-# Local _ packages   :   /etc/QuickBox/packages
 # Author             :   PastaGringo | KarmaPoliceT2
-# URL                :   https://quickbox.io
 #
-# QuickBox Copyright (C) 2017 QuickBox.io
+# Servidor HD Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -113,7 +108,7 @@ elif [[ -f /install/.panel.lock ]]; then
 else
   OUTTO="/dev/null"
 fi
-username=$(cat /root/.master.info | cut -d: -f1)
+username=$(cut -d: -f1 < /root/.master.info)
 distribution=$(lsb_release -is)
 version=$(lsb_release -cs)
 . /etc/swizzin/sources/functions/mono

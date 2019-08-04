@@ -1,7 +1,8 @@
 #!/bin/bash
 # rTorrent installer
 # Author: liara
-# Copyright (C) 2017 Swizzin
+# modified by ajvulcan
+# Copyright (C) 2019 Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -96,8 +97,8 @@ fi
 . /etc/swizzin/sources/functions/rtorrent
 whiptail_rtorrent
 
-noexec=$(cat /etc/fstab | grep "/tmp" | grep noexec)
-user=$(cat /root/.master.info | cut -d: -f1)
+noexec=$(grep "/tmp" /etc/fstab | grep noexec)
+user=$(cut -d: -f1 < /root/.master.info)
 rutorrent="/srv/rutorrent/"
 port=$((RANDOM%64025+1024))
 portend=$((${port} + 1500))
@@ -113,12 +114,12 @@ if [[ -n $noexec ]]; then
 	mount -o remount,exec /tmp
 	noexec=1
 fi
-	  echo "Installing rTorrent Dependencies ... ";depends_rtorrent
-		echo "Building xmlrpc-c from source ... ";build_xmlrpc-c
-		echo "Building libtorrent from source ... ";build_libtorrent_rakshasa
-		echo "Building rtorrent from source ... ";build_rtorrent
-		echo "Making ${user} directory structure ... ";_makedirs
-		echo "setting up rtorrent.rc ... ";_rconf;_systemd
+	  echo "Instalando dependencias rTorrent ... ";depends_rtorrent
+		echo "Compilando xmlrpc-c desde fuente ... ";build_xmlrpc-c
+		echo "Compilando libtorrent desde fuente ... ";build_libtorrent_rakshasa
+		echo "Compilando rtorrent desde fuente ... ";build_rtorrent
+		echo "Montando estructura de directorios de ${user} ... ";_makedirs
+		echo "Configurando rtorrent.rc ... ";_rconf;_systemd
 
 if [[ -n $noexec ]]; then
 	mount -o remount,noexec /tmp

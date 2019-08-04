@@ -1,5 +1,5 @@
 #! /bin/bash
-# Medusa installer for swizzin
+# Medusa installer for servidor HD
 # Author: liara
 
 if [[ -f /tmp/.install.lock ]]; then
@@ -10,7 +10,7 @@ else
   log="/dev/null"
 fi
 distribution=$(lsb_release -is)
-user=$(cat /root/.master.info | cut -d: -f1)
+user=$(cut -d: -f1 < /root/.master.info)
 
 if [[ $(systemctl is-active sickgear@${user}) == "active" ]]; then
   active=sickgear

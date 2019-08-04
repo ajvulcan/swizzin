@@ -1,11 +1,12 @@
 #!/bin/bash
 #
-# [Swizzin :: Install AutoDL-IRSSI package]
+# [Servidor HD :: Install AutoDL-IRSSI package]
 #
 # Originally written for QuickBox
 # Ported from QuickBox and modified for Swizzin by liara
+# Forked in Servidor HD by ajvulcan
 #
-# QuickBox Copyright (C) 2017 QuickBox.io
+# Servidor HD Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -13,10 +14,8 @@
 #   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
 #
-#   QuickBox.IO does not grant the end-user the right to distribute this
-#   code in a means to supply commercial monetization. If you would like
-#   to include QuickBox in your commercial project, write to echo@quickbox.io
-#   with a summary of your project as well as its intended use for moentization.
+#   Servidor HD does not grant the end-user the right to distribute this
+#   code in a means to supply commercial monetization. 
 #
 
 
@@ -87,7 +86,7 @@ elif [[ -f /install/.panel.lock ]]; then
 else
   OUTTO="/dev/null"
 fi
-users=($(cat /etc/htpasswd | cut -d ":" -f 1))
+users=($(cut -d: -f1 < /etc/htpasswd))
 
 if [[ -n $1 ]]; then
   users=($1)

@@ -1,6 +1,8 @@
 #!/bin/bash
+#
+# SERVIDOR HD
 
-#Update club-QuickBox with latest changes
+#Actualiza club-QuickBox con los últimos cambios
 if [[ -d /srv/rutorrent/plugins/theme/themes/club-QuickBox ]]; then
   cd /srv/rutorrent/plugins/theme/themes/club-QuickBox
   git reset HEAD --hard
@@ -15,7 +17,7 @@ if [[ -d /srv/rutorrent/plugins/theme/themes/DarkBetter ]]; then
 fi
 
 if [[ -f /install/.flood.lock ]]; then
-  users=($(cat /etc/htpasswd | cut -d ":" -f 1))
+  users=($(cut -d: -f1 < /etc/htpasswd))
   for u in ${users[@]}; do
     if [[ ! -f /etc/nginx/apps/${u}.scgi.conf ]]; then
       cat > /etc/nginx/apps/${u}.scgi.conf <<RUC

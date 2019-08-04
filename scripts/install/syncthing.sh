@@ -1,15 +1,10 @@
 #!/bin/bash
 #
-# [Quick Box :: Install syncthing]
+# [Servidor HD :: Install syncthing]
 #
-# GITHUB REPOS
-# GitHub _ packages  :   https://github.com/QuickBox/quickbox_packages
-# LOCAL REPOS
-# Local _ packages   :   /etc/QuickBox/packages
-# Author             :   QuickBox.IO | liara
-# URL                :   https://quickbox.io
+# Author             :   liara
 #
-# QuickBox Copyright (C) 2017 QuickBox.io
+# Servidor HD Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -24,17 +19,17 @@ elif [[ -f /install/.panel.lock ]]; then
 else
   OUTTO="/dev/null"
 fi
-MASTER=$(cat /root/.master.info | cut -d: -f1)
+MASTER=$(cut -d: -f1 < /root/.master.info)
 
-echo "Adding Syncthing Repository ... " >>"${OUTTO}" 2>&1;
+echo "Añadiendo repositorio Syncthing ... " >>"${OUTTO}" 2>&1;
 curl -s https://syncthing.net/release-key.txt | sudo apt-key add - > /dev/null 2>&1
 echo "deb http://apt.syncthing.net/ syncthing release" > /etc/apt/sources.list.d/syncthing.list
 
-echo "Installing Syncthing ... " >>"${OUTTO}" 2>&1;
+echo "Instalando Syncthing ... " >>"${OUTTO}" 2>&1;
 sudo apt-get -q update > /dev/null 2>&1
 sudo apt-get -qy install syncthing > /dev/null 2>&1
 
-echo "Configuring Syncthing & Starting ... " >>"${OUTTO}" 2>&1;
+echo "Configurando Syncthing & comenzando ... " >>"${OUTTO}" 2>&1;
 cat > /etc/systemd/system/syncthing@.service <<SYNC
 [Unit]
 Description=Syncthing - Open Source Continuous File Synchronization for %I
@@ -61,7 +56,7 @@ if [[ -f /install/.nginx.lock ]]; then
 fi
 
 touch /install/.syncthing.lock
-echo "Syncthing installation complete!" >>"${OUTTO}" 2>&1;
-echo >>"${OUTTO}" 2>&1;
-echo >>"${OUTTO}" 2>&1;
-echo "Close this dialog box to refresh your browser" >>"${OUTTO}" 2>&1;
+echo "Instalación deSyncthing completada!" >>"${OUTTO}" 2>&1
+echo >>"${OUTTO}" 2>&1
+echo >>"${OUTTO}" 2>&1
+echo "Cierra esta ventana para actualizar tu explorador" >>"${OUTTO}" 2>&1

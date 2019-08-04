@@ -1,5 +1,5 @@
 #!/bin/bash
-# NZBGet installer for swizzin
+# NZBGet installer for servidor HD
 # Author: liara
 # 
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
@@ -86,9 +86,9 @@ else
   log="/dev/null"
 fi
 
-users=($(cat /etc/htpasswd | cut -d ":" -f 1))
-master=$(cat /root/.master.info | cut -d: -f1)
-noexec=$(cat /etc/fstab | grep "/tmp" | grep noexec)
+users=($(cut -d: -f1 < /etc/htpasswd))
+master=$(cut -d: -f1 < /root/.master.info)
+noexec=$(grep "/tmp" /etc/fstab | grep noexec)
 
 if [[ -n $noexec ]]; then
 	mount -o remount,exec /tmp
