@@ -1,7 +1,7 @@
 #!/bin/bash
 # ruTorrent installation and nginx configuration
 # Author: liara
-# Copyright (C) 2017 Swizzin
+# Copyright (C) 2019 Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -14,7 +14,7 @@ if [[ ! -f /install/.nginx.lock ]]; then
   exit 1
 fi
 
-users=($(cat /etc/htpasswd | cut -d ":" -f 1))
+users=($(cut -d: -f1 < /etc/htpasswd))
 
 apt-get update -y -q >>/dev/null 2>&1
 apt-get install -y -q sox geoip-database python python-setuptools python-pip >>/dev/null 2>&1

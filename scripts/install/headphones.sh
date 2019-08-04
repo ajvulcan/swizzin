@@ -1,15 +1,10 @@
 #!/bin/bash
 #
-# [Quick Box :: Install Headphones package]
+# [Servidor HD :: Install Headphones package]
 #
-# GITHUB REPOS
-# GitHub _ packages  :   https://github.com/QuickBox/QB/packages
-# LOCAL REPOS
-# Local _ packages   :   /etc/QuickBox/packages
-# Author             :   QuickBox.IO | JMSolo
-# URL                :   https://quickbox.io
+# Author             :   JMSolo
 #
-# QuickBox Copyright (C) 2017 QuickBox.io
+# QuickBox Copyright (C) 2019 Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -17,10 +12,8 @@
 #   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
 #
-#   QuickBox.IO does not grant the end-user the right to distribute this
-#   code in a means to supply commercial monetization. If you would like
-#   to include QuickBox in your commercial project, write to echo@quickbox.io
-#   with a summary of your project as well as its intended use for moentization.
+#   Servidor HD does not grant the end-user the right to distribute this
+#   code in a means to supply commercial monetization. 
 #
 
 YELLOW='\e[93m'
@@ -36,8 +29,8 @@ elif [[ -f /install/.panel.lock ]]; then
 else
   OUTTO="/dev/null"
 fi
-USERNAME=$(cat /root/.master.info | cut -d: -f1)
-PASSWD=$(cat /root/.master.info | cut -d: -f2)
+USERNAME=$(cut -d: -f1 < /root/.master.info)
+PASSWD=$(cut -d: -f2 < /root/.master.info)
 
 
 APPNAME='headphones'

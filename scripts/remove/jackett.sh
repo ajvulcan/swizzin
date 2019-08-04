@@ -1,5 +1,8 @@
 #!/bin/bash
-username=$(cat /root/.master.info | cut -d: -f1)
+#
+# SERVIDOR HD
+#
+username=$(cut -d: -f1 < /root/.master.info)
 
 rm -r /home/$username/Jackett
 rm /install/.jackett.lock

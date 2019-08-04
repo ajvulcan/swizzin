@@ -2,10 +2,11 @@
 #
 # Tautulli installer
 #
-# Author             :   QuickBox.IO | liara
+# Author             :   liara
 # Ported to swizzin by liara
+# Forked to Servidor HD by ajvulcan
 #
-# QuickBox Copyright (C) 2017 QuickBox.io
+# Servidor HD Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -20,7 +21,7 @@ elif [[ -f /install/.panel.lock ]]; then
 else
   OUTTO="/dev/null"
 fi
-MASTER=$(cat /root/.master.info | cut -d: -f1)
+MASTER=$(cut -d: -f1 < /root/.master.info)
 
 
 apt-get -y -q install python python-setuptools tzdata >>"${OUTTO}" 2>&1
@@ -70,8 +71,8 @@ if [[ -f /install/.nginx.lock ]]; then
 fi
 touch /install/.tautulli.lock
 
-echo "Tautulli Install Complete!" >>"${OUTTO}" 2>&1;
+echo "instalación de Tautulli completa!" >>"${OUTTO}" 2>&1;
 sleep 5
 echo >>"${OUTTO}" 2>&1;
 echo >>"${OUTTO}" 2>&1;
-echo "Close this dialog box to refresh your browser" >>"${OUTTO}" 2>&1;
+echo "Cierra esta ventana para actualizar el explorador" >>"${OUTTO}" 2>&1;

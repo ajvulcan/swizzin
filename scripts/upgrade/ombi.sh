@@ -1,6 +1,8 @@
 #!/bin/bash
 # Upgrade ombi
 # Author liara
+#
+# SERVIDOR HD
 
 if grep -q "\-\-storage" /etc/systemd/system/ombi.service; then
   :
@@ -63,6 +65,6 @@ OMB
   fi
 fi
 
-user=$(cat /root/.master.info | cut -d: -f1)
+user=$(cut -d: -f1 < /root/.master.info)
 
 systemctl start ombi

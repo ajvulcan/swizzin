@@ -1,5 +1,7 @@
 #!/bin/bash
 # Simple tool to grab the latest release of emby
+#
+# SERVIDOR HD
 
 current=$(curl -L -s -H 'Accept: application/json' https://github.com/MediaBrowser/Emby.Releases/releases/latest | sed -e 's/.*"tag_name":"\([^"]*\)".*/\1/')
 cd /tmp

@@ -1,15 +1,10 @@
 #!/bin/bash
 #
-# [Quick Box :: Remove Sonarr-NzbDrone package]
+# [Servidor HD :: Remove Sonarr-NzbDrone package]
 #
-# GITHUB REPOS
-# GitHub _ packages  :   https://github.com/QuickBox/quickbox_packages
-# LOCAL REPOS
-# Local _ packages   :   /etc/QuickBox/packages
-# Author             :   QuickBox.IO | JMSolo
-# URL                :   https://quickbox.io
+# Author             :   JMSolo
 #
-# QuickBox Copyright (C) 2016
+# Servidor Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -17,7 +12,7 @@
 #   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
 #
-username=$(cat /root/.master.info | cut -d: -f1)
+username=$(cut -d: -f1 < /root/.master.info)
 local_setup=/etc/QuickBox/setup/
 
 function _removeSonarr() {

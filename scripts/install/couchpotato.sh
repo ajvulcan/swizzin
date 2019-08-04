@@ -1,9 +1,10 @@
 #!/bin/bash
 #
-# [Swizzin :: Couchpotato Installer]
+# [Servidor HD :: Couchpotato Installer]
 #
 # Originally written for QuickBox.io by liara
 # Modified for Swizzin by liara
+# Forked in Servidor HD by ajvulcan
 #
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
@@ -67,6 +68,6 @@ elif [[ -f /install/.panel.lock ]]; then
 else
   OUTTO="/dev/null"
 fi
-MASTER=$(cat /root/.master.info | cut -d: -f1)
+MASTER=$(cut -d: -f1 < /root/.master.info)
 _install
 _services

@@ -1,15 +1,10 @@
 #!/bin/bash
 #
-# [Quick Box :: Remove quotas]
+# [Servidor HD :: Remove quotas]
 #
-# GITHUB REPOS
-# GitHub _ packages  :   https://github.com/QuickBox/quickbox_packages
-# LOCAL REPOS
-# Local _ packages   :   /etc/QuickBox/packages
-# Author             :   QuickBox.IO | liara
-# URL                :   https://quickbox.io
+# Author             :   liara
 #
-# QuickBox Copyright (C) 2016
+# Servidor HD Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -18,7 +13,7 @@
 #   under the GPL along with build & install instructions.
 #
 #################################################################################
-username=$(cat /root/.master.info | cut -d: -f1)
+username=$(cut -d: -f1 < /root/.master.info)
 
 sed -i 's/,usrjquota=aquota.user,jqfmt=vfsv1//g' /etc/fstab
 apt-get remove -y -q quota >/dev/null 2>&1

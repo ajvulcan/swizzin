@@ -1,7 +1,7 @@
 #!/bin/bash
 # Lidarr configuration for nginx
 # Author: liara
-# Copyright (C) 2019 Swizzin
+# Copyright (C) 2019 Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -9,7 +9,7 @@
 #   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
 
-user=$(cat /root/.master.info | cut -d: -f1)
+user=$(cut -d: -f1 < /root/.master.info)
 isactive=$(systemctl is-active bazarr)
 
 if [[ $isactive == "active" ]]; then

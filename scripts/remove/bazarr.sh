@@ -1,5 +1,8 @@
 #!/bin/bash
-user=$(cat /root/.master.info | cut -d: -f1)
+#
+#   Servidor HD
+#
+user=$(cut -d: -f1 < /root/.master.info)
 systemctl disable --now bazarr
 
 rm -rf /home/$user/bazarr

@@ -1,6 +1,9 @@
 #!/bin/bash
 # Deluge upgrade/downgrade/reinstall script
 # Author: liara
+#
+# SERVIDOR HD
+
 if [[ ! -f /install/.deluge.lock ]]; then
   echo "Deluge doesn't appear to be installed. What do you hope to accomplish by running this script?"
   exit 1
@@ -14,8 +17,8 @@ fi
 
 . /etc/swizzin/sources/functions/deluge
 whiptail_deluge
-users=($(cat /etc/htpasswd | cut -d ":" -f 1))
-noexec=$(cat /etc/fstab | grep "/tmp" | grep noexec)
+users=($(cut -d: -f1 < /etc/htpasswd))
+noexec=$(grep "/tmp" /etc/fstab | grep noexec)
 
 for u in "${users[@]}"; do
   systemctl stop deluged@${u}

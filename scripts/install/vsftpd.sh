@@ -1,7 +1,7 @@
 #!/bin/bash
 # vsftpd installer
 # Author: liara
-# Copyright (C) 2017 Swizzin
+# Copyright (C) 2019 SERVIDOR HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -79,7 +79,7 @@ VSC
 # Check for LE cert, and copy it if available.
 chkhost="$(find /etc/nginx/ssl/* -maxdepth 1 -type d | cut -f 5 -d '/')"
 if [[ -n $chkhost ]]; then
-    defaulthost=$(cat /etc/nginx/sites-enabled/default | grep -m 1 server_name | awk '{print $2}' | sed 's/;//g')
+    defaulthost=$(grep -m1 "server_name" /etc/nginx/sites-enabled/default | awk '{print $2}' | sed 's/;//g')
     sed -i "s#rsa_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem#rsa_cert_file=/etc/nginx/ssl/${defaulthost}/fullchain.pem#g" /etc/vsftpd.conf
     sed -i "s#rsa_private_key_file=/etc/ssl/private/ssl-cert-snakeoil.key#rsa_private_key_file=/etc/nginx/ssl/${defaulthost}/key.pem#g" /etc/vsftpd.conf
 fi

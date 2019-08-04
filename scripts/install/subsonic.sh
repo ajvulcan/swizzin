@@ -1,15 +1,10 @@
 #!/bin/bash
 #
-# [Quick Box :: Install Subsonic package]
+# [Servidor HD :: Install Subsonic package]
 #
-# QUICKLAB REPOS
-# QuickLab _ packages  :   https://github.com/QuickBox/quickbox_packages
-# LOCAL REPOS
-# Local _ packages   :   /etc/QuickBox/packages
-# Author             :   QuickBox.IO | JMSolo
-# URL                :   https://quickbox.io
+# Author             :   JMSolo
 #
-# QuickBox Copyright (C) 2017 QuickBox.io
+# Servidor HD Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -25,8 +20,7 @@ elif [[ -f /install/.panel.lock ]]; then
 else
   OUTTO="/dev/null"
 fi
-MASTER=$(cat /root/.master.info | cut -d: -f1)
-
+MASTER=$(cut -d: -f1 < /root/.master.info)
 
 echo "Creating subsonic-tmp install directory ... " >>"${OUTTO}" 2>&1;
 mkdir /root/subsonic-tmp
@@ -48,7 +42,7 @@ rm -rf /root/subsonic-tmp
 echo "Modifying Subsonic startup script ... " >>"${OUTTO}" 2>&1;
 cat > /usr/share/subsonic/subsonic.sh <<SUBS
 #!/bin/sh
-MASTER=$(cat /root/.master.info | cut -d: -f1 )
+MASTER=$(cut -d: -f1 < /root/.master.info )
 SUBSONICIP=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
 
 SUBSONIC_HOME=/srv/subsonic

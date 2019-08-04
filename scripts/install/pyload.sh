@@ -1,17 +1,12 @@
 #!/bin/bash
 #
-# [Quick Box :: Install pyLoad package]
+# [Servidor HD :: Install pyLoad package]
 #
-# QUICKLAB REPOS
-# QuickLab _ packages  :   https://github.com/QuickBox/QB/packages
-# LOCAL REPOS
-# Local _ packages   :   /etc/QuickBox/packages
-# Author             :   QuickBox.IO | JMSolo
-# URL                :   https://quickbox.io
+# Author             :   JMSolo
 #
-# Modifications for Swizzin by liara
+# Modifications for Servidor HD by ajvulcan
 #
-# QuickBox Copyright (C) 2017 QuickBox.io
+# Servidor HD Copyright (C) 2019 Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -128,7 +123,7 @@ function _installpyLoad9() {
 
 
 ip=$(curl -s http://whatismyip.akamai.com)
-MASTER=$(cat /root/.master.info | cut -d: -f1)
+MASTER=$(cut -d: -f1 < /root/.master.info)
 if [[ -f /tmp/.install.lock ]]; then
   OUTTO="/root/logs/install.log"
 elif [[ -f /install/.panel.lock ]]; then
