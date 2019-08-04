@@ -4,3 +4,18 @@ systemctl restart nginx
 echo 'NGINX reiniciado'
 #systemctl stop shellinabox
 #echo 'shellinabox reiniciado'
+
+#Reinicio de servicio emby
+if [ $1 == "emby" ]; then
+echo "Reiniciando servicio emby"
+
+service emby-server stop >/dev/null 2>&1
+username=$(cat /root/.master.info | cut -d: -f1)
+echo '...'
+echo "cambiando usuario emby a "${username}" "
+systemctl disable emby-server --now
+chown -R $username:$username /var/lib/emby
+systemctl enable emby-server@$username --now
+systemctl restart emby-server@$username
+
+fi

@@ -1,8 +1,10 @@
 #!/bin/bash
 # ruTorrent e(x)tras management
+#
+# SERVIDOR HD
 
 function _intro() {
-  whiptail --title "ruTorrent Extras Manager" --msgbox "Welcome to rtx! Using this script you can choose to install and remove the plugins and themes for ruTorrent. Use the arrow keys to navigate, spacebar to toggle the currently selected item and enter to continue." 15 50
+  whiptail --title "ruTorrent Extras" --msgbox "Bienvenido a rtx! Aquí puedes instalar o borrar plugins y temas para ruTorrent. Múevete con las flechas, barra espaciadora para seleccionar y enter para continuar." 15 50
 }
 
 function _function() {

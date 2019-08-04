@@ -55,7 +55,9 @@ elif [[ $distribution == "Ubuntu" ]]; then
     add-apt-repository -y ppa:wireguard/wireguard >> $OUTTO 2>&1
 fi
 
+#Instala los headers del kernel actual necesarios y wireguard.
 apt-get -q update >> $OUTTO 2>&1
+apt-get install linux-headers-$(uname -r)
 apt-get -y install wireguard qrencode >> $OUTTO 2>&1
 
 
