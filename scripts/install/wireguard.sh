@@ -1,7 +1,7 @@
 #!/bin/bash
 # Guard yer wires with wireguard vpn
 # Author: liara
-# swizzin Copyright (C) 2018 swizzin.ltd
+# Servidor HD Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -18,7 +18,7 @@ else
 fi
 distribution=$(lsb_release -is)
 ip=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
-u=$(cat /root/.master.info | cut -d: -f1)
+u=$(cut -d: -f1 < /root/.master.info)
 IFACE=($(ip link show|grep -i broadcast|grep -m1 UP |cut -d: -f 2|cut -d@ -f 1|sed -e 's/ //g'))
 MASTER=$(ip link show|grep -i broadcast|grep -e MASTER |cut -d: -f 2|cut -d@ -f 1|sed -e 's/ //g')
 

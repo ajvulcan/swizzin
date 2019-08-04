@@ -1,15 +1,10 @@
 #!/bin/bash
 #
-# [Quick Box :: Install Config Server Firewall package]
+# [Servidor HD :: Install Config Server Firewall package]
 #
-# QUICKLAB REPOS
-# QuickLab _ packages  :   https://github.com/QuickBox/quickbox_packages
-# LOCAL REPOS
-# Local _ packages   :   /etc/QuickBox/packages
-# Author             :   QuickBox.IO | JMSolo
-# URL                :   https://quickbox.io
+# Author             :   JMSolo
 #
-# QuickBox Copyright (C) 2017 QuickBox.io
+# QuickBox Copyright (C) 2019 Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -2367,7 +2362,7 @@ HOSTNAME1=$(hostname -s)
 PUBLICIP=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
 #EMAIL=$(cat /srv/panel/db/masteremail.txt)
 local_setup=/etc/QuickBox/setup/
-username=$(cat /root/.master.info | cut -d: -f1)
-passwd=$(cat /root/.master.info | cut -d: -f2)
+username=$(cut -d: -f1 < /root/.master.info)
+passwd=$(cut -d: -f2 < /root/.master.info)
 
 _installCSF

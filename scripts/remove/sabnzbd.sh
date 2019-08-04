@@ -1,5 +1,8 @@
 #!/bin/bash
-username=$(cat /root/.master.info | cut -d: -f1)
+#
+#   SERVIDOR HD 
+#
+username=$(cut -d: -f1 < /root/.master.info)
 
 apt-get -y remove par2-tbb python-openssl python-sabyenc python-cheetah >/dev/null 2>&1
 rm -rf /home/$username/SABnzbd

@@ -1,8 +1,10 @@
 #!/bin/bash
 # ruTorrent removal
 # Author: liara
+#
+# SERVIDOR HD 
 
-users=($(cat /etc/htpasswd | cut -d ":" -f 1))
+users=($(cut -d: -f1 < /etc/htpasswd))
 
 rm -rf /srv/rutorrent
 rm -rf /etc/nginx/apps/rutorrent.conf

@@ -1,11 +1,10 @@
 #!/bin/bash
 #
-# [Quick Box :: Install nzbhydra package]
-# Author:   liara for QuickBox.io
-# Ported by: liara for swizzin
-# URL                :   https://quickbox.io
+# [Servidor HD :: Install nzbhydra package]
+# Author:   liara
+# Forked by: ajvulcan for Servidor HD
 #
-# QuickBox Copyright (C) 2017 QuickBox.io
+# QuickBox Copyright (C) 2019 Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -84,6 +83,6 @@ elif [[ -f /install/.panel.lock ]]; then
 else
   OUTTO="/dev/null"
 fi
-MASTER=$(cat /root/.master.info | cut -d: -f1)
+MASTER=$(cut -d: -f1 < /root/.master.info)
 _install
 _services

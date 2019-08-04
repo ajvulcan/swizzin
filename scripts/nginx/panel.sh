@@ -1,7 +1,7 @@
 #!/bin/bash
 # QuickBox dashboard installer for Swizzin
 # Author: liara
-# Copyright (C) 2017 Swizzin
+# Copyright (C) 2019 Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -10,7 +10,7 @@
 #   under the GPL along with build & install instructions.
 #
 IFACE=$(ip link show|grep -i broadcast|grep -m1 UP|cut -d: -f 2|cut -d@ -f 1|sed -e 's/ //g');
-user=$(cat /root/.master.info | cut -d: -f1)
+user=$(cut -d: -f1 < /root/.master.info)
 if [[ -f /tmp/.install.lock ]]; then
   log="/root/logs/install.log"
 else

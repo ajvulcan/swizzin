@@ -1,15 +1,10 @@
 #!/bin/bash
 #
-# [Quick Box :: Install Jackett package]
+# [Servidor HD :: Install Jackett package]
 #
-# GITHUB REPOS
-# GitHub _ packages  :   https://github.com/QuickBox/quickbox_packages
-# LOCAL REPOS
-# Local _ packages   :   /etc/QuickBox/packages
-# Author             :   QuickBox.IO | d2dyno
-# URL                :   https://quickbox.io
+# Author             :   d2dyno
 #
-# QuickBox Copyright (C) 2017 QuickBox.io
+# Servidor HD Copyright (C) 2019 SERVIDOR HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -26,10 +21,10 @@ else
 fi
 distribution=$(lsb_release -is)
 version=$(lsb_release -cs)
-username=$(cat /root/.master.info | cut -d: -f1)
+username=$(cut -d: -f1 < /root/.master.info)
 jackett=$(curl -s https://api.github.com/repos/Jackett/Jackett/releases/latest | grep AMDx64 | grep browser_download_url | cut -d \" -f4)
 #jackettver=$(wget -q https://github.com/Jackett/Jackett/releases/latest -O - | grep -E \/tag\/ | grep -v repository | awk -F "[><]" '{print $3}')
-password=$(cat /root/.master.info | cut -d: -f2)
+password=$(cut -d: -f2 < /root/.master.info)
 
 echo >>"${OUTTO}" 2>&1;
 echo "Installing Jackett ... " >>"${OUTTO}" 2>&1;
@@ -67,7 +62,7 @@ cat > /home/${username}/.config/Jackett/ServerConfig.json <<JSC
   "AdminPassword": "",
   "InstanceId": "",
   "BlackholeDir": "",
-  "UpdateDisabled": false,
+  "UpdateDisabled": true,
   "UpdatePrerelease": false,
   "BasePathOverride": "",
   "OmdbApiKey": "",

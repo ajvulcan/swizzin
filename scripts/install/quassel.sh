@@ -2,10 +2,10 @@
 #
 # Quassel Installer
 #
-# Originally written for QuickBox.io. Ported to Swizzin
+# Originally written for QuickBox.io. Ported to Swizzin. Forked to Servidor HD by ajvulcan.
 # Author: liara
 #
-# QuickBox Copyright (C) 2016
+# Servidor HD Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -25,7 +25,7 @@ fi
 distribution=$(lsb_release -is)
 codename=$(lsb_release -cs)
 IP=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
-user=$(cat /root/.master.info | cut -d: -f1)
+user=$(cut -d: -f1 < /root/.master.info)
 . /etc/swizzin/sources/functions/backports
 
 echo "Installing Quassel PPA (Ubuntu) or grabbing latest backport (Debian) ... "

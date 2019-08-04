@@ -2,10 +2,10 @@
 #
 # Ombi installer
 #
-# Author:   QuickBox.IO | liara
-# Ported for swizzin by liara
+# Author:  liara
+# Forked for Servidor HD by ajvulcan
 #
-# QuickBox Copyright (C) 2016
+# Servidor HD Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -75,7 +75,7 @@ else
   OUTTO="/dev/null"
 fi
 distribution=$(lsb_release -is)
-user=$(cat /root/.master.info | cut -d: -f1)
+user=$(cut -d: -f1 < /root/.master.info)
 
 echo -ne "Initializing plex ... $i\033[0K\r"
 

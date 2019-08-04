@@ -1,25 +1,25 @@
 #!/bin/bash
 #
-# [swizzin :: box management solution]
+# [servidor HD :: box management solution]
 # `box -h` for commands and info
 #
-# Author             :   swizzin | liara
+# Author             :  liara, ajvulcan
+#
+#       SERVIDOR HD 2019
 #
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
-#
-#   You may copy, distribute and modify the software as long as you track
+##   You may copy, distribute and modify the software as long as you track
 #   changes/dates in source files. Any modifications to our software
 #   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
-#
 #################################################################################
 
 function _intro() {
-  whiptail --title "Swizzin Package Manager" --msgbox "Welcome to the Box! Using this script you can choose to install and remove the packages contained within the package repository. Use the arrow keys to navigate, spacebar to toggle the currently selected item and enter to continue." 15 50
+  whiptail --title "SERVIDOR HD control de paquetes" --msgbox "Bienvenido a Box! Usando este script puedes elegir instalar o eliminar los paquetes dentro del repositorio servidor HD. Usa las teclas de flecha para navegar, barra espaciadora para seleccionar los elementos y enter para continuar." 15 50
 }
 
 function _function() {
-  function=$(whiptail --title "Swizzin" --menu "Choose an option:" --ok-button "Continue" --nocancel 12 50 3 \
+  function=$(whiptail --title "Servidor HD" --menu "Elige una opción:" --ok-button "Continuar" --nocancel 12 50 3 \
                Install "packages" \
                Remove "packages" \
                Exit "" 3>&1 1>&2 2>&3)
@@ -42,12 +42,12 @@ function _install() {
       installa+=("$i" '""')
     fi
   done
-  whiptail --title "Install Software" --checklist --noitem --separate-output "Make some choices:" 15 26 7 "${installa[@]}" 2>results
+  whiptail --title "Instalar Software" --checklist --noitem --separate-output "Elige:" 15 26 7 "${installa[@]}" 2>results
   
   readarray result < results
   for i in "${result[@]}"; do
     result=$(echo $i)
-    echo -e "Installing ${result}"
+    echo -e "Instalando ${result}"
     bash /usr/local/bin/swizzin/install/${result}.sh
   done
 
@@ -64,11 +64,11 @@ for i in "${locks[@]}"; do
     removea+=("$i" '""')
   fi
 done
-whiptail --title "Remove Software" --noitem --checklist --separate-output "Make some choices:" 15 26 7 "${removea[@]}" 2>results
+whiptail --title "Eliminar Software" --noitem --checklist --separate-output "Elige:" 15 26 7 "${removea[@]}" 2>results
   readarray result < results
   for i in "${result[@]}"; do
     result=$(echo $i)
-    echo -e "Removing ${result}"
+    echo -e "Eliminando ${result}"
     bash /usr/local/bin/swizzin/remove/${result}.sh
   done
 rm results
@@ -82,13 +82,13 @@ function _cli() {
   for i in "${packages[@]}"; do
     app=${i}
     if [[ -f /install/.${app}.lock ]]; then
-      echo -e "Package $i already installed"
+      echo -e "El paquete $i ya está instalado"
     else
-      if [[ "${repo[@]}" =~ $i ]]; then
-        echo -e "Installing $i "
+      if [[ "${repo[*]}" =~ $i ]]; then
+        echo -e "Instalando $i "
         bash /usr/local/bin/swizzin/install/$i.sh
       else
-        echo -e "Package $i not found"
+        echo -e "Paquete $i no encontrado"
       fi
     fi
   done
@@ -100,24 +100,33 @@ function _clr() {
   for i in "${packages[@]}"; do
     app=${i}
     if [[ -f /install/.$app.lock ]]; then
-      echo -e "Removing $i "
+      echo -e "Eliminando $i "
       bash /usr/local/bin/swizzin/remove/$i.sh
     else
-      echo -e "Package $i not installed"
+      echo -e "Paquete $i no instalado"
     fi
   done
 }
 
 function _update() {
-  echo -e "Automatic update DISABLED"
+# echo -e "Actualización automática DESHABILITADA"
+  echo -e "Actualizando el repositorio local de Servidor HD"
+  echo "Esto sobreescribirá Servidor HD desde el repositorio de Github, ¿Está seguro? (escriba SI, no por defecto)"
+  read respuesta
 
-#  echo -e "Actualizando el repositorio local de Servidor HD"
-#  cd /etc/swizzin
-#  git checkout master
-#  git reset --hard origin/master
-#  git pull
-#  chmod -R 700 /etc/swizzin/scripts
-#  for f in /etc/swizzin/scripts/update/*; do . $f; done
+case $respuesta in
+  "SI" ) echo "Comienza la actualización ..."; 
+          cd /etc/swizzin ;
+          git checkout master;
+          git reset --hard origin/master;
+          git pull;
+          chmod -R 700 /etc/swizzin/scripts;
+          for f in /etc/swizzin/scripts/update/*; do . $f; done ;
+          echo "Actualización finalizada."
+          ;;
+  * ) echo "Actualización cancelada";;
+esac
+    
 }
 
 function _upgrade() {
@@ -126,11 +135,11 @@ function _upgrade() {
   repo=($(find /usr/local/bin/swizzin/upgrade -type f -printf "%f\n" | cut -d "." -f 1))
   for i in "${packages[@]}"; do
     app=${i}
-    if [[ "${repo[@]}" =~ $i ]]; then
-      echo -e "Upgrading $i "
+    if [[ "${repo[*]}" =~ $i ]]; then
+      echo -e "Mejorando $i "
       bash /usr/local/bin/swizzin/upgrade/$i.sh
     else
-      echo -e "Upgrade script for $i does not exist"
+      echo -e "El script de mejora para $i no existe"
     fi
   done
 }
@@ -139,42 +148,42 @@ function _help() {
   sgformat="${bold}%-15s${normal}"
   spacing=$(echo $'\t' | pr -Te15)
 
-  echo -e "Usage: `basename $0` [ install | remove | upgrade ] ${bold}pkg1 pkg2 [...]${normal}\n"
+  echo -e "Usar:  `basename $0` [ install | remove | upgrade ] ${bold}pkg1 pkg2 [...]${normal}\n"
   echo -e "       `basename $0` [ adduser | deluser | chpasswd ] ${bold}username${normal}\n"
   echo -e "       `basename $0` [ list | update ]\n"
   echo -e "       `basename $0` panel fix-disk [ root | home ]\n"
   echo -e "       `basename $0`\n"
-  echo -e "Note: Only install and remove functions accept package arguments. List and update must be run without modifiers\n" | fmt --goal=66 --tagged-paragraph
+  echo -e "Nota: Solo instalar y eliminar permiten paquetes como argumento. List y update se ejecutan sin modificadores\n" | fmt --goal=66 --tagged-paragraph
   echo -e "\n"
   printf "${sgformat}" "install"
-  echo -e "The install function requires at least one package name as an argument but will accept multiples\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
-  echo -e "               Example: box install quassel syncthing znc\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
+  echo -e "La función install requiere al menos un nombre de paquete como argumento pero admite múltiples\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
+  echo -e "               Ejemplo: box install quassel syncthing znc\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
   printf "${sgformat}" "remove"
-  echo -e "The remove function requires at least one package name as an argument but will accept multiples\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
-  echo -e "               Example: box remove quassel syncthing znc\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
+  echo -e "La función remove requiere al menos un nombre de paquete como argumento pero admite múltiples\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
+  echo -e "               Ejemplo: box remove quassel syncthing znc\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
    printf "${sgformat}" "adduser"
-  echo -e "The adduser function requires a single user to be specified, this user will be created\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
-  echo -e "               Example: box adduser freeloadingfriend\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
+  echo -e "La función adduser requiere un usuario, El usuario será creado\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
+  echo -e "               Ejemplo: box adduser amiguete\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
    printf "${sgformat}" "deluser"
-  echo -e "The deluser function requires a single user to be specified, this user will be removed\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
-  echo -e "               Example: box deluser exgirlfriend\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
+  echo -e "La función deluser requiere un usuario, el usuario será eliminado\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
+  echo -e "               Ejemplo: box deluser exnovia\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
    printf "${sgformat}" "chpasswd"
-  echo -e "The chpasswd function requires a single user to be specified, their password will be changed\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
-  echo -e "               Example: box chpasswd forgetfulfriend\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
+  echo -e "La función chpasswd requiere un usuario, su contraseña será cambiada\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
+  echo -e "               Ejemplo: box chpasswd amiguete\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
   printf "${sgformat}" "update"
-  echo -e "The update command will update your local swizzin repository to the latest version and run important update scripts\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
+  echo -e "El comando update actualizará tu repositorio local de servidor HD a la última versiony ejecutará scripts importantes\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
   printf "${sgformat}" "upgrade"
-  echo -e "Runs the associated upgrade script.\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
+  echo -e "Ejecuta el script de mejora asociado.\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
   printf "${sgformat}" "panel fix-disk"
-  echo -e "The panel fix-disk command change the disk widget in the web panel to root or home\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
+  echo -e "El comando panel fix-disk cambia el widget de disco del panel web a root o home\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
   printf "${sgformat}" "list"
-  echo -e "The list command will list packages available to be managed by box\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
+  echo -e "El comando list mostrará la lista disponible de paquetes en Servidor HD\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
 }
 
 function _list() {
   repo=($(find /usr/local/bin/swizzin/install -type f -printf "%f\n" | cut -d. -f 1 | sort -d))
   if [[ -f /srv/panel/inc/localize.php ]]; then
-    lang=$(cat /srv/panel/inc/localize.php | grep language | cut -d "'" -f 2)
+    lang=$(grep language /srv/panel/inc/localize.php | cut -d "'" -f 2)
     locale=/srv/panel/lang/$lang
   else
     locale=/etc/swizzin/sources/lang_en
@@ -184,7 +193,7 @@ function _list() {
     if [[ $i == ombi ]]; then app=ombi; fi
     sgformat="${bold}%-15s${normal}"
     spacing=$(echo $'\t' | pr -Te15)
-    description=$(cat $locale | grep -i -m 1 \\\[\'$app | cut -d= -f2 | sed "s/ '//g" | sed "s/';//g" | sed "s/\\\'/'/g")
+    description=$(grep -i -m 1 \\\[\'$app $locale | cut -d= -f2 | sed "s/ '//g" | sed "s/';//g" | sed "s/\\\'/'/g")
     if [[ -z $description ]]; then description="Description missing";fi
     printf "${sgformat}" "$i"
     echo -e "${description}\n" | fmt --goal=50 | sed -e "2,\$s/^/$spacing/"
@@ -195,12 +204,12 @@ function _list() {
 function _adduser {
   user=$2
   if [[ $user =~ [A-Z] ]]; then
-    echo "Usernames must not contain capital letters. Please try again."
+    echo "Nombres de usuario no pueden contener mayúsculas. Prueba de nuevo."
     exit 1
   fi
 
   if [[ -f /root/${user}.info ]]; then
-    echo "User already seems to exist"
+    echo "El usuario ya existe"
     exit 1
   fi
 
@@ -208,25 +217,25 @@ function _adduser {
   existing=$?
 
   if [[ $existing == 0 ]]; then
-    echo "${user} already appears to be present on this machine; however, it does not appear to be configured as a swizzin user"
+    echo "${user} ya está presente en esta máquina, sin embargo no está configurado como un usuario de Servidor HD"
     echo
-    read -rep 'Press enter to continue adding user.'
+    read -rep 'Presiona enter para continuar añadiéndolo como usuario.'
     echo
   fi
 
-  echo -e "Enter password for ${user}. (leave empty to generate a password)"; read 'pass'
+  echo -e "Introduce la contraseña para ${user}. (dejar vacío para generarla automáticamente)"; read 'pass'
 
   if [[ -z "${pass}" ]]; then
     pass="$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c16)"
-    echo "Password for ${user} has been set to ${pass}"
+    echo "La contraseña ${user} se ha establecido como ${pass}"
   fi
   if [[ -n $(which cracklib-check) ]]; then 
-    echo "Cracklib detected. Checking password strength."
+    echo "Cracklib detectado. Comprobando fortaleza de contraseña."
     sleep 1
     str="$(cracklib-check <<<"$pass")"
     check=$(grep OK <<<"$str")
     if [[ -z $check ]]; then
-      read -n 1 -s -r -p "Password did not pass cracklib check. Press any key to enter a new password"
+      read -n 1 -s -r -p "La contraseña no ha pasado el test de cracklib. Presiona cualquier tecla para introducir nueva contraseña."
       printf "\n"
       _adduser "$@"
     else
@@ -292,8 +301,12 @@ echo "/home/${administrador}/DESCARGAS  /home/${user}/DESCARGAS   none    bind  
  chmod 550 /home/${user}/PERSONAL
  chown $user:$user /home/${user}/PERSONAL
 
+ echo "Carpetas DESCARGAS y PERSONAL de ${user} creadas."
+
 #Añado usuario a acceso emby
 htpasswd -b /etc/htpasswd.d/htpasswd.emby $user $pass
+echo "Añado el usuario ${user} a acceso emby."
+echo " "
 
 #Mensaje recordatorio
 echo "Recuerda reiniciar el sistema para enlazar la carpeta descargas en el fstab"
@@ -305,18 +318,18 @@ echo "Recuerda reiniciar el sistema para enlazar la carpeta descargas en el fsta
 function _deluser {
   user=$2
   if [[ ! -f /root/${user}.info ]]; then
-    master=$(cat /root/.master.info | cut -d: -f1)
+    master=$(cut -d: -f1 < /root/.master.info)
     if [[ $user == $master ]]; then
-      echo "Master user deletion is not supported"
+      echo "No puedes eliminar el usuario maestro."
       exit 1
     fi
-    echo "Error: user ${user} not found. Exiting."
+    echo "Error: usuario ${user} no encontrado. Saliendo."
     exit 1
   fi
 
-  echo "WARNING: This will delete the user '${user}' and all associated configs and subdirectories. THIS ACTION CANNOT BE UNDONE."
+  echo "ADVERTENCIA: Esto borrará el usuario '${user}' y todas sus configuraciones y directorio asociados. ESTA ACCIÓN ES DEFINITIVA."
   echo
-  read -rep 'Removal will start as soon as you confirm this message. Press enter to continue.'
+  read -rep 'La eliminación empezará tan pronto como confirmes este mensaje. Presiona enter para continuar.'
   
   for app in rtorrent rutorrent deluge autodl flood nzbget lounge; do
     if [[ $app = "rutorrent" ]]; then
@@ -367,25 +380,25 @@ sed -i '/${user}/d' /etc/fstab
 
 function _chpasswd {
   user=$2
-  echo -e "Enter new password for ${user}. Leave empty to generate a password"; read 'pass'
+  echo -e "Introduce una nueva contraseña para ${user}. Deja vacía para generar una contraseña"; read 'pass'
   if [[ -z "${pass}" ]]; then
     pass="$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c16)"
-    echo "New password has been set to ${pass}"
+    echo "La nueva contraseña se ha establecido para ${pass}"
   fi
   if [[ -n $(which cracklib-check) ]]; then 
-    echo "Cracklib detected. Checking password strength."
+    echo "Cracklib detectado. Comprobando fortaleza de contraseña."
     sleep 1
     str="$(cracklib-check <<<"$pass")"
     check=$(grep OK <<<"$str")
     if [[ -z $check ]]; then
-      read -n 1 -s -r -p "Password did not pass cracklib check. Press any key to enter a new password"
+      read -n 1 -s -r -p "La contraseña no pasa la comprobación de cracklib. Presiona cualquier tecla para introducir una nueva contraseña."
       printf "\n"
       _chpasswd "$@"
     else
       echo "OK"
     fi
   fi
-  master=$(cat /root/.master.info | cut -d: -f1)
+  master=$(cut -d: -f1 < /root/.master.info)
   if [[ $user = $master ]]; then
     echo "$user:$pass" > /root/.master.info
   fi
@@ -397,7 +410,7 @@ function _chpasswd {
   if [[ -e /install/.deluge.lock ]]; then
     systemctl stop deluged@${user}
     systemctl stop deluge-web@${user}
-    DWSALT=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+    DWSALT=$(tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 32 | head -n 1)
     DWP=$(python /usr/local/bin/swizzin/deluge.Userpass.py ${pass} ${DWSALT})
     sed -i "s/.*${user}.*/${user}:${pass}:10/" /home/$user/.config/deluge/auth
     sed -i "s/.*pwd_salt.*/  \"pwd_salt\": \"${DWSALT}\",/" /home/$user/.config/deluge/web.conf
@@ -411,7 +424,7 @@ function _chpasswd {
 
 function _panel () {
   if [[ $2 != "fix-disk" ]]; then
-    echo "fix-disk is the only acceptable panel argument at this time"
+    echo "el comando solo acepta el argumento fix-disk por el momento"
     exit 1
   fi
   /usr/local/bin/swizzin/panel/fix-disk $3
@@ -421,14 +434,14 @@ function _nukeovh() {
   grsec=$(uname -a | grep -i grs)
   if [[ -n $grsec ]]; then
     echo
-    echo -e "Your server is currently running with kernel version: $(uname -r)"
-    echo -e "While not it is not required to switch, kernels with grsec are not recommend due to conflicts in the panel and other packages."
+    echo -e "Tu servidor actualmente corre con la versión de kernel siguiente: $(uname -r)"
+    echo -e "Mientras no se requiera cambiar, los kernels con grsec nos están recomendados por conflictos con el panel y otros paquetes."
     echo
-    echo -ne "Would you like swizzin to install the distribution kernel? (Default: Y) "; read input
+    echo -ne "¿Quieres que Servidor HD instale una distribución del kernel? Would you like swizzin to install the distribution kernel? (Por defecto: Y) "; read input
       case $input in
-        [yY] | [yY][Ee][Ss] | "" ) kernel=yes; echo "Your distribution's default kernel will be installed. You will need to reboot after these changes."  ;;
-        [nN] | [nN][Oo] ) echo "Why did you even run this function?" exit 1 ;;
-      *) kernel=yes; echo "Your distribution's default kernel will be installed. You will need to reboot after these changes."  ;;
+        [yY] | [yY][Ee][Ss] | "" ) kernel=yes; echo "Se instalará la versión de kernel de tu distribución, se requiere un reinicio después."  ;;
+        [nN] | [nN][Oo] ) echo "¿Porque has ejecutado esta función entonces?" exit 1 ;;
+      *) kernel=yes; echo "Se instalará la versión de kernel de tu distribución, se requiere un reinicio después."  ;;
       esac
       if [[ $kernel == yes ]]; then
         if [[ $DISTRO == Ubuntu ]]; then
@@ -446,7 +459,7 @@ function _nukeovh() {
       fi
     else
     echo
-    echo -e "grsec not detected. Nothing to do."
+    echo -e "grsec no detectado. Nada que hacer."
   fi
 }
 
@@ -466,7 +479,7 @@ case "$1" in
   ;;
   "install"|"it")
     if [[ -z $2 ]]; then
-      echo "Error: You must choose some packages"
+      echo "Error: Debes seleccionar algún paquete"
       exit 1
     fi
     _cli "$@"
@@ -474,7 +487,7 @@ case "$1" in
   ;;
   "remove"|"rm")
     if [[ -z $2 ]]; then
-      echo "Error: You must choose some packages"
+      echo "Error: Debes seleccionar algunos paquetes"
       exit 1
     fi
     _clr "$@"
@@ -482,11 +495,11 @@ case "$1" in
   ;;
   "adduser")
     if [[ -z $2 ]]; then
-      echo "Error: You must specify a user"
+      echo "Error: Debes especificar un usuario"
       exit 1
     fi
     if [[ -n $3 ]]; then
-      echo -e "Error: too many arguments\nCorrect usage: box adduser <username>"
+      echo -e "Error: demasiados argumentos\nUso correcto: box adduser <nombre de usuario>"
       exit 1
     fi
   _adduser "$@"
@@ -494,11 +507,11 @@ case "$1" in
   ;;
   "deluser")
     if [[ -z $2 ]]; then
-      echo -e "Error: you must specify a username.\nCorrect usage: box deluser <username>"
+      echo -e "Error: debes especificar un nombre de usuario.\nUso correcto: box deluser <nombre de usuario>"
       exit 1
     fi
     if [[ -n $3 ]]; then
-      echo -e "Error: too many arguments\nCorrect usage: box deluser <username>"
+      echo -e "Error: demasiados argumentos\nUso correcto: box deluser <nombre de usuario>"
       exit 1
     fi
     _deluser "$@"
@@ -506,7 +519,7 @@ case "$1" in
   ;;
   "chpasswd")
     if [[ -n $3 ]]; then
-      echo -e "Error: too many arguments\nCorrect usage: box chpasswd <username>"
+      echo -e "Error: demasiados argumentos\nUso correcto: box chpasswd <nombre de usuario>"
       exit 1
     fi
     _chpasswd "$@"
@@ -514,7 +527,7 @@ case "$1" in
   ;;
   "panel")
     if [[ ! -f /install/.panel.lock ]]; then
-      echo "Panel not installed..."
+      echo "Panel no instalado..."
       exit 1
     fi
     _panel "$@"
@@ -532,7 +545,7 @@ case "$1" in
     exit 0
   ;;
   "upgrade")
-    if [[ ! $2 ]]; then echo "You must choose at least one package to update."; exit 1; fi
+    if [[ ! $2 ]]; then echo "Debes elegir al menos un paquete para actualizar."; exit 1; fi
     _update
     _upgrade "$@"
     exit 0
@@ -542,7 +555,7 @@ case "$1" in
     exit 0
   ;;
   *)
-    echo "Error: $1 invalid command"
+    echo "Error: $1 comando no válido"
     exit 1
   ;;
 esac

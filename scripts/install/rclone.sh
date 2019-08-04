@@ -1,15 +1,10 @@
 #!/bin/bash
 #
-# [Quick Box :: Install rclone]
+# [Servidor HD :: Install rclone]
 #
-# GITHUB REPOS
-# GitHub _ packages  :   https://github.com/QuickBox/quickbox_packages
-# LOCAL REPOS
-# Local _ packages   :   /etc/QuickBox/packages
 # Author             :   DedSec | d2dyno
-# URL                :   https://quickbox.io
 #
-# QuickBox Copyright (C) 2017 QuickBox.io
+# Servidor HD Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -24,16 +19,16 @@ elif [[ -f /install/.panel.lock ]]; then
 else
   OUTTO="/dev/null"
 fi
-MASTER=$(cat /root/.master.info | cut -d: -f1)
+MASTER=$(cut -d: -f1 < /root/.master.info)
 
-echo "Downloading and installing rclone ..." >>"${OUTTO}" 2>&1;
+echo "Descargando e instalando rclone ..." >>"${OUTTO}" 2>&1;
 
 # One-liner to check arch/os type, as well as download latest rclone for relevant system.
 curl https://rclone.org/install.sh | sudo bash
 
 # Make sure rclone downloads and installs without error before proceeding
 if [ $? -eq 0 ]; then
-    echo "Adding rclone mount service..." >>"${OUTTO}" 2>&1;
+    echo "Añadiendo servicio de montaje de rclone..." >>"${OUTTO}" 2>&1;
 
 cat >/etc/systemd/system/rclone@.service<<EOF
 [Unit]
@@ -57,10 +52,10 @@ WantedBy=multi-user.target
 EOF
 
     touch /install/.rclone.lock
-    echo "rclone installation complete!" >>"${OUTTO}" 2>&1;
+    echo "rclone instalación completa!" >>"${OUTTO}" 2>&1;
 else
-    echo "Issue occured during rclone installation." >>"${OUTTO}" 2>&1;
+    echo "Un error ha ocurrido durante la instalación de rclone." >>"${OUTTO}" 2>&1;
 fi
 echo >>"${OUTTO}" 2>&1;
 echo >>"${OUTTO}" 2>&1;
-echo "Close this dialog box to refresh your browser" >>"${OUTTO}" 2>&1;
+echo "Cierra esta ventana de diálogo para actualizar tu navegador" >>"${OUTTO}" 2>&1;
