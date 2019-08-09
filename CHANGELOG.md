@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.1]
+
+## 10 Agosto, 2019
+
+### Añadido
+
+- Añadido webmin
+
 ## [1.5.0]
 
 ### Julio 15, 2019
