@@ -6,7 +6,7 @@ echo 'NGINX reiniciado'
 #echo 'shellinabox reiniciado'
 
 #Reinicio de servicio emby
-if [ $1 == "emby" ]; then
+if [[ $1 == "emby" ]]; then
 echo "Reiniciando servicio emby"
 
 service emby-server stop >/dev/null 2>&1
@@ -17,5 +17,9 @@ systemctl disable emby-server --now
 chown -R $username:$username /var/lib/emby
 systemctl enable emby-server@$username --now
 systemctl restart emby-server@$username
+
+else
+
+echo "No se hace nada con emby, Si quieres reiniciarlo escribe reload emby"
 
 fi
