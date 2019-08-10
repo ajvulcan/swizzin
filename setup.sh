@@ -160,7 +160,11 @@ function _adduser() {
   #añade usuario a lista emby
   htpasswd -b -c /etc/htpasswd.d/htpasswd.emby $user $pass
   echo "Añado el usuario ${user} a acceso emby (/etc/htpasswd.d/htpasswd.emby) "
-
+  
+  #añade al usuario al grupo sshuser
+  groupadd sshuser
+  adduser ${user} sshuser
+  
   #Crea carpeta de descargas para usuario administrador
   mkdir /home/${user}/DESCARGAS
   chmod 777 /home/${user}/DESCARGAS
@@ -278,6 +282,15 @@ function _post {
   if [[ $distribution = "Ubuntu" ]]; then
     echo 'Defaults  env_keep -="HOME"' > /etc/sudoers.d/env_keep
   fi
+
+#Da permiso solo a usuarios seleccionados para SSH
+cat >> /etc/ssh/sshd_config <<EOF
+
+#Solo permite acceso al usuario maestro o seleccionado
+AllowGroups sshuser
+EOF
+service ssh restart
+
   echo "¡Instalación completa!"
   echo ""
   echo "Ya puedes logearte con el siguiente usuario: ${user}:${pass}"

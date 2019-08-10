@@ -308,6 +308,17 @@ htpasswd -b /etc/htpasswd.d/htpasswd.emby $user $pass
 echo "Añado el usuario ${user} a acceso emby."
 echo " "
 
+#Permiso SSH
+echo "¿Quiere que este usuario tenga acceso a consola SSH? s/N (Por defecto N)"
+read permisoSSH
+
+case $permisoSSH in
+  "s" ) echo "Dado permisos SSH a ${user} ..."; 
+          addgroup ${user} sshuser ;
+          ;;
+  * ) echo "NO se le dan permisos SSH";;
+esac
+
 #Mensaje recordatorio
 echo "Recuerda reiniciar el sistema para enlazar la carpeta descargas en el fstab"
 
