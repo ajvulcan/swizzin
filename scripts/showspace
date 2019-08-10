@@ -6,20 +6,90 @@
 ######################################################################
 function showspace() { # Divides by 2^10 until < 1024 and then append metric suffix
 declare -a METRIC=('B' 'KB' 'MB' 'GB' 'TB' 'XB' 'PB') # Array of suffixes
-MAGNITUDE=0  # magnitude of 2^10
-PRECISION="scale=3" # change this numeric value to inrease decimal precision
-UNITS=`echo $1 | tr -d ','`  # numeric arg val (in bytes) to be converted
-while [ ${UNITS/.*} -ge 1024 ] # compares integers (b/c no floats in bash)
-  do
-   UNITS=`echo "$PRECISION; $UNITS/1024" | bc` # floating point math via `bc`
-   ((MAGNITUDE++)) # increments counter for array pointer
-  done
-echo -n "$UNITS${METRIC[$MAGNITUDE]}"
+	MAGNITUDE=0  # magnitude of 2^10
+	PRECISION="scale=3" # change this numeric value to inrease decimal precision
+	UNITS=`echo $1 | tr -d ','`  # numeric arg val (in bytes) to be converted
+	while [ ${UNITS/.*} -ge 1024 ] # compares integers (b/c no floats in bash)
+  	 do
+  	 UNITS=`echo "$PRECISION; $UNITS/1024" | bc` # floating point math via `bc`
+   	 ((MAGNITUDE++)) # increments counter for array pointer
+         done
+	echo -n "$UNITS${METRIC[$MAGNITUDE]}"
 }
 
-cd /home/ && du */ -bs | awk '$1 > 500 { print $0 }' | while read LINE; do
-    SIZE=$(echo "$LINE" | cut -f 1)
-    HRSIZE=$(showspace "$SIZE")
-    DIR=$(echo "$LINE" | cut -f 2)
-    printf "%8s %s\n" "$HRSIZE" "$DIR"
+function _plus(){
+#Este es un script para cuando el disco duro se peta...
+#Para busquedas manuales puedes usar el siguiente comando...
+#       sudo du -h --max-depth=1 /
+# donde / lo sustituyes por la carpeta donde inspeccionas, y el maxdepth por la
+# profundidad de escaneo en directorio.
+#
+#
+# Con esto tendría en cuenta todos los ficheros desde 100MB en adelante.
+# grep -e '[0-9]G\>' -e "[1-9][0-9][0-9]M\>"
+
+
+file="/root/resultado_analisis.txt"
+
+printf "\nANALIZANDO USO DEL DISCO...\n\n"
+printf "\n||||||ANALIZADOR DE USO DE DISCO DE SERVIDOR HD||||||\n\n" > $file
+df -Th | grep -v "fs" | sort >> $file 2>/dev/null
+printf "\n."
+printf "\n>>>>CARPETAS DE MAS DE 1 GB....\n\n" >> $file
+sudo du -h --max-depth=6 / | grep '[0-9]G\>' | grep -v 'DESCARGAS' | grep -v '/home/*' >> $file 2>/dev/null
+printf "\n."
+printf "\n>>>>FICHEROS DE MAS DE 100MB...\n\n" >> $file
+sudo find / -name '*' -size +100M | grep -v 'DESCARGAS' | grep -v 'GDRIVE' >> $file 2>/dev/null
+printf "\n."
+printf "\n>>>>FICHEROS BASURA...\n\n" >> $file
+sudo find / -type d -name '*Trash*' | sudo xargs du -h | sort >> $file 2>/dev/null
+printf "\n."
+printf "\n>>>>FICHEROS .DEB EN CACHE PARA BORRAR....\n" >> $file
+sudo du -h /var/cache/apt/ >> $file 2>/dev/null
+printf "\n."
+printf "\n>>>>FICHEROS .LOG BORRABLES....\n\n" >> $file
+sudo du -h /var/log >> $file 2>/dev/null
+printf "\n."
+printf "\n>>>>COMPRUEBA SI HAY FICHEROS EN LA PAPELERA DE RECICLAJE...\n\n" >> $file
+sudo find / -type d -name '*Trash*' | sudo xargs du -h | sort >> $file 2>/dev/null
+printf "\n\n>>>>VAMOS A VER CADA USUARIO CUANTO OCUPA EN DISCO DURO...\n    (FICHEROS Y CARPETAS DE MAS DE 1GB)\n" >> $file
+
+LIMITE=$(ls -1 /home/ | grep -v 'lost+found' |  wc -l)
+
+for ((i=1; i <= LIMITE ; i++))
+do
+#nombre=$(cat /etc/passwd | cut -d":" -f1 | sed -n "$i"p)
+nombre=$(ls -1 /home/ | grep -v 'lost+found' | sed -n "$i"p)
+printf "\n -----USUARIO $nombre---------\n\n" >> $file
+sudo find /home/$nombre/* -maxdepth 1 -user $nombre -print0 | sudo xargs -0 du --max-depth=0 -h | sort | grep '[0-9]G\>' >> $file 2> /dev/null
+printf "\n."
 done
+
+chmod 644 $file
+
+#printf "\nCOMPROBACIÓN FINALIZADA...\n\nTODOS LOS RESULTADOS HAN SIDO ALMACENADOS EN RESULTADOS_ANALISIS.TXT\nPOR FAVOR COMPRUEBE EL FICHERO EN SU CARPETA /ROOT/...\n"
+cat $file
+echo "RECUERDE: Puede consultar los resultados en el fichero resultado_analisis.txt de la carpeta /root"
+}
+
+#Selector
+case "$1" in
+  "plus")
+        _plus
+        exit 0
+  ;;
+  "-h")
+	echo "Este comando sirve para analizar el uso del disco duro, por usuario, por tipo o por importancia en el tamaño."
+	exit 0
+	;;
+  *)
+    cd /home/ && du */ -bs | awk '$1 > 500 { print $0 }' | while read LINE; do
+     SIZE=$(echo "$LINE" | cut -f 1)
+     HRSIZE=$(showspace "$SIZE")
+     DIR=$(echo "$LINE" | cut -f 2)
+     printf "%8s %s\n" "$HRSIZE" "$DIR"
+    done
+	echo ""
+	echo "Ejecute 'showspace plus' para una versión más exhaustiva ..."
+  ;;
+esac

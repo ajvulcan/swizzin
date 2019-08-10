@@ -1,0 +1,99 @@
+#!/bin/bash
+# Programas de monitorización
+#
+# Creado por ajvulcan para Servidor HD 2019
+
+function _discos(){
+  HEIGHT=0
+  WIDTH=0
+  CHOICE_HEIGHT=4
+  BACKTITLE="Control SMART de discos"
+  TITLE="SELECCIÓN DE DISCO"
+  MENU="Elige disco, con toda la información completa o resumen:"
+
+OPTIONS=(1 "Disco SDA ínforme completo"
+         2 "Disco SDA informe resumido"
+         3 "Disco SDB informe completo"
+	 4 "Disco SDB informe resumido"
+	 5 "SALIR")
+
+#until [$CHOICE -eq 5]; do
+
+CHOICE=$(whiptail --clear \
+                --backtitle "$BACKTITLE" \
+                --title "$TITLE" \
+                --menu "$MENU" \
+                $HEIGHT $WIDTH $CHOICE_HEIGHT \
+		--ok-button "Aceptar" \
+		--nocancel \
+                "${OPTIONS[@]}" \
+                2>&1 >/dev/tty)
+
+clear
+case $CHOICE in
+        1)
+	    echo 'consultando sistema ..'
+	    datos=$(smartctl --all /dev/sda)
+            whiptail --msgbox "$datos" 0 0
+	    _discos
+            ;;
+        2)
+	    echo 'consultando sistema ..'
+            datos=$(smartctl --all /dev/sda | grep -e Model -e Serial -e Firmware -e overall-health -e Reallocated_Sector_Ct -e Power_On_Hours)
+            whiptail --msgbox "$datos" 0 0
+	    _discos
+	    ;;
+        3)
+		echo 'consultando sistema ..'
+	    datos=$(smartctl --all /dev/sdb)
+            whiptail --msgbox "$datos" 0 0
+            _discos
+            ;;
+	4)
+		echo 'consultando sistema ..'
+	    datos=$(smartctl --all /dev/sdb | grep -e Model -e Serial -e Firmware -e overall-health -e Reallocated_Sector_Ct -e Power_On_Hours)
+            whiptail --msgbox "$datos" 0 0
+            _discos
+	    ;;
+	5)
+	    break
+	    ;;
+esac
+
+clear
+echo "¡Hasta pronto!"
+
+#done
+}
+
+titulo="||||CONTROL Y MONITORIZACION||||"
+
+echo "$titulo"
+PS3='Selecciona que monitorizar: '
+options=("Consola FTP" "Procesos en disco" "Estado discos(SMART)" "Interfaces red" "Procesos de sistema" "Salir")
+select opt in "${options[@]}"
+do
+    case $opt in
+        "Consola FTP")
+	    sudo watch ps -C vsftpd -o user,pid,stime,cmd
+            ;;
+        "Procesos en disco")
+            sudo iotop
+            ;;
+        "Estado discos(SMART)")
+	    _discos
+	    ;;
+        "Interfaces red")
+            nload
+            ;;
+	"Procesos de sistema")
+            htop
+            ;;
+        "Salir")
+	   echo ""
+	   echo "Saliendo de monitor ..."
+            break
+            ;;
+        *) echo "Selección no válida $REPLY";;
+    esac
+done

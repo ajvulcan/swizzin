@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.2]
+
+## 10 Agosto, 2019
+
+### Añadido
+
+- Nuevas aplicaciones de administrador por consola
+
 ## [1.5.1]
 
 ## 10 Agosto, 2019

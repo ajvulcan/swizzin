@@ -1,0 +1,73 @@
+#!/bin/bash
+#
+# Analizador de rendimiento de disco duro
+#
+# Creador: ajvulcan
+#
+# Servidor HD 2019
+#############################################
+
+function _menu() {
+  HEIGHT=0
+  WIDTH=0
+  CHOICE_HEIGHT=4
+  BACKTITLE="TESTS DE RENDIMIENTO PARA DISCOS DUROS"
+  TITLE="SELECCIÓN DE DISCO"
+  MENU="Elige disco:"
+  lineas_array=()
+
+lsblk -P -o KNAME,FSTYPE,SIZE,MOUNTPOINT,MODEL | cut -d "\"" -f 2,4,6,8,10,12 -s | sed 's/\"/ /g' > discos
+
+mapfile -t lineas_array < <( cat discos )
+
+rm discos
+
+OPTIONS=(1 "SALIR")
+AUX=2
+
+for i in "${lineas_array[@]}";do
+OPTIONS=("${OPTIONS[@]}" "${AUX}" "${i}")
+$((AUX++))
+done
+
+echo ${OPTIONS[@]}
+
+CHOICE=$(whiptail --clear \
+                --backtitle "$BACKTITLE" \
+                --title "$TITLE" \
+                --menu "$MENU" \
+                $HEIGHT $WIDTH $CHOICE_HEIGHT \
+                --ok-button "Aceptar" \
+                --nocancel \
+                "${OPTIONS[@]}" \
+                2>&1 >/dev/tty)
+
+echo "El numero de elección es: $CHOICE"
+
+if [ $CHOICE -gt 1 ]; then
+
+DISCO_SEL=$(echo ${lineas_array[$CHOICE-2]} | cut -d " " -f1)
+
+clear
+
+echo "EVALUANDO EL DISCO ${DISCO_SEL} SELECCIONADO ..."
+
+resultado=$(sudo hdparm -Tt /dev/$DISCO_SEL)
+
+whiptail --title "RESULTADOS(Velocidad de cache y lectura de disco)"  --msgbox "${resultado}" 0 0
+
+#REINICIO
+clear
+_menu
+
+else
+
+  clear
+  echo "¡Hasta pronto!"
+
+fi
+
+}
+
+#ARRANQUE
+_menu

@@ -58,4 +58,9 @@ Box:
 
 * reload - Reinicia php y nginx entre otros.
 * setdisk - establece cuotas en disco.
-* showspace - muestra el uso de disco por parte de cada usuario.
+* showspace - muestra el uso de disco por parte de cada usuario, incluye versión plus con otras consideraciones.
+* menu - muestra todos los scripts disponibles
+* disco_analizador - Ejecución del programa NCDU para analisis del espacio en disco.
+* disco_rendimiento - Ejecuta una prueba a traves de HDparm para comprobar la velocidad de disco.
+* monitor - Set de herramientas de monitorización del sistema (FTP, htop, hd smart, interfaces, cpu, ...).
+* speedtest-cli - Script de speedtest para pruebas de velocidad.

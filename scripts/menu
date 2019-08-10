@@ -1,0 +1,8 @@
+#Lista los comandos disponibles de Servidor HD
+echo ""
+echo "-----------------------------------"
+echo "COMANDOS DISPONIBLES DE SERVIDOR HD"
+echo "-----------------------------------"
+ls -p /etc/swizzin/scripts | grep -v /
+echo "-----------------------------------"
+echo ""
