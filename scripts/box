@@ -298,7 +298,7 @@ echo "/home/${administrador}/DESCARGAS  /home/${user}/DESCARGAS   none    bind  
 
 #Crea carpeta personal de usuario
  mkdir /home/${user}/PERSONAL
- chmod 550 /home/${user}/PERSONAL
+ chmod 770 /home/${user}/PERSONAL
  chown $user:$user /home/${user}/PERSONAL
 
  echo "Carpetas DESCARGAS y PERSONAL de ${user} creadas."

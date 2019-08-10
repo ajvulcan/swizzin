@@ -171,7 +171,7 @@ function _adduser() {
   chown $user:$user /home/${user}/DESCARGAS
   #Crea carpeta personal de admin
   mkdir /home/${user}/PERSONAL
-  chmod 750 /home/${user}/PERSONAL
+  chmod 770 /home/${user}/PERSONAL
   chown $user:$user /home/${user}/PERSONAL
   echo "Carpetas de DESCARGA y PERSONAL creadas para el usuario ${user}"
 
