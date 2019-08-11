@@ -167,11 +167,27 @@ location /descargas {
 DESIN
 fi
 
-#Añado la carpeta personal de administador.
+#Añado la carpeta personal de usuario.
 if [[ ! -f /etc/nginx/apps/personal.conf ]]; then
   cat > /etc/nginx/apps/personal.conf <<PERIN
 location /personal {
   alias /home/\$remote_user/PERSONAL;
+  include /etc/nginx/snippets/fancyindex.conf;
+  auth_basic "What's the password?";
+  auth_basic_user_file /etc/htpasswd;
+
+  location ~* \.php$ {
+
+  }
+}
+PERIN
+fi
+
+#Añado la carpeta en la nube.
+if [[ ! -f /etc/nginx/apps/nube.conf ]]; then
+  cat > /etc/nginx/apps/nube.conf <<PERIN
+location /nube {
+  alias /home/\$remote_user/NUBE;
   include /etc/nginx/snippets/fancyindex.conf;
   auth_basic "What's the password?";
   auth_basic_user_file /etc/htpasswd;

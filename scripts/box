@@ -308,6 +308,8 @@ echo "/home/${administrador}/DESCARGAS  /home/${user}/DESCARGAS   none    bind  
  chmod 775 /home/${user}/NUBE
  chown $user:$user /home/${user}/NUBE
 
+ echo "Carpeta para nube creada."
+
 #Añado usuario a acceso emby
 htpasswd -b /etc/htpasswd.d/htpasswd.emby $user $pass
 echo "Añado el usuario ${user} a acceso emby."
