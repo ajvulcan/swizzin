@@ -23,6 +23,10 @@ MASTER=$(cut -d: -f1 < /root/.master.info)
 
 echo "Descargando e instalando rclone ..." >>"${OUTTO}" 2>&1;
 
+#necesitamos la librería de fuse
+apt-get -y update >> $OUTTO 2>&1
+apt-get -y install fuse >> $OUTTO 2>&1
+
 # One-liner to check arch/os type, as well as download latest rclone for relevant system.
 curl https://rclone.org/install.sh | sudo bash
 
@@ -50,6 +54,17 @@ StartLimitBurst=3
 WantedBy=multi-user.target
 
 EOF
+
+cat > /etc/fuse.conf<<EOF2
+# /etc/fuse.conf - Configuration file for Filesystem in Userspace (FUSE)
+
+# Set the maximum number of FUSE mounts allowed to non-root users.
+# The default is 1000.
+#mount_max = 1000
+
+# Allow non-root users to specify the allow_other or allow_root mount options.
+user_allow_other
+EOF2
 
     touch /install/.rclone.lock
     echo "rclone instalación completa!" >>"${OUTTO}" 2>&1;

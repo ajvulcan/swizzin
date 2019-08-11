@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# [Servidor HD :: Unistall rclone]
+# [Servidor HD :: Desinstalar PlexDrive]
 #
-# Author             :   DedSec
+# Autor : ajvulcan
 #
 # Servidor HD Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
@@ -12,12 +12,7 @@
 #   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
 
-MASTER=$(cut -d: -f1 < /root/.master.info)
+  rm -f  /usr/local/bin/plexdrive
+  rm -f /install/.plexdrive.lock
 
-  rm -f  /usr/sbin/rclone
-  rm -f /usr/bin/rclone
-  rm -f /install/.rclone.lock
-
-#eliminamos fuse que ya no es necesario
-  apt-get purge -y fuse >> /etc/null
-
+echo "PlexDrive desinstalado."
