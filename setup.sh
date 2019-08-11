@@ -175,6 +175,10 @@ function _adduser() {
   chown $user:$user /home/${user}/PERSONAL
   echo "Carpetas de DESCARGA y PERSONAL creadas para el usuario ${user}"
 
+  #Nube, para rclone o plexdrive
+  mkdir /home/${user}/NUBE
+  chmod 775 /home/${user}/NUBE
+  chown $user:$user /home/${user}/NUBE
 }
 
 function _choices() {

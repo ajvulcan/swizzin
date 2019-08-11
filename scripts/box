@@ -303,6 +303,11 @@ echo "/home/${administrador}/DESCARGAS  /home/${user}/DESCARGAS   none    bind  
 
  echo "Carpetas DESCARGAS y PERSONAL de ${user} creadas."
 
+#Nube, para rclone o plexdrive
+ mkdir /home/${user}/NUBE
+ chmod 775 /home/${user}/NUBE
+ chown $user:$user /home/${user}/NUBE
+
 #Añado usuario a acceso emby
 htpasswd -b /etc/htpasswd.d/htpasswd.emby $user $pass
 echo "Añado el usuario ${user} a acceso emby."

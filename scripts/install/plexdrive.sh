@@ -20,8 +20,6 @@ else
   OUTTO="/dev/null"
 fi
 
-echo "Instalando PlexDrive ..."
-
 #necesitamos la librería de fuse (si no está instalada)
 apt-get -y update >> $OUTTO 2>&1
 apt-get -y install fuse >> $OUTTO 2>&1
@@ -35,7 +33,32 @@ chown root:root plexdrive
 chmod 755 plexdrive
 mv plexdrive /usr/local/bin/plexdrive
 
+cat >/etc/systemd/system/plexdrive@.service<<EOF
+[Unit]
+Description=PLEXDRIVE
+After=network.target
+
+[Service]
+Type=simple
+User=%I
+ExecStartPre=/bin/mkdir -p /home/%I/NUBE/PLEXDRIVE
+ExecStart=/usr/local/bin/plexdrive mount -o allow_other /home/%I/NUBE/PLEXDRIVE
+ExecStop=/bin/fusermount -u /home/%I/NUBE/PLEXDRIVE
+ExecStop=/bin/rmdir /home/%I/NUBE/PLEXDRIVE
+Restart=on-failure
+RestartSec=30
+StartLimitInterval=60s
+StartLimitBurst=3
+
+[Install]
+WantedBy=multi-user.target
+
+EOF
+
 touch /install/.plexdrive.lock
+echo "Recuerda, para ejecutar rclone debes adaptar tu circustancia al servicio (mismo nombre en configuración que de usuario)"
+echo "... o modificar el servicio que se encuentra en: /etc/systemd/system/plexdrive@.service"
+echo "Después inicialo con systemctl enable plexdrive@usuario, ejecutalo cambiando el enable por start y acuérdate de correr systemctl daemon-reload"
 
     echo "¡plexdrive instalación completa!" >>"${OUTTO}" 2>&1;
 

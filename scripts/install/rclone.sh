@@ -2,7 +2,7 @@
 #
 # [Servidor HD :: Install rclone]
 #
-# Author             :   DedSec | d2dyno
+# Author             :   DedSec | d2dyno | ajvulcan
 #
 # Servidor HD Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
@@ -43,8 +43,10 @@ After=network.target
 Type=simple
 User=%I
 Group=%I
-ExecStart=/usr/sbin/rclone mount /home/%I/cloud --allow-non-empty --allow-other --dir-cache-time 10m --max-read-ahead 9G --checkers 32 --contimeout 15s --quiet
-ExecStop=/bin/fusermount -u /home/%I/cloud
+ExecStartPre=/bin/mkdir -p /home/%I/NUBE/GDRIVE
+ExecStart=/usr/bin/rclone mount --allow-other %I: /home/%I/NUBE/GDRIVE
+ExecStop=/bin/fusermount -u /home/%I/NUBE/GDRIVE
+ExecStop=/bin/rmdir /home/%I/NUBE/GDRIVE
 Restart=on-failure
 RestartSec=30
 StartLimitInterval=60s
@@ -67,6 +69,10 @@ user_allow_other
 EOF2
 
     touch /install/.rclone.lock
+echo "Recuerda, para ejecutar rclone debes adaptar tu circustancia al servicio (mismo nombre en configuración que de usuario)"
+echo "... o modificar el servicio que se encuentra en: /etc/systemd/system/rclone@.service"
+echo "Después inicialo con systemctl enable rclone@usuario, ejecutalo cambiando el enable por start y acuérdate de correr systemctl daemon-reload"
+
     echo "rclone instalación completa!" >>"${OUTTO}" 2>&1;
 else
     echo "Un error ha ocurrido durante la instalación de rclone." >>"${OUTTO}" 2>&1;
