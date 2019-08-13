@@ -56,12 +56,13 @@ WantedBy=multi-user.target
 EOF
 
 touch /install/.plexdrive.lock
-echo "Recuerda, para ejecutar rclone debes adaptar tu circustancia al servicio (mismo nombre en configuración que de usuario)"
-echo "... o modificar el servicio que se encuentra en: /etc/systemd/system/plexdrive@.service"
-echo "Después inicialo con systemctl enable plexdrive@usuario, ejecutalo cambiando el enable por start y acuérdate de correr systemctl daemon-reload"
 
     echo "¡plexdrive instalación completa!" >>"${OUTTO}" 2>&1;
 
 echo >>"${OUTTO}" 2>&1;
 echo >>"${OUTTO}" 2>&1;
 echo "Cierra esta ventana de diálogo para actualizar tu navegador" >>"${OUTTO}" 2>&1;
+
+echo "Recuerda, para ejecutar rclone debes adaptar tu circustancia al servicio (mismo nombre en configuración que de usuario)"
+echo "... o modificar el servicio que se encuentra en: /etc/systemd/system/plexdrive@.service"
+echo "Después inicialo con systemctl enable plexdrive@usuario, ejecutalo cambiando el enable por start y acuérdate de correr systemctl daemon-reload"

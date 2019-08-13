@@ -326,6 +326,11 @@ case $permisoSSH in
   * ) echo "NO se le dan permisos SSH";;
 esac
 
+#Permisos especiales
+chmod 550 /home/${user}
+setfacl -R -m user:${administrador}:rwx /home/${user}
+
+
 #Mensaje recordatorio
 echo "Recuerda reiniciar el sistema para enlazar la carpeta descargas en el fstab"
 

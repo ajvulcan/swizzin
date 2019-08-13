@@ -36,22 +36,19 @@ printf "\n||||||ANALIZADOR DE USO DE DISCO DE SERVIDOR HD||||||\n\n" > $file
 df -Th | grep -v "fs" | sort >> $file 2>/dev/null
 printf "\n."
 printf "\n>>>>CARPETAS DE MAS DE 1 GB....\n\n" >> $file
-sudo du -h --max-depth=6 / | grep '[0-9]G\>' | grep -v 'DESCARGAS' | grep -v '/home/*' >> $file 2>/dev/null
+sudo du -h --max-depth=6 --exclude='NUBE' --exclude=/proc --exclude='OVH_BACKUP' / | grep '[0-9]G\>' | grep -v 'DESCARGAS' | grep -v '/home/*' | grep -v 'proc' | grep -v 'sys' >> $file 2>/dev/null
 printf "\n."
 printf "\n>>>>FICHEROS DE MAS DE 100MB...\n\n" >> $file
-sudo find / -name '*' -size +100M | grep -v 'DESCARGAS' | grep -v 'GDRIVE' >> $file 2>/dev/null
-printf "\n."
-printf "\n>>>>FICHEROS BASURA...\n\n" >> $file
-sudo find / -type d -name '*Trash*' | sudo xargs du -h | sort >> $file 2>/dev/null
+sudo find / \( -path '/home/*/NUBE' -o -path '/proc' -o -path '/home/*/DESCARGAS' \) -prune -o -name '*' -size +100M | grep -v 'NUBE' | grep -v 'DESCARGAS' | grep -v 'proc' | grep -v 'sys' >> $file 2>/dev/null
 printf "\n."
 printf "\n>>>>FICHEROS .DEB EN CACHE PARA BORRAR....\n" >> $file
-sudo du -h /var/cache/apt/ >> $file 2>/dev/null
+sudo du --exclude='/home/*/NUBE' --exclude=/proc -h /var/cache/apt/ >> $file 2>/dev/null
 printf "\n."
 printf "\n>>>>FICHEROS .LOG BORRABLES....\n\n" >> $file
-sudo du -h /var/log >> $file 2>/dev/null
+sudo du --exclude='/home/*/NUBE' -h /var/log >> $file 2>/dev/null
 printf "\n."
 printf "\n>>>>COMPRUEBA SI HAY FICHEROS EN LA PAPELERA DE RECICLAJE...\n\n" >> $file
-sudo find / -type d -name '*Trash*' | sudo xargs du -h | sort >> $file 2>/dev/null
+sudo find / -path '/home/*/NUBE' -prune -o -type d -name '*Trash*' | sudo xargs du -h --exclude='/home/*/NUBE' | sort >> $file 2>/dev/null
 printf "\n\n>>>>VAMOS A VER CADA USUARIO CUANTO OCUPA EN DISCO DURO...\n    (FICHEROS Y CARPETAS DE MAS DE 1GB)\n" >> $file
 
 LIMITE=$(ls -1 /home/ | grep -v 'lost+found' |  wc -l)
@@ -61,7 +58,11 @@ do
 #nombre=$(cat /etc/passwd | cut -d":" -f1 | sed -n "$i"p)
 nombre=$(ls -1 /home/ | grep -v 'lost+found' | sed -n "$i"p)
 printf "\n -----USUARIO $nombre---------\n\n" >> $file
-sudo find /home/$nombre/* -maxdepth 1 -user $nombre -print0 | sudo xargs -0 du --max-depth=0 -h | sort | grep '[0-9]G\>' >> $file 2> /dev/null
+sudo find /home/${nombre}/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=1 -h | sort | grep '[0-9]G\>' >> $file
+#tamaño total
+#printf "\n TAMAÑO TOTAL OCUPADO (GB): "
+#cut -d "G" -f1 | paste -sd+ | sed "s/,/./g" | bc >> $file 2>/dev/null
+#rm info
 printf "\n."
 done
 
@@ -69,8 +70,10 @@ chmod 644 $file
 
 #printf "\nCOMPROBACIÓN FINALIZADA...\n\nTODOS LOS RESULTADOS HAN SIDO ALMACENADOS EN RESULTADOS_ANALISIS.TXT\nPOR FAVOR COMPRUEBE EL FICHERO EN SU CARPETA /ROOT/...\n"
 cat $file
+echo ""
 echo "RECUERDE: Puede consultar los resultados en el fichero resultado_analisis.txt de la carpeta /root"
 }
+
 
 #Selector
 case "$1" in
@@ -83,6 +86,7 @@ case "$1" in
 	exit 0
 	;;
   *)
+    echo "Espere ..."
     cd /home/ && du */ -bs | awk '$1 > 500 { print $0 }' | while read LINE; do
      SIZE=$(echo "$LINE" | cut -f 1)
      HRSIZE=$(showspace "$SIZE")

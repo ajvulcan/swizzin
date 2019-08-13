@@ -69,9 +69,6 @@ user_allow_other
 EOF2
 
     touch /install/.rclone.lock
-echo "Recuerda, para ejecutar rclone debes adaptar tu circustancia al servicio (mismo nombre en configuración que de usuario)"
-echo "... o modificar el servicio que se encuentra en: /etc/systemd/system/rclone@.service"
-echo "Después inicialo con systemctl enable rclone@usuario, ejecutalo cambiando el enable por start y acuérdate de correr systemctl daemon-reload"
 
     echo "rclone instalación completa!" >>"${OUTTO}" 2>&1;
 else
@@ -80,3 +77,7 @@ fi
 echo >>"${OUTTO}" 2>&1;
 echo >>"${OUTTO}" 2>&1;
 echo "Cierra esta ventana de diálogo para actualizar tu navegador" >>"${OUTTO}" 2>&1;
+
+echo "Recuerda, para ejecutar rclone debes adaptar tu circustancia al servicio (mismo nombre en configuración que de usuario)"
+echo "... o modificar el servicio que se encuentra en: /etc/systemd/system/rclone@.service"
+echo "Después inicialo con systemctl enable rclone@usuario, ejecutalo cambiando el enable por start y acuérdate de correr systemctl daemon-reload"
