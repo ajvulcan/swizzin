@@ -158,3 +158,9 @@ echo "¡Ya tienes certificado disponible!, configura Plex o Emby con el certific
 echo "ruta del certificado: /usr/local/etc/streaming-cert.pkfx"
 echo "clave de cifrado: ${str_pass}"
 echo "Certificado de dominio personalizado, para plex :  https://${hostname}:32400, para otro simplemente usa ${hostname}"
+echo "Fichero de configuración disponible en /root/cert_streaming.info para futuras consultas."
+
+echo "Datos de Certificado:" > /root/cert_streaming.info
+echo "Ruta: /usr/local/etc/streaming-cert.pkfx" >> /root/cert_streaming.info
+echo "clave de cifrado: ${str_pass}" >> /root/cert_streaming.info
+echo "Certificado de dominio personalizado, para plex :  https://${hostname}:32400, para otro simplemente usa ${hostname}" >> /root/cert_streaming.info

@@ -34,6 +34,7 @@ fi
 
 echo "Instalando las llaves y fuentes de emby o descargando el binario ... " >>"${OUTTO}" 2>&1;
 echo "Instalando las llaves y fuentes de emby o descargando el binario ... "
+apt-get -y update >/dev/null 2>&1
   if [[ $DISTRO == Debian ]]; then
     version=$(grep VERSION= /etc/os-release| cut -d "\"" -f 2 | cut -d " " -f1).0
     echo "deb http://download.opensuse.org/repositories/home:/emby/$(lsb_release -is)_${version}/ /" > /etc/apt/sources.list.d/emby-server.list
@@ -43,6 +44,8 @@ echo "Instalando las llaves y fuentes de emby o descargando el binario ... "
       current=$(curl -L -s -H 'Accept: application/json' https://github.com/MediaBrowser/Emby.Releases/releases/latest | sed -e 's/.*"tag_name":"\([^"]*\)".*/\1/')
       cd /tmp
       wget -q -O emby.dpkg https://github.com/MediaBrowser/Emby.Releases/releases/download/${current}/emby-server-deb_${current}_amd64.deb
+      echo "Actualizando sistema & instalando emby server ... " >>"${OUTTO}" 2>&1;
+      echo "Actualizando sistema & instalando emby server ... "
       dpkg -i emby.dpkg >> $OUTTO 2>&1
       rm emby.dpkg
     else
@@ -52,15 +55,14 @@ echo "Instalando las llaves y fuentes de emby o descargando el binario ... "
       current=$(curl -L -s -H 'Accept: application/json' https://github.com/MediaBrowser/Emby.Releases/releases/latest | sed -e 's/.*"tag_name":"\([^"]*\)".*/\1/')
       cd /tmp
       wget -q -O emby.dpkg https://github.com/MediaBrowser/Emby.Releases/releases/download/${current}/emby-server-deb_${current}_amd64.deb
+      echo "Actualizando sistema & instalando emby server ... " >>"${OUTTO}" 2>&1;
+      echo "Actualizando sistema & instalando emby server ... "      
+      #apt-get install -y --allow-unauthenticated -f emby-server >/dev/null 2>&1
+      dpkg -i emby.dpkg
+      rm emby.dpkg
     fi
   fi
 
-echo "Actualizando sistema & instalando emby server ... " >>"${OUTTO}" 2>&1;
-echo "Actualizando sistema & instalando emby server ... "
-    apt-get -y update >/dev/null 2>&1
-    #apt-get install -y --allow-unauthenticated -f emby-server >/dev/null 2>&1
-    dpkg -i emby.dpkg
-    rm emby.dpkg
     echo
     sleep 5
 
