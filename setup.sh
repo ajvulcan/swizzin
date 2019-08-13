@@ -53,7 +53,7 @@ function _preparation() {
   fi
   apt-get -q -y update >> ${log} 2>&1
   apt-get -q -y upgrade >> ${log} 2>&1
-  apt-get -q -y install whiptail git sudo curl wget lsof fail2ban apache2-utils vnstat tcl tcl-dev build-essential dirmngr apt-transport-https python-pip nano iotop nload htop hdparm acl >> ${log} 2>&1
+  apt-get -q -y install whiptail git sudo curl wget lsof fail2ban apache2-utils vnstat tcl tcl-dev build-essential dirmngr apt-transport-https python-pip nano iotop nload htop hdparm acl smartmontools >> ${log} 2>&1
   nofile=$(grep "DefaultLimitNOFILE=500000" /etc/systemd/system.conf)
   if [[ ! "$nofile" ]]; then echo "DefaultLimitNOFILE=500000" >> /etc/systemd/system.conf; fi
   echo "Clonando Servidor HD al equipo ..."
@@ -180,6 +180,29 @@ function _adduser() {
   chmod 775 /home/${user}/NUBE
   chown $user:$user /home/${user}/NUBE
   echo "Carpeta para uso de la nube creada..."
+
+ #Añade una tarea de limpieza mensual
+  echo ""
+  echo -ne "¿Deseas que los torrents de la carpeta descargas con una antiguedad superior a 45 dias sean borrados automáticamente? (S/n)"; read input
+      case $input in
+        [sS]| "" )
+                  echo "modificando...";
+                  cat >> /etc/crontab << FINAL
+
+#Limpieza torrents antiguos
+00 05 * * * find /home/usuario_m/DESCARGAS/* -mtime +45 -exec rm -Rf {} \; > /dev/null 2> /dev/null
+FINAL
+                  sed -i 's/usuario_m/'${user}'/' /etc/crontab;;
+        [nN] )
+                  echo "Los torrents antiguos de la carpeta DESCARGAS no serán borrados automáticamente";;
+        *)
+                  cat >> /etc/crontab << FIN2
+
+#Limpieza torrents antiguos
+00 05 * * * find /home/usuario_m/DESCARGAS/* -mtime +45 -exec rm -Rf {} \; > /dev/null 2> /dev/null
+FIN2
+                  sed -i 's/usuario_m/'${user}'/' /etc/crontab;;
+        esac
 }
 
 function _choices() {

@@ -13,7 +13,7 @@ rm -rf /etc/nginx
 rm -rf /etc/php
 
 if [[ -d /srv/panel ]]; then
-    rm -rf /srv/panel
+    rm -rf /srv/panel 
     /etc/sudoers.d/panel
     rm /etc/cron.d/set_interface
 fi

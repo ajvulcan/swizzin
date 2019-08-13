@@ -330,7 +330,6 @@ esac
 chmod 550 /home/${user}
 setfacl -R -m user:${administrador}:rwx /home/${user}
 
-
 #Mensaje recordatorio
 echo "Recuerda reiniciar el sistema para enlazar la carpeta descargas en el fstab"
 
@@ -397,7 +396,10 @@ function _deluser {
   rm /root/${user}.info
   service nginx reload
 
+#Elimino el usuario en FSTAB para carpeta descargas
 sed -i '/${user}/d' /etc/fstab
+#Elimino el usuario de emby
+sed -i '/'${user}'/d' /etc/htpasswd.d/htpasswd.emby
 
 }
 
@@ -426,10 +428,19 @@ function _chpasswd {
     echo "$user:$pass" > /root/.master.info
   fi
   echo "$user:$pass" > /root/${user}.info
+  
+  #Usuario de acceso web
   chpasswd<<<"${user}:${pass}"
   htpasswd -b /etc/htpasswd $user $pass
   mkdir -p /etc/htpasswd.d/
   htpasswd -b -c /etc/htpasswd.d/htpasswd.${user} $user $pass
+  
+  #Elimino el usuario de emby web
+  sed -i '/'${user}'/d' /etc/htpasswd.d/htpasswd.emby
+  #Añado usuario a acceso emby web
+  htpasswd -b /etc/htpasswd.d/htpasswd.emby $user $pass
+
+  #Borrado de user deluge
   if [[ -e /install/.deluge.lock ]]; then
     systemctl stop deluged@${user}
     systemctl stop deluge-web@${user}
@@ -442,7 +453,6 @@ function _chpasswd {
     systemctl start deluged@${user}
     systemctl start deluge-web@${user}
   fi
-
 }
 
 function _panel () {
