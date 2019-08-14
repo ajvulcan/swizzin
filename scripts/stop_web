@@ -1,0 +1,4 @@
+systemctl stop php7.0-fpm.service
+systemctl stop nginx
+echo 'NGINX y PHP detenidos'
+

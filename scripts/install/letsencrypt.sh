@@ -153,6 +153,7 @@ echo "Introduce una contraseña para el certificado de streaming:"
 read str_pass
 openssl pkcs12 -export -out streaming-cert.pkfx -inkey ${hostname}.key -in ${hostname}.cer -certfile fullchain.cer -passout pass:$str_pass
 mv streaming-cert.pkfx /usr/local/etc/
+chmod 644 /usr/local/etc/streaming-cert.pkfx
 
 echo "¡Ya tienes certificado disponible!, configura Plex o Emby con el certificado correspondiente"
 echo "ruta del certificado: /usr/local/etc/streaming-cert.pkfx"
