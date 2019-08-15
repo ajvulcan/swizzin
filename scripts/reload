@@ -1,7 +1,15 @@
-systemctl restart php7.0-fpm.service
+#   Recarga de servicios web
+#
+# autor: ajvulcan
+#
+#       Servidor HD 2019
+
+. /etc/swizzin/sources/functions/php
+restart_php_fpm
 echo 'PHP reiniciado'
 systemctl restart nginx
 echo 'NGINX reiniciado'
+
 #systemctl stop shellinabox
 #echo 'shellinabox reiniciado'
 
