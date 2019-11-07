@@ -42,6 +42,7 @@ fi
 
 echo "Comprobando por método obsoleto de instalación de deluge."; remove_ltcheckinstall
 echo "Reconstruyendo libtorrent ... "; build_libtorrent_rasterbar
+cleanup_deluge
 echo "Actualizando Deluge. Por favor, espera ... "; build_deluge
 
 if [[ -n $noexec ]]; then

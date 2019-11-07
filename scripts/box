@@ -118,8 +118,9 @@ case $respuesta in
   "SI" ) echo "Comienza la actualización ..."; 
           cd /etc/swizzin ;
           git checkout master;
+          git fetch origin master;
           git reset --hard origin/master;
-          git pull;
+          #git pull;
           chmod -R 700 /etc/swizzin/scripts;
           for f in /etc/swizzin/scripts/update/*; do . $f; done ;
           echo "Actualización finalizada."
