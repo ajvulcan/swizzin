@@ -79,6 +79,8 @@ ExecStartPre=-/bin/rm -f /home/%I/.sessions/rtorrent.lock
 ExecStart=/usr/bin/screen -d -m -fa -S rtorrent /usr/bin/rtorrent
 ExecStop=/usr/bin/screen -X -S rtorrent quit
 WorkingDirectory=/home/%I/
+Restart=on-failure
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
@@ -114,9 +116,13 @@ if [[ -n $noexec ]]; then
 	mount -o remount,exec /tmp
 	noexec=1
 fi
-	  echo "Instalando dependencias rTorrent ... ";depends_rtorrent
-		echo "Compilando xmlrpc-c desde fuente ... ";build_xmlrpc-c
-		echo "Compilando libtorrent desde fuente ... ";build_libtorrent_rakshasa
+		if [[ ! $rtorrentver == repo ]]; then
+			echo "Compilando xmlrpc-c desde fuente ...";build_xmlrpc-c
+			echo "Compilando libtorrent desde fuente ... ";build_libtorrent_rakshasa
+			echo "Compilando rtorrent desde fuente ... ";build_rtorrent
+		else
+			echo "Instalando rtorrent con apt-get ... ";rtorrent_apt
+		fi		
 		echo "Compilando rtorrent desde fuente ... ";build_rtorrent
 		echo "Montando estructura de directorios de ${user} ... ";_makedirs
 		echo "Configurando rtorrent.rc ... ";_rconf;_systemd

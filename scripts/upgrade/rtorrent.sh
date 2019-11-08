@@ -32,14 +32,22 @@ if [[ -n $noexec ]]; then
 fi
 
 isdeb=$(dpkg -l | grep rtorrent)
+echo "Borrando binarios y librerias viejas de rTorrent ...";
+
 if [[ -z $isdeb ]]; then
-	echo "Borrando binarios y librerias viejas de rTorrent ... ";remove_rtorrent_legacy
+	remove_rtorrent_legacy
+else
+  	remove_rtorrent
 fi
 	echo "Comprobar dependencias rTorrent ... ";depends_rtorrent
-	echo "Compilando xmlrpc-c desde la fuente ... ";build_xmlrpc-c
-	echo "Compilando libtorrent desde la fuente ... ";build_libtorrent_rakshasa
-	echo "Compilando rtorrent desde la fuente ... ";build_rtorrent
-  
+	if [[ ! $rtorrentver == repo ]]; then
+ 	  echo "Compilando xmlrpc-c desde la fuente ...  ";build_xmlrpc-c
+ 	  echo "Compilando libtorrent desde la fuente ... ";build_libtorrent_rakshasa
+	  echo "Compilando rtorrent desde la fuente ... ";build_rtorrent
+	else
+  	  echo "Installing rtorrent with apt-get ... ";rtorrent_apt
+	fi
+	
 if [[ -n $noexec ]]; then
 	mount -o remount,noexec /tmp
 fi
