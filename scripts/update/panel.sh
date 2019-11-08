@@ -1,9 +1,11 @@
 #! /bin/bash
+#
+#   SERVIDOR HD
 
 if [[ -d /srv/panel ]]; then
   echo "Updating panel"
   cd /srv/panel
-  if grep -q "repquota /home" /srv/panel/widgets/disk_data.php; then 
+  if ! grep -q 'disk_total_space(".")' /srv/panel/widgets/disk_data.php; then 
     disk=home
   fi
   git fetch origin master
@@ -34,12 +36,15 @@ if [[ -d /srv/panel ]]; then
     cd /srv/panel
     cp -a /tmp/custom.menu.php custom/
   fi
+  if grep -q /usr/sbin/repquota /etc/sudoers.d/panel; then
+    sed -i 's|/usr/sbin/repquota|/usr/bin/quota|g' /etc/sudoers.d/panel
+  fi
   if [[ $disk = "home" ]]; then
     /usr/local/bin/swizzin/panel/fix-disk home
   fi
   
   . /etc/swizzin/sources/functions/php
-  restart_php_fpm
-
+   
+   restart_php_fpm
    systemctl restart nginx
 fi
