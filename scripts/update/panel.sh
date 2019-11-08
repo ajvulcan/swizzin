@@ -37,7 +37,7 @@ if [[ -d /srv/panel ]]; then
     cp -a /tmp/custom.menu.php custom/
   fi
   
-  if !grep -q pam_session /etc/sudoers.d/panel; then
+  if ! grep -q pam_session /etc/sudoers.d/panel; then
 cat > /etc/sudoers.d/panel <<SUD
 #secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin/swizzin:/usr/local/bin/swizzin/scripts:/usr/local/bin/swizzin/scripts/install:/usr/local/bin/swizzin/scripts/remove:/usr/local/bin/swizzin/panel"
 #Defaults  env_keep -="HOME"
