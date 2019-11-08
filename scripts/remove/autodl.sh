@@ -2,8 +2,6 @@
 #
 # [Servidor HD :: Remove AutoDL-IRSSI package]
 #
-# Author             :   JMSolo
-#
 # Servidor HD Copyright (C) 2019
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
@@ -13,23 +11,12 @@
 #   under the GPL along with build & install instructions.
 #
 
-function _removepackage-autodl() {
-  username=$(whoami);
-  users=($(cut -d: -f1 < /etc/htpasswd))
-  rutorrent="/srv/rutorrent/";
-  PLUGIN="autodl-irssi"
-    for i in $PLUGIN; do
-      rm -rf "${rutorrent}/plugins/$i"
-    done
-      systemctl stop irssi@*
-      systemctl disable irssi@*
-      rm /etc/systemd/system/irssi@.service
-    for u in "${users[@]}"; do
-      rm -rf /home/${u}/.autodl
-      rm -rf /home/${u}/.irssi
-    done
-    rm /install/.autodl.lock
-
-}
-
-_removepackage-autodl
+users=($(cut -d: -f1 < /etc/htpasswd))
+rm -rf /srv/rutorrent/plugins/autodl-irssi
+  for u in "${users[@]}"; do
+    systemctl disable --now irssi@${u}
+    rm -rf /home/${u}/.autodl
+    rm -rf /home/${u}/.irssi
+  done
+rm /etc/systemd/system/irssi@.service
+rm /install/.autodl.lock
