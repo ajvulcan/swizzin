@@ -1,6 +1,7 @@
 #!/bin/bash
 # Flood for rtorrent installation script for swizzin
 # Author: liara
+# Modified by: ajvulcan
 #
 #  SERVIDOR HD
 
@@ -17,10 +18,8 @@ else
   log="/dev/null"
 fi
 
-if [[ ! $(which npm) ]] || [[ $(node --version) =~ "v6" ]]; then
-  bash <(curl -sL https://deb.nodesource.com/setup_10.x) >> $log 2>&1
-  apt-get -y -q install nodejs build-essential npm >> $log 2>&1
-fi
+. /etc/swizzin/sources/functions/npm
+npm_install
 
 if [[ ! $(which node-gyp) ]]; then
   npm install -g node-gyp >> $log 2>&1
