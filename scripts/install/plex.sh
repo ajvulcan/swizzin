@@ -4,7 +4,6 @@
 #
 # Originally authored by: JMSolo for QuickBox
 # Modifications to QuickBox package by: liara / PastaGringo
-# Maintained and updated for swizzin by: liara
 # Maintained and updated for servidor HD by: ajvulcan
 #
 # Servidor HD Copyright (C) 2019 Servidor HD
@@ -22,7 +21,7 @@ elif [[ -f /install/.panel.lock ]]; then
 else
   log="/dev/null"
 fi
-echo "Please visit https://www.plex.tv/claim, login, copy your plex claim token to your clipboard and paste it here. This will automatically claim your server! Otherwise, you can leave this blank and to tunnel to the port instead."; read 'claim'
+echo "Por favor, visita https://www.plex.tv/claim, logeate, copia tu token de reclamación al portapapeles y pégalo ahí. Esto automaticamente reclamará tu server. Alternativamente,puedes dejar esto en blanco y hacer un tunel al puerto."; read 'claim'
 master=$(cut -d: -f1 < /root/.master.info)
 
 #versions=https://plex.tv/api/downloads/1.json
@@ -30,12 +29,12 @@ master=$(cut -d: -f1 < /root/.master.info)
 #releases=$(grep -ioe '"label"[^}]*' <<<"${wgetresults}" | grep -i "\"distro\":\"ubuntu\"" | grep -m1 -i "\"build\":\"linux-ubuntu-x86_64\"")
 #latest=$(echo ${releases} | grep -m1 -ioe 'https://[^\"]*')
 
-echo "Installing plex keys and sources ... "
+echo "Instalando las llaves de plex y fuentes ... "
   wget -q https://downloads.plex.tv/plex-keys/PlexSign.key -O - | sudo apt-key add -
   echo "deb https://downloads.plex.tv/repo/deb public main" > /etc/apt/sources.list.d/plexmediaserver.list     
   echo
 
-echo "Updating system ... "
+echo "Actualizando sistema ... "
   apt-get install apt-transport-https -y >> ${log} 2>&1
   apt-get -y update >> ${log} 2>&1
   apt-get install -o Dpkg::Options::="--force-confold" -y -f plexmediaserver >> ${log} 2>&1
@@ -50,13 +49,15 @@ echo "Updating system ... "
     chown -R plex:plex /var/lib/plexmediaserver
   fi
   usermod -a -G ${master} plex
-  service plexmediaserver restart >/dev/null 2>&1
 
 if [[ -n $claim ]]; then
-  #sleep 5
+  sleep 5
   . /etc/swizzin/sources/functions/plex
   claimPlex ${claim}
 fi
+
+    service plexmediaserver restart >/dev/null 2>&1
+
     touch /install/.plex.lock
     echo
-echo "Plex Install Complete!"
+echo "Instalación de PLEX completada."
