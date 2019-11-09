@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.0]
+
+### 8 Noviembre 2019
+
+### Añadido
+
+- Soporte Deluge v2
+- Rtorrent "repo"
+- Posibilidad de reclamar PLEX durante la instalación
+- Versión Nodejs 10 LTS
+- Plexdrive
+- Otras mejoras
+
 ## [1.5.2]
 
 ## 10 Agosto, 2019
