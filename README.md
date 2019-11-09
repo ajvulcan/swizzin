@@ -1,6 +1,6 @@
 ![swizzin](https://github.com/ajvulcan/swizzin/raw/master/logo.png)
 
-Servidor HD es una solución seedbox modular para Ubuntu 16.04+ con posibilidad de instalar multitud aplicaciones todo en uno.
+Servidor HD es una solución seedbox modular para Ubuntu 16.04 / 18.04 con posibilidad de instalar multitud de aplicaciones todo en uno.
 
 ### Inicio rápido:
 
@@ -22,8 +22,9 @@ sudo -H su -c 'bash <(wget -O- -q https://raw.githubusercontent.com/ajvulcan/swi
 
 #### Soporte
 
-Long-term solo:
+Solo para versiones LTS:
 * Ubuntu 16.04/18.04
+* Debian 8/9/10 (No testeado)
 
 ### Es una versión propia de quickbox/swizzin con las siguientes funciones
 
