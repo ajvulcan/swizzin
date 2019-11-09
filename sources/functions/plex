@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# SERVIDOR HD
+# SERVIDOR HD 2019
 
 function getPref {
   local key="$1"
