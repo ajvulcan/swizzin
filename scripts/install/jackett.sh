@@ -54,6 +54,7 @@ TimeoutStopSec=20
 WantedBy=multi-user.target
 JAK
 
+if [[ ! -f /home/${username}/Jackett/jackett_launcher.sh ]]; then
 cat > /home/${username}/Jackett/jackett_launcher.sh <<'JL'
 #!/bin/bash
 user=$(whoami)
@@ -63,8 +64,8 @@ while pgrep -u ${user} JackettUpdater > /dev/null ; do
 done
 echo "Jackett update complete"
 JL
-
-chmod +x /home/${username}/Jackett/jackett_launcher.sh
+  chmod +x /home/${username}/Jackett/jackett_launcher.sh
+fi
 
 mkdir -p /home/${username}/.config/Jackett
 chown ${username}.${username} -R /home/${username}/.config
