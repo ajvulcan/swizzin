@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 #  SERVIDOR HD 2019
+#
 
 if [[ -f /etc/apt/sources.list.d/plexmediaserver.list ]]; then
   if grep -q "/deb/" /etc/apt/sources.list.d/plexmediaserver.list; then
