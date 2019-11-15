@@ -82,7 +82,7 @@ case "$1" in
         exit 0
   ;;
   "-h")
-	echo "Este comando sirve para analizar el uso del disco duro, por usuario, por tipo o por importancia en el tamaño."
+	echo "Este comando sirve para analizar el uso del disco duro, por usuario, por tipo o por importancia en el tamaño. Escribe showspace plus para versión extendida."
 	exit 0
 	;;
   *)
