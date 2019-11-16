@@ -51,8 +51,9 @@ _os() {
 function _preparation() {
   echo "Actualizando sistema y dependencias."
   if [[ $distribution = "Ubuntu" ]]; then
-    echo "Comprobando repositorios disponibles"
+    echo "Comprobando repositorios disponibles."
     if [[ -z $(which add-apt-repository) ]]; then
+     echo "Instalando algunos elementos comunes ..."
       apt-get install -y -q software-properties-common >> ${log} 2>&1
     fi
     add-apt-repository universe >> ${log} 2>&1
@@ -61,6 +62,7 @@ function _preparation() {
   fi
   apt-get -q -y update >> ${log} 2>&1
   apt-get -q -y upgrade >> ${log} 2>&1
+  echo "Instalando aplicaciones básicas que serán usadas (quizás tarde bastante tiempo, por favor, espere)."
   apt-get -q -y install whiptail git sudo curl wget lsof fail2ban apache2-utils vnstat tcl tcl-dev build-essential dirmngr apt-transport-https python-pip nano iotop nload htop hdparm acl smartmontools >> ${log} 2>&1
   nofile=$(grep "DefaultLimitNOFILE=500000" /etc/systemd/system.conf)
   if [[ ! "$nofile" ]]; then echo "DefaultLimitNOFILE=500000" >> /etc/systemd/system.conf; fi
