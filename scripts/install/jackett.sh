@@ -68,7 +68,6 @@ JL
 fi
 
 mkdir -p /home/${username}/.config/Jackett
-chown ${username}.${username} -R /home/${username}/.config
 cat > /home/${username}/.config/Jackett/ServerConfig.json <<JSC
 {
   "Port": 9117,
@@ -90,6 +89,8 @@ cat > /home/${username}/.config/Jackett/ServerConfig.json <<JSC
   "ProxyIsAnonymous": true
 }
 JSC
+
+chown ${username}.${username} -R /home/${username}/.config/Jackett
 
 if [[ -f /install/.nginx.lock ]]; then
   bash /usr/local/bin/swizzin/nginx/jackett.sh

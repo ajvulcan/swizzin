@@ -63,7 +63,7 @@ function _preparation() {
   apt-get -q -y update >> ${log} 2>&1
   apt-get -q -y upgrade >> ${log} 2>&1
   echo "Instalando aplicaciones básicas que serán usadas (quizás tarde bastante tiempo, por favor, espere)."
-  apt-get -q -y install whiptail git sudo curl wget lsof fail2ban apache2-utils vnstat tcl tcl-dev build-essential dirmngr apt-transport-https python-pip nano iotop nload htop hdparm acl smartmontools >> ${log} 2>&1
+  apt-get install whiptail git sudo curl wget lsof fail2ban apache2-utils vnstat tcl tcl-dev build-essential dirmngr apt-transport-https python-pip nano iotop nload htop hdparm acl smartmontools >> ${log} 2>&1
   nofile=$(grep "DefaultLimitNOFILE=500000" /etc/systemd/system.conf)
   if [[ ! "$nofile" ]]; then echo "DefaultLimitNOFILE=500000" >> /etc/systemd/system.conf; fi
   echo "Clonando Servidor HD al equipo ..."
