@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.7.0]
+
+### 10 Febrero 2020
+
+### Cambios
+- Eliminación de aplicación de mineria.
+- Arreglos en let's encrypt, jackett, tautulli, radarr y bazarr.
+- Otros arreglos.
+
 ## [1.6.0]
 
 ### 8 Noviembre 2019

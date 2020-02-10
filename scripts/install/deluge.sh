@@ -283,7 +283,7 @@ if [[ -n $noexec ]]; then
 	noexec=1
 fi
 
-if [[ ! -f /install/libtorrent.lock ]]; then
+if [[ ! -f /install/.libtorrent.lock ]]; then
   echo "Building libtorrent-rasterbar"; build_libtorrent_rasterbar
 fi
 
