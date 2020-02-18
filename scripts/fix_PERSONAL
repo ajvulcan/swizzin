@@ -13,5 +13,6 @@ do
 usuario=$(ls -1 /home/ | grep -v 'lost+found' | grep -v 'server' | sed -n "$i"p)
 #echo ${usuario}
 chown -R ${usuario}:${usuario} /home/${usuario}/PERSONAL
+chmod -R 755 /home/${usuario}/PERSONAL/*
 
 done
