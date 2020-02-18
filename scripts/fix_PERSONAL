@@ -1,0 +1,17 @@
+#!/bin/bash
+## SCRIPT PARA ESTABLECER PERMISOS EN CARPETAS DE USUARIO PERSONALES
+##
+## by AJVULCAN
+
+LIMITE=$(ls -1 /home/ | grep -v 'lost+found' | grep -v 'server' | wc -l)
+
+echo 'Restaurando permisos...'
+
+for ((i=1; i <=LIMITE ; i++))
+do
+
+usuario=$(ls -1 /home/ | grep -v 'lost+found' | grep -v 'server' | sed -n "$i"p)
+#echo ${usuario}
+chown -R ${usuario}:${usuario} /home/${usuario}/PERSONAL
+
+done
