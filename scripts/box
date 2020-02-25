@@ -349,18 +349,20 @@ function _deluser {
     echo "Error: usuario ${user} no encontrado. Saliendo."
     exit 1
   fi
-  echo "OJO,¿¿¿HAS QUITADO EL ENLACE DURO A DESCARGAS PREVIAMENTE PARA QUE NO SE BORREN TODOS LOS CONTENIDOS???, SINO CIERRA ESTO, QUITALO DEL /ETC/FSTAB Y REINICIA EL SISTEMA."
-  echo "Si quieres continuar pulsa 's' (SI), sino pulsa 'n' (NO) y saldremos."
-  read continuar_del
 
-  case $continuar_del in
-	"s" ) echo "permiso concedido..." ;;
-	* ) echo "saliendo..."; exit 1;;
-  esac
+if [ -d /home/${user}/DESCARGAS ];
 
-  echo
-  echo "ADVERTENCIA: Esto borrará el usuario '${user}' y todas sus configuraciones y directorio asociados. ESTA ACCIÓN ES DEFINITIVA."
-  echo
+then
+  echo "OJO, LA CARPETA DESCARGAS SIGUE EXISTIENDO, QUITALO EL ENLACE DURO DESDE /ETC/FSTAB, Y REINICIA EL SISTEMA O BORRARAS DATOS AJENOS."
+  echo  "SALIENDO..."
+  exit 1
+
+else
+	echo
+	echo "ADVERTENCIA: Esto borrará el usuario '${user}' y todas sus configuraciones y directorio asociados. ESTA ACCIÓN ES DEFINITIVA."
+	echo
+fi
+
   read -rep 'La eliminación empezará tan pronto como confirmes este mensaje. Presiona enter para continuar.'
 
   for app in rtorrent rutorrent deluge autodl flood nzbget lounge; do
