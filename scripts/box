@@ -350,18 +350,57 @@ function _deluser {
     exit 1
   fi
 
-if [ -d /home/${user}/DESCARGAS ];
+  #Compruebo que la carpeta DESCARGAS no siga asociada a esta cuenta, en caso contrario borro el usuario del fstab y pido reiniciar.
+  if [ -e /home/${user}/DESCARGAS/.lock ];
+  then
+    
+    #Miramos si ya hemos borrado al usuario del fstab, en cuyo caso hay que reiniciar el sistema si o si, sino se lo indicamos al usuario.
 
-then
-  echo "OJO, LA CARPETA DESCARGAS SIGUE EXISTIENDO, QUITALO EL ENLACE DURO DESDE /ETC/FSTAB, Y REINICIA EL SISTEMA O BORRARAS DATOS AJENOS."
-  echo  "SALIENDO..."
-  exit 1
+    if [ -e /home/${user}/.deleteUser ];
+      then
+        echo ""
+        echo "¡Es necesario reiniciar el sistema antes de poder continuar borrando el usuario!"
+        exit 1
 
-else
-	echo
-	echo "ADVERTENCIA: Esto borrará el usuario '${user}' y todas sus configuraciones y directorio asociados. ESTA ACCIÓN ES DEFINITIVA."
-	echo
-fi
+      else
+        echo ""
+        echo "Procedemos a desvincular la carpeta descargas con el usuario. ¿Está seguro? s/n (Por defecto NO):"
+        read desvDES
+
+        case $desvDES in
+          "s" ) echo "";
+                #Elimino el usuario en FSTAB para carpeta descargas
+                sed -i "/${user}/d" /etc/fstab;
+                echo "Eliminado del FSTAB.";
+                touch /home/${user}/.deleteUser;
+                chmod 600 /home/${user}/.deleteUser;
+                echo "Tienes que reiniciar el sistema para que se apliquen los cambios.";
+                exit 1;
+                ;;
+          "S" ) echo "";
+                #Elimino el usuario en FSTAB para carpeta descargas
+                sed -i "/${user}/d" /etc/fstab;
+                echo "Eliminado del FSTAB.";              
+                touch /home/${user}/.deleteUser;
+                chmod 600 /home/${user}/.deleteUser;
+                echo "Tienes que reiniciar el sistema para que se apliquen los cambios.";
+                exit 1;
+                ;;
+          * ) echo "";
+              echo "Saliendo...";
+              exit 1;
+              ;;
+          esac
+      fi  
+
+    #Es necesario reiniciar para aplicar los cambios.
+    exit 1
+
+  else
+    echo
+    echo "ADVERTENCIA: Esto borrará el usuario '${user}' y todas sus configuraciones y directorio asociados. ESTA ACCIÓN ES DEFINITIVA."
+    echo
+  fi
 
   read -rep 'La eliminación empezará tan pronto como confirmes este mensaje. Presiona enter para continuar.'
 
@@ -408,10 +447,8 @@ fi
   rm /root/${user}.info
   service nginx reload
 
-#Elimino el usuario en FSTAB para carpeta descargas
-sed -i '/${user}/d' /etc/fstab
-#Elimino el usuario de emby
-sed -i '/'${user}'/d' /etc/htpasswd.d/htpasswd.emby
+  #Elimino el usuario de emby
+  sed -i '/'${user}'/d' /etc/htpasswd.d/htpasswd.emby
 
 }
 
