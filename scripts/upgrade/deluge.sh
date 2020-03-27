@@ -27,8 +27,6 @@ users=($(cut -d: -f1 < /etc/htpasswd))
 noexec=$(grep "/tmp" /etc/fstab | grep noexec)
 
 for u in "${users[@]}"; do
-  systemctl stop deluged@${u}
-  systemctl stop deluge-web@${u}
     if [[ $dver == 1.3* ]] && [[ $deluge == master ]]; then
       echo "'/home/${u}/.config/deluge' -> '/home/$u/.config/deluge.$$'"
       cp -a /home/${u}/.config/deluge /home/${u}/.config/deluge.$$
@@ -59,6 +57,6 @@ echo "Modificando servicio web y lista de hosts ... "; dweb_check
 
 for u in "${users[@]}"; do
   echo "Ejecutando comprobación ltconfig ..."; ltconfig
-  systemctl start deluged@${u}
-  systemctl start deluge-web@${u}
+  systemctl try-restart deluged@${u}
+  systemctl try-restart deluge-web@${u}
 done

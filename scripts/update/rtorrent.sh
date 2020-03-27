@@ -22,7 +22,7 @@ for u in "${users[@]}"; do
     fi
   fi
   if [[ $restart = 1 ]]; then
-    systemctl restart rtorrent@${u}
+    systemctl try-restart rtorrent@${u}
   fi
   if [[ -f /etc/nginx/apps/${u}.scgi.conf ]]; then
     if grep -q "scgi_pass 127.0.0.1" /etc/nginx/apps/${u}.scgi.conf; then
@@ -42,7 +42,7 @@ for u in "${users[@]}"; do
     if grep -q "socket: false" /home/${u}/.flood/config.js; then
       sed -i "s/socket: false/socket: true/g" /home/${u}/.flood/config.js
       sed -i "s/socketPath.*/socketPath: '\/var\/run\/${u}\/.rtorrent.sock'/g" /home/${u}/.flood/config.js
-      systemctl restart flood@${u}
+      systemctl try-restart flood@${u}
     fi
   fi
 done

@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+#   SERVIDOR HD
+
 if [[ -f /install/.ombi.lock ]]; then
 if grep -q "\-\-storage" /etc/systemd/system/ombi.service; then
   :
@@ -19,6 +22,6 @@ else
     fi
   fi
   chown -R ombi:nogroup /etc/Ombi
-  systemctl restart ombi
+  systemctl try-restart ombi
 fi
 fi

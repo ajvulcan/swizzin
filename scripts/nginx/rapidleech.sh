@@ -15,6 +15,8 @@ else
   sock=php7.0-fpm
 fi
 
+usermod -a -G ${MASTER} www-data
+
 if [[ ! -f /etc/nginx/apps/rapidleech.conf ]]; then
   cat > /etc/nginx/apps/rapidleech.conf <<RAP
 location /rapidleech {
