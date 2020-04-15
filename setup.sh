@@ -177,7 +177,7 @@ function _adduser() {
   
   #Crea carpeta de descargas para usuario administrador
   mkdir /home/${user}/DESCARGAS
-  chmod 777 /home/${user}/DESCARGAS
+  chmod 1777 /home/${user}/DESCARGAS
   chown $user:$user /home/${user}/DESCARGAS
   touch /home/${user}/DESCARGAS/.lock  #Para que al eliminar un usuario no nos llevemos la carpeta común de descargas por delante
   chmod 600 /home/${user}/DESCARGAS/.lock

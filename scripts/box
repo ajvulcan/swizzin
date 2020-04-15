@@ -328,8 +328,8 @@ case $permisoSSH in
 esac
 
 #Permisos especiales
-chmod 550 /home/${user}
 setfacl -R -m user:${administrador}:rwx /home/${user}
+chmod 550 /home/${user}
 
 #Mensaje recordatorio
 echo "Recuerda reiniciar el sistema para enlazar la carpeta descargas en el fstab"
@@ -374,7 +374,7 @@ function _deluser {
                 echo "Eliminado del FSTAB.";
                 touch /home/${user}/.deleteUser;
                 chmod 600 /home/${user}/.deleteUser;
-                echo "Tienes que reiniciar el sistema para que se apliquen los cambios.";
+                echo "Es necesario reiniciar el sistema para poder continuar el borrado.";
                 exit 1;
                 ;;
           "S" ) echo "";
@@ -383,7 +383,7 @@ function _deluser {
                 echo "Eliminado del FSTAB.";              
                 touch /home/${user}/.deleteUser;
                 chmod 600 /home/${user}/.deleteUser;
-                echo "Tienes que reiniciar el sistema para que se apliquen los cambios.";
+                echo "Es necesario reiniciar el sistema para poder continuar el borrado.";
                 exit 1;
                 ;;
           * ) echo "";
@@ -433,6 +433,14 @@ function _deluser {
   if [[ -z $(which lsof) ]]; then
     apt-get install -y -q lsof > /dev/null 2>&1
   fi
+
+  #parar servicios de NUBE.
+  systemctl stop rclone_nube@${user}
+  systemctl disable rclone_nube@${user}
+  systemctl stop rclone@${user}
+  systemctl disable rclone@${user}
+  systemctl stop plexdrive@${user}
+  systemctl disable plexdrive@${user}
 
   kill -9 $(lsof -t /home/${user})
   deluser --force --remove-home ${user}
