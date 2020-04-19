@@ -48,8 +48,6 @@ Box:
   * Uso: `box update`
 * upgrade - actualiza una aplicación instalada desde un paquete.
   * Uso: `box upgrade nginx`
-* panel - cambia la inspección de disco entre el directorio raiz `fix-disk root` o el uso del directorio home `fix-disk home`.
-  * Uso: `box panel fix-disk home`
 * rmgrsec - elimina los kernels grsec instalados por ovh y lo sustituye por uno estándar.
   * Uso: `box rmgrsec`
 * rtx - configura los plugins de rutorrent.

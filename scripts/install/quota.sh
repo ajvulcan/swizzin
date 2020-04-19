@@ -1,21 +1,6 @@
 #!/bin/bash
 #
-# [Quick Box :: Install User Quotas]
-#
-# GITHUB REPOS
-# GitHub _ packages  :   https://github.com/QuickBox/quickbox_packages
-# LOCAL REPOS
-# Local _ packages   :   /etc/QuickBox/packages
-# Author             :   QuickBox.IO | JMSolo
-# URL                :   https://quickbox.io
-#
-# QuickBox Copyright (C) 2016
-# Licensed under GNU General Public License v3.0 GPL-3 (in short)
-#
-#   You may copy, distribute and modify the software as long as you track
-#   changes/dates in source files. Any modifications to our software
-#   including (via compiler) GPL-licensed code must also be made available
-#   under the GPL along with build & install instructions.
+# [Servidor HD :: Instalar cuotas por usuario]
 #
 #################################################################################
 
@@ -134,15 +119,22 @@ fi
 
 if [[ -f /tmp/.install.lock ]]; then
   OUTTO="/root/logs/install.log"
-elif [[ -f /install/.panel.lock ]]; then
-  OUTTO="/srv/panel/db/output.log"
 else
-  OUTTO="/dev/null"
+  OUTTO="/root/logs/swizzin.log"
 fi
 DISTRO=$(lsb_release -is)
 
 
 _installquota
+
+cat > /etc/sudoers.d/quota <<EOSUD
+#Defaults  env_keep -="HOME"
+Defaults:www-data !logfile
+Defaults:www-data !syslog
+Defaults:www-data !pam_session
+Cmnd_Alias   QUOTA = /usr/bin/quota
+www-data     ALL = (ALL) NOPASSWD: QUOTA
+EOSUD
 
 touch /install/.quota.lock
 echo "${primaryroot}" > /install/.quota.lock

@@ -17,7 +17,9 @@ if [[ -f /install/.sonarr.lock ]] || [[ -f /install/.radarr.lock ]] || [[ -f /in
       a=$a@$master
     fi
     
-    systemctl try-restart $a
+    if [[ -f /install/.$a.lock ]]; then
+      systemctl try-restart $a
+    fi
   done
 fi
 

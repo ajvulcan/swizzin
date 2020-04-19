@@ -251,7 +251,8 @@ function _adduser {
   htpasswd -b /etc/htpasswd $user $pass
   mkdir -p /etc/htpasswd.d/
   htpasswd -b -c /etc/htpasswd.d/htpasswd.${user} $user $pass
-  chmod 550 /home/${user}
+  chmod 550 /home/${user}  
+  if [[ -f /install/.panel.lock ]]; then setfacl -m g:swizzin:rx /home/${user}; fi
   echo "D /var/run/${user} 0750 ${user} ${user} -" >> /etc/tmpfiles.d/${user}.conf
   systemd-tmpfiles /etc/tmpfiles.d/${user}.conf --create
 
@@ -512,14 +513,6 @@ function _chpasswd {
   fi
 }
 
-function _panel () {
-  if [[ $2 != "fix-disk" ]]; then
-    echo "el comando solo acepta el argumento fix-disk por el momento"
-    exit 1
-  fi
-  /usr/local/bin/swizzin/panel/fix-disk $3
-}
-
 function _nukeovh() {
   grsec=$(uname -a | grep -i grs)
   if [[ -n $grsec ]]; then
@@ -613,14 +606,6 @@ case "$1" in
       exit 1
     fi
     _chpasswd "$@"
-    exit 0
-  ;;
-  "panel")
-    if [[ ! -f /install/.panel.lock ]]; then
-      echo "Panel no instalado..."
-      exit 1
-    fi
-    _panel "$@"
     exit 0
   ;;
   "rmgrsec")

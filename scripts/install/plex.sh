@@ -16,10 +16,8 @@
 #
 if [[ -f /tmp/.install.lock ]]; then
   log="/root/logs/install.log"
-elif [[ -f /install/.panel.lock ]]; then
-  log="/srv/panel/db/output.log"
 else
-  log="/dev/null"
+  log="/root/logs/swizzin.log"
 fi
 echo "Por favor, visita https://www.plex.tv/claim, logeate, copia tu token de reclamación al portapapeles y pégalo ahí. Esto automaticamente reclamará tu server. Alternativamente,puedes dejar esto en blanco y hacer un tunel al puerto."; read 'claim'
 master=$(cut -d: -f1 < /root/.master.info)

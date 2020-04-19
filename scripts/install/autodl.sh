@@ -63,10 +63,10 @@ After=network.target
 [Service]
 Type=forking
 KillMode=none
-User=%I
+User=%i
 ExecStart=/usr/bin/screen -d -m -fa -S irssi /usr/bin/irssi
 ExecStop=/usr/bin/screen -S irssi -X stuff '/quit\n'
-WorkingDirectory=/home/%I/
+WorkingDirectory=/home/%i/
 
 [Install]
 WantedBy=multi-user.target
@@ -79,10 +79,8 @@ done
 
 if [[ -f /tmp/.install.lock ]]; then
   OUTTO="/root/logs/install.log"
-elif [[ -f /install/.panel.lock ]]; then
-  OUTTO="/srv/panel/db/output.log"
 else
-  OUTTO="/dev/null"
+  OUTTO="/root/logs/swizzin.log"
 fi
 users=($(cut -d: -f1 < /etc/htpasswd))
 

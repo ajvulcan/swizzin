@@ -6,7 +6,7 @@ user=$(cut -d: -f1 < /root/.master.info)
 if [[ -f /tmp/.install.lock ]]; then
   log="/root/logs/install.log"
 else
-  log="/dev/null"
+  log="/root/logs/swizzin.log"
 fi
 
 if [[ $(systemctl is-active medusa@${user}) == "active" ]]; then
@@ -64,9 +64,9 @@ After=syslog.target network.target
 [Service]
 Type=forking
 GuessMainPID=no
-User=%I
-Group=%I
-ExecStart=/usr/bin/python /home/%I/.sickchill/SickBeard.py -q --daemon --nolaunch --datadir=/home/%I/.sickchill
+User=%i
+Group=%i
+ExecStart=/usr/bin/python /home/%i/.sickchill/SickBeard.py -q --daemon --nolaunch --datadir=/home/%i/.sickchill
 
 
 [Install]

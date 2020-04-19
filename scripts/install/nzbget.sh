@@ -24,12 +24,12 @@ Documentation=http://nzbget.net/Documentation
 After=network.target
 
 [Service]
-User=%I
-Group=%I
+User=%i
+Group=%i
 Type=forking
-ExecStart=/bin/sh -c "/home/%I/nzbget/nzbget -D"
-ExecStop=/bin/sh -c "/home/%I/nzbget/nzbget -Q"
-ExecReload=/bin/sh -c "/home/%I/nzbget/nzbget -O"
+ExecStart=/bin/sh -c "/home/%i/nzbget/nzbget -D"
+ExecStop=/bin/sh -c "/home/%i/nzbget/nzbget -Q"
+ExecReload=/bin/sh -c "/home/%i/nzbget/nzbget -O"
 Restart=on-failure
 
 [Install]
@@ -83,7 +83,7 @@ function _cleanup {
 if [[ -f /tmp/.install.lock ]]; then
   log="/root/logs/install.log"
 else
-  log="/dev/null"
+  log="/root/logs/swizzin.log"
 fi
 
 users=($(cut -d: -f1 < /etc/htpasswd))

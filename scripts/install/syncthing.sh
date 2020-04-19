@@ -14,10 +14,8 @@
 
 if [[ -f /tmp/.install.lock ]]; then
   OUTTO="/root/logs/install.log"
-elif [[ -f /install/.panel.lock ]]; then
-  OUTTO="/srv/panel/db/output.log"
 else
-  OUTTO="/dev/null"
+  OUTTO="/root/logs/swizzin.log"
 fi
 MASTER=$(cut -d: -f1 < /root/.master.info)
 
@@ -32,7 +30,7 @@ sudo apt-get -qy install syncthing > /dev/null 2>&1
 echo "Configurando Syncthing & comenzando ... " >>"${OUTTO}" 2>&1;
 cat > /etc/systemd/system/syncthing@.service <<SYNC
 [Unit]
-Description=Syncthing - Open Source Continuous File Synchronization for %I
+Description=Syncthing - Open Source Continuous File Synchronization for %i
 Documentation=man:syncthing(1)
 After=network.target
 Wants=syncthing-inotify@.service

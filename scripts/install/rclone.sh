@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# [Servidor HD :: Install rclone]
+# [Servidor HD :: Instalación rclone]
 #
 # Author             :   DedSec | d2dyno | ajvulcan
 #
@@ -14,10 +14,8 @@
 
 if [[ -f /tmp/.install.lock ]]; then
   OUTTO="/root/logs/install.log"
-elif [[ -f /install/.panel.lock ]]; then
-  OUTTO="/srv/panel/db/output.log"
 else
-  OUTTO="/dev/null"
+  OUTTO="/root/logs/swizzin.log"
 fi
 MASTER=$(cut -d: -f1 < /root/.master.info)
 
@@ -41,12 +39,12 @@ After=network.target
 
 [Service]
 Type=simple
-User=%I
-Group=%I
-ExecStartPre=/bin/mkdir -p /home/%I/NUBE/GDRIVE
-ExecStart=/usr/bin/rclone mount --allow-other %I: /home/%I/NUBE/GDRIVE
-ExecStop=/bin/fusermount -u /home/%I/NUBE/GDRIVE
-ExecStop=/bin/rmdir /home/%I/NUBE/GDRIVE
+User=%i
+Group=%i
+ExecStartPre=/bin/mkdir -p /home/%i/NUBE/GDRIVE
+ExecStart=/usr/bin/rclone mount %i: /home/%i/NUBE/GDRIVE --allow-other --allow-non-empty
+ExecStop=/bin/fusermount -u /home/%i/NUBE/GDRIVE
+ExecStop=/bin/rmdir /home/%i/NUBE/GDRIVE
 Restart=on-failure
 RestartSec=30
 StartLimitInterval=60s
