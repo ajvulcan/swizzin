@@ -1,4 +1,10 @@
 #!/bin/bash
+<<<<<<< HEAD
+=======
+#
+# SERVIDOR HD
+#
+>>>>>>> master
 
 if [[ -f /install/.quota.lock ]]; then
   if [[ ! -f /etc/sudoers.d/quota ]]; then

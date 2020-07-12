@@ -1,7 +1,7 @@
 #!/bin/bash
 # Nginx configuration for Jackett
-# Author: liara
-# Copyright (C) 2019 Servidor HD
+# by ajvulcan
+# Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -19,7 +19,6 @@ if [[ ! -f /etc/nginx/apps/jackett.conf ]]; then
 location /jackett {
   return 301 /jackett/;
 }
-
 location /jackett/ {
   include /etc/nginx/snippets/proxy.conf;
   proxy_pass http://127.0.0.1:9117/jackett/;

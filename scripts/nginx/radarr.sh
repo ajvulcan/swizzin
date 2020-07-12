@@ -1,8 +1,8 @@
 #!/bin/bash
 # Nginx Configuration for Radarr
-# Author: liara
-# Copyright (C) 2019 Servidor HD
-#
+# by ajvulcan
+# 
+# Servidor HD
 #   You may copy, distribute and modify the software as long as you track
 #   changes/dates in source files. Any modifications to our software
 #   including (via compiler) GPL-licensed code must also be made available

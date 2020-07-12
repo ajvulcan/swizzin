@@ -2,9 +2,9 @@
 #
 # x2go installer
 #
-# Originally written for QuickBox.io by liara
+# by ajvulcan
 #
-# Servidor HD Copyright (C) 2019
+# SERVIDOR HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -22,12 +22,12 @@ fi
 
 distribution=$(lsb_release -is)
 release=$(lsb_release -cs)
-echo -n "Instalando Xfce4 (quizás tarde un rato) ... "
+echo -n "Installing Xfce4 (this may take a bit) ... "
 apt-get install -y xfce4 >> ${log} 2>&1
-#disable lightdm because it causes suspend issues on Ubuntu
+#Desabilita ligthdn porque causa problemas de suspensión en ubuntu.
 systemctl disable --now lightdm >> ${log} 2>&1
 
-echo -n "Instalando repositorios de x2go ... "
+echo -n "Instalando repositorios x2go ... "
 
 if [[ $distribution == Ubuntu ]]; then
 	apt-get install -q -y software-properties-common >> ${log} 2>&1
@@ -40,7 +40,6 @@ cat >/etc/apt/sources.list.d/x2go.list<<EOF
 deb http://packages.x2go.org/debian ${release} main
 # X2Go Repository (sources of release builds)
 deb-src http://packages.x2go.org/debian ${release} main
-
 # X2Go Repository (nightly builds)
 #deb http://packages.x2go.org/debian ${release} heuler
 # X2Go Repository (sources of nightly builds)
@@ -48,18 +47,14 @@ deb-src http://packages.x2go.org/debian ${release} main
 EOF
 
 apt-get -y update>> ${log} 2>&1
-if [[ $release == "jessie" ]]; then
-	gpg --keyserver keys.gnupg.net --recv E1F958385BFE2B6E >> ${log} 2>&1
-	gpg --export E1F958385BFE2B6E > /etc/apt/trusted.gpg.d/x2go.gpg
-else
-  apt-key --keyring /etc/apt/trusted.gpg.d/x2go.gpg adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E1F958385BFE2B6E >> ${log} 2>&1
-fi
+apt-key --keyring /etc/apt/trusted.gpg.d/x2go.gpg adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E1F958385BFE2B6E >> ${log} 2>&1
 
 apt-get -y update >> ${log} 2>&1
 apt-get -y install x2go-keyring >> ${log} 2>&1 && apt-get update >> ${log} 2>&1
 fi
 
-echo -n "Instalando X2go (quizás tarde un rato) ... "
+
+echo -n "Instalando X2go (puede llevar un rato) ... "
 apt-get -y install x2goserver x2goserver-xsession >> ${log} 2>&1
 apt-get -y install pulseaudio >> ${log} 2>&1
 

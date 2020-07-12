@@ -1,40 +1,18 @@
 #!/bin/bash
 #
-# [Servidor HD :: Remove Config Server Firewall package]
-#
-# Author             :   JMSolo
-#
-# Servidor HD Copyright (C) 2019
-# Licensed under GNU General Public License v3.0 GPL-3 (in short)
-#
-#   You may copy, distribute and modify the software as long as you track
-#   changes/dates in source files. Any modifications to our software
-#   including (via compiler) GPL-licensed code must also be made available
-#   under the GPL along with build & install instructions.
-#
+# SERVIDOR HD
 
-function _removepyLoad() {
-  systemctl stop pyload@${MASTER}.service >/dev/null 2>&1
-  systemctl disable pyload@${MASTER}.service >/dev/null 2>&1
+systemctl disable --now pyload >/dev/null 2>&1
 
-  rm /etc/systemd/system/pyload@.service
+rm /etc/systemd/system/pyload.service
 
-  rm -rf /home/${MASTER}/.pip
-  rm -rf /home/${MASTER}/.pyload
-  rm -rf /var/run/pyload
-  rm -rf /etc/nginx/apps/pyload.conf
-  apt-get -y remove tesseract-ocr \
-                    gocr \
-                    rhino \
-                    pyqt4-dev-tools \
-                    python-imaging
-  apt-get -y autoremove >/dev/null 2>&1
-  apt-get -y autoclean >/dev/null 2>&1
-  rm /install/.pyload.lock
-}
-
-
-MASTER=$(cut -d: -f1 < /root/.master.info)
-
-
-_removepyLoad
+rm -rf /opt/pyload
+rm -rf /opt/.venv/pyload
+if [ -z "$(ls -A /opt/.venv)" ]; then
+   rm -rf  /opt/.venv
+fi
+rm -rf /etc/nginx/apps/pyload.conf
+apt-get -y remove tesseract-ocr gocr rhino >/dev/null 2>&1
+apt-get -y autoremove >/dev/null 2>&1
+systemctl reload nginx > /dev/null 2>&1
+rm /install/.pyload.lock

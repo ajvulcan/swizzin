@@ -1,0 +1,54 @@
+#!/bin/bash
+#
+# SERVIDOR HD
+#
+
+if [[ -f /install/.pyload.lock ]]; then
+    if [[ -f /etc/systemd/system/pyload@.service ]]; then
+        codename=$(lsb_release -cs)
+        user=$(cut -d: -f1 < /root/.master.info)
+        isactive=$(systemctl is-active pyload@${user})
+        log="/root/logs/swizzin.log"
+        . /etc/swizzin/sources/functions/pyenv
+        systemctl disable --now pyload@${user} >> ${log} 2>&1
+        if [[ $codename =~ ("xenial"|"stretch"|"buster"|"bionic") ]]; then
+            LIST='tesseract-ocr gocr rhino python2.7-dev python-pip virtualenv python-virtualenv libcurl4-openssl-dev sqlite3'
+        else
+            LIST='tesseract-ocr gocr rhino libcurl4-openssl-dev python2.7-dev sqlite3'
+        fi
+        apt-get -y update >>"${log}" 2>&1
+        for depend in $LIST; do
+            apt-get -qq -y install $depend >>"${log}" 2>&1 || { echo "ERROR: APT-GET could not install a required package: ${depend}. That's probably not good..."; }
+        done
+
+        if [[ ! $codename =~ ("xenial"|"stretch"|"buster"|"bionic") ]]; then            
+            python_getpip
+        fi
+
+        python2_venv ${user} pyload
+
+        PIP='wheel setuptools pycurl pycrypto tesseract pillow pyOpenSSL js2py feedparser beautifulsoup'
+        /opt/.venv/pyload/bin/pip install $PIP >>"${log}" 2>&1
+        chown -R ${user}: /opt/.venv/pyload
+
+        mv /home/${user}/.pyload /opt/pyload
+        echo "/opt/pyload" > /opt/pyload/module/config/configdir
+
+cat >/etc/systemd/system/pyload.service<<PYSD
+[Unit]
+Description=pyLoad
+After=network.target
+[Service]
+User=${user}
+ExecStart=/opt/.venv/pyload/bin/python2 /opt/pyload/pyLoadCore.py --config=/opt/pyload
+WorkingDirectory=/opt/pyload
+[Install]
+WantedBy=multi-user.target
+PYSD
+        systemctl daemon-reload
+        rm /etc/systemd/system/pyload@.service
+        if [[ $isactive == "active" ]]; then
+            systemctl enable --now pyload >> ${log} 2>&1
+        fi
+    fi
+fi

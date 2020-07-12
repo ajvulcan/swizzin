@@ -1,15 +1,15 @@
 # Changelog
 
+## [2.0]
 
-## [2.0.0]
-
-### 19 Abril, 2020
+### 12 JULIO 2020
 
 ### Cambios
-Introducción del panel Servidor HD dashboard basado en Swizzin Dashboard.
-Añado Jellyfin
-Añado LibreSpeed
-Algunos arreglos y actualizaciones a python
+- Soporte para ubuntu 20.04.
+- Jellyfin media server
+- Librespeed
+- pyLoad
+- python 3
 
 ## [1.7.0]
 

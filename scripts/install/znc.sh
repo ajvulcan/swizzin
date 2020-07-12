@@ -2,10 +2,9 @@
 #
 # ZNC Installer
 #
-# Originally written for QuickBox.io by liara
-# Forked to Servidor HD by ajvulcan
+# by ajvulcan
 #
-# Servidor HD Copyright (C) 2019
+# Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -21,7 +20,9 @@ else
   OUTTO="/root/logs/swizzin.log"
 fi
 
-echo "Installing ZNC. Please wait ... " >> ${OUTTO} 2>&1
+. /etc/swizzin/sources/functions/letsencrypt
+
+echo "Instalando ZNC. Por favor espera ... " >> ${OUTTO} 2>&1
 echo "" >> ${OUTTO} 2>&1
 echo "" >> ${OUTTO} 2>&1
 useradd znc -m -s /bin/bash
@@ -30,7 +31,7 @@ passwd znc -l >> ${OUTTO} 2>&1
 if [[ $DISTRO == Debian ]]; then
   . /etc/swizzin/sources/functions/backports
   check_debian_backports
-cat > /etc/apt/preferences.d/znc <<ZNCP
+  cat > /etc/apt/preferences.d/znc <<ZNCP
 Package: *znc*
 Pin: release a=${CODENAME}-backports
 Pin-Priority: 500
@@ -55,20 +56,16 @@ Restart=always
 WantedBy=multi-user.target
 ZNC
 systemctl enable znc
-  echo "#### ZNC configuration will now run. Please answer the following prompts ####"
-  sleep 5
-  sudo -H -u znc znc --makeconf
-  killall -u znc znc > /dev/null 2>&1
-  sleep 1
+echo "#### ZNC la configuración se va a lanzar ahora. Responde a las siguientes preguntas ####"
+sleep 5
+sudo -H -u znc znc --makeconf
+killall -u znc znc > /dev/null 2>&1
+sleep 1
 
-  # Check for LE cert, and copy it if available.
-  chkhost="$(find /etc/nginx/ssl/* -maxdepth 1 -type d | cut -f 5 -d '/')"
-  if [[ -n $chkhost ]]; then
-    defaulthost=$(grep -m1 "server_name" /etc/nginx/sites-enabled/default | awk '{print $2}' | sed 's/;//g')
-    cat /etc/nginx/ssl/"$defaulthost"/{key,fullchain}.pem > /home/znc/.znc/znc.pem
-    crontab -l > newcron.txt | sed -i  "s#cron#cron --post-hook \"cat /etc/nginx/ssl/"$defaulthost"/{key,fullchain}.pem > /home/znc/.znc/znc.pem\"#g" newcron.txt | crontab newcron.txt | rm newcron.txt
-  fi
-  systemctl start znc
-  echo "$(grep Port /home/znc/.znc/configs/znc.conf | sed -e 's/^[ \t]*//')" > /install/.znc.lock
-  echo "$(grep SSL /home/znc/.znc/configs/znc.conf | sed -e 's/^[ \t]*//')" >> /install/.znc.lock
-echo "#### ZNC now installed! ####"
+# Check for LE cert, and copy it if available.
+le_znc_hook
+
+systemctl start znc
+echo "$(grep Port /home/znc/.znc/configs/znc.conf | sed -e 's/^[ \t]*//')" > /install/.znc.lock
+echo "$(grep SSL /home/znc/.znc/configs/znc.conf | sed -e 's/^[ \t]*//')" >> /install/.znc.lock
+echo "#### ZNC ya está instalado! ####"

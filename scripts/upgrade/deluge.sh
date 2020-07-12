@@ -1,12 +1,11 @@
 #!/bin/bash
 # Deluge upgrade/downgrade/reinstall script
-# Author: liara
-# Mod: ajvulcan
+# by ajvulcan
 #
 # SERVIDOR HD
 
 if [[ ! -f /install/.deluge.lock ]]; then
-  echo "Deluge no está instalado. ¿Que esperas conseguir ejecutando este script?"
+  echo "Deluge doesn't appear to be installed. What do you hope to accomplish by running this script?"
   exit 1
 fi
 
@@ -21,16 +20,16 @@ whiptail_deluge
 whiptail_libtorrent_rasterbar
 dver=$(deluged -v | grep deluged | grep -oP '\d+\.\d+\.\d+')
 if [[ $dver == 1.3* ]] && [[ $deluge == master ]]; then
-  echo "Detectada actualización más moderna. Haciendo copia de seguridad de datos."
+  echo "Major version upgrade detected. User-data will be backed-up."
 fi
 users=($(cut -d: -f1 < /etc/htpasswd))
 noexec=$(grep "/tmp" /etc/fstab | grep noexec)
 
 for u in "${users[@]}"; do
-    if [[ $dver == 1.3* ]] && [[ $deluge == master ]]; then
-      echo "'/home/${u}/.config/deluge' -> '/home/$u/.config/deluge.$$'"
-      cp -a /home/${u}/.config/deluge /home/${u}/.config/deluge.$$
-    fi
+  if [[ $dver == 1.3* ]] && [[ $deluge == master ]]; then
+    echo "'/home/${u}/.config/deluge' -> '/home/$u/.config/deluge.$$'"
+    cp -a /home/${u}/.config/deluge /home/${u}/.config/deluge.$$
+  fi
 done
 
 if [[ -n $noexec ]]; then
@@ -38,25 +37,24 @@ if [[ -n $noexec ]]; then
   noexec=1
 fi
 
-echo "Comprobando por método obsoleto de instalación de deluge."; remove_ltcheckinstall
-echo "Reconstruyendo libtorrent ... "; build_libtorrent_rasterbar
+echo "Checking for outdated deluge install method."; remove_ltcheckinstall
+echo "Rebuilding libtorrent ... "; build_libtorrent_rasterbar
 cleanup_deluge
-echo "Actualizando Deluge. Por favor, espera ... "; build_deluge
-
+echo "Upgrading Deluge. Please wait ... "; build_deluge
 if [[ -n $noexec ]]; then
 	mount -o remount,noexec /tmp
 fi
 
 if [[ -f /install/.nginx.lock ]]; then
-  echo "Reconfigurando configuraciones deluge de ngnix"
+  echo "Reconfiguring deluge nginx configs"
   bash /usr/local/bin/swizzin/nginx/deluge.sh
-  service nginx reload
+  systemctl reload nginx
 fi
 
-echo "Modificando servicio web y lista de hosts ... "; dweb_check
+echo "Fixing Web Service and Hostlist ... "; dweb_check
 
 for u in "${users[@]}"; do
-  echo "Ejecutando comprobación ltconfig ..."; ltconfig
+  echo "Running ltconfig check ..."; ltconfig
   systemctl try-restart deluged@${u}
   systemctl try-restart deluge-web@${u}
 done

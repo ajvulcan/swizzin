@@ -1,6 +1,16 @@
 #!/bin/bash
 #
-# [Servidor HD :: Instalar cuotas por usuario]
+# [SERVIDOR HD :: Install User Quotas]
+#
+# by Ajvulcan
+#
+# -- SERVIDOR HD --
+# Licensed under GNU General Public License v3.0 GPL-3 (in short)
+#
+#   You may copy, distribute and modify the software as long as you track
+#   changes/dates in source files. Any modifications to our software
+#   including (via compiler) GPL-licensed code must also be made available
+#   under the GPL along with build & install instructions.
 #
 #################################################################################
 
@@ -9,31 +19,31 @@ bold=$(tput bold); normal=$(tput sgr0); alert=${white}${on_red}; title=${standou
 
   echo
   echo "##################################################################################"
-  echo "#${bold} By default the quota script will use ${green}/${normal} ${bold}as the${normal}"
-  echo "#${bold} primary partition for mounting quotas.${normal}"
+  echo "#${bold} Por defecto el script usará ${green}/${normal} ${bold}como la${normal}"
+  echo "#${bold} partición primaria para cuotas.${normal}"
   echo "#"
-  echo "#${bold} Some providers, such as OVH and SYS force ${green}/home${normal} ${bold}as the primary mount ${normal}"
-  echo "#${bold} on their server setups. So if you have an OVH or SYS server and have not"
-  echo "#${bold} modified your partitions, it is safe to choose option ${yellow}2)${normal} ${bold}below.${normal}"
+  echo "#${bold} Algunos proveedores, como OVH y SYS fuerzan ${green}/home${normal} ${bold}como montaje primario ${normal}"
+  echo "#${bold} en sus configuraciones. Por lo que si tienes OVH o SYS y no has"
+  echo "#${bold} modificado tus particiones, es seguro escoger la opción ${yellow}2)${normal} ${bold}abajo.${normal}"
   echo "#"
-  echo "#${bold} If you are not sure:${normal}"
-  echo "#${bold} I have listed out your current partitions below. Your mountpoint will be"
-  echo "#${bold} listed as ${green}/home${normal} ${bold}or ${green}/${normal}${bold}. ${normal}"
+  echo "#${bold} Si no estás seguro:${normal}"
+  echo "#${bold} He listado tus particiones actuales abajo. Tu punto de montaje será"
+  echo "#${bold} listado como ${green}/home${normal} ${bold}o ${green}/${normal}${bold}. ${normal}"
   echo "#"
-  echo "#${bold} Typically, the partition with the most space assigned is your default.${normal}"
+  echo "#${bold} Generalmente, la particion con el mayor espacio asignado es la predeterminada.${normal}"
   echo "##################################################################################"
   echo
   lsblk
   echo
   echo -e "${bold}${yellow}1)${normal} / - ${green}root mount${normal}"
   echo -e "${bold}${yellow}2)${normal} /home - ${green}home mount${normal}"
-  echo -ne "${bold}${yellow}What is your mount point for user quotas?${normal} (Default ${green}1${normal}): "; read version
+  echo -ne "${bold}${yellow}¿Cual es tu punto de montaje para las cuotas?${normal} (Default ${green}1${normal}): "; read version
   case $version in
     1 | "") primaryroot=root  ;;
     2) primaryroot=home  ;;
     *) primaryroot=root ;;
   esac
-  echo "Using ${green}$primaryroot mount${normal} for quotas"
+  echo "Usando ${green}$primaryroot mount${normal} para quotas"
   echo
 
 function _installquota(){
@@ -50,7 +60,7 @@ function _installquota(){
 
   if [[ -z $hook ]]; then
     if [[ -z $hook2 ]]; then
-      echo "ERROR: Cannot determine $primaryroot mount point. Installer cannot continue."
+      echo "ERROR: No se puede determinar el punto de montaje $primaryroot. El instalador no puede continuar."
       exit 1
     fi
     hook=$hook2
@@ -66,20 +76,22 @@ function _installquota(){
     exit 1
   fi
 
+  echo "Instalando dependencias"
+
   if [[ $DISTRO == Ubuntu ]]; then
     sed -ie '/\'"${loc}"'/ s/'${hook}'/'${hook}',usrjquota=aquota.user,jqfmt=vfsv1/' /etc/fstab
-    apt-get install -y linux-image-extra-virtual quota >>"${OUTTO}" 2>&1
+    DEBIAN_FRONTEND=noninteractive apt-get install -qy -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" linux-image-extra-virtual quota >>"${OUTTO}" 2>&1
     mount -o remount ${loc} >>"${OUTTO}" 2>&1
     quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
     quotaon -uv / >>"${OUTTO}" 2>&1
-    service quota start >>"${OUTTO}" 2>&1
+    systemctl start quota >>"${OUTTO}" 2>&1
   elif [[ $DISTRO == Debian ]]; then
     sed -ie '/\'"${loc}"'/ s/'${hook}'/'${hook}',usrjquota=aquota.user,jqfmt=vfsv1/' /etc/fstab
-    apt-get install -y quota >>"${OUTTO}" 2>&1
+    DEBIAN_FRONTEND=noninteractive apt-get install -qy -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" quota >>"${OUTTO}" 2>&1
     mount -o remount ${loc} >>"${OUTTO}" 2>&1
     quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
     quotaon -uv / >>"${OUTTO}" 2>&1
-    service quota start >>"${OUTTO}" 2>&1
+    systemctl start quota >>"${OUTTO}" 2>&1
   fi
 
   if [[ -d /srv/rutorrent ]]; then
@@ -116,14 +128,14 @@ fi
 fi
 }
 
-
 if [[ -f /tmp/.install.lock ]]; then
   OUTTO="/root/logs/install.log"
+elif [[ -f /install/.panel.lock ]]; then
+  OUTTO="/srv/panel/db/output.log"
 else
   OUTTO="/root/logs/swizzin.log"
 fi
 DISTRO=$(lsb_release -is)
-
 
 _installquota
 
@@ -139,4 +151,4 @@ EOSUD
 touch /install/.quota.lock
 echo "${primaryroot}" > /install/.quota.lock
 
-echo "Quotas have been installed. Use the command setdisk to set quotas per user."
+echo "Quotas ha sido instalado. Usa el commando setdisk para establecer cuotas por usuario."

@@ -1,9 +1,16 @@
+<<<<<<< HEAD
 #!/usr/bin/env bash
 #
 # authors: liara userdocs
 #
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
+=======
+#!/bin/bash
+#
+#   SERVIDOR HD
+
+>>>>>>> master
 # Get our exertnal IP 4 address and set it as a variable.
 ip_address="$(curl -s4 icanhazip.com)"
 #
@@ -17,12 +24,20 @@ install_ffmpeg="/opt/ffmpeg"
 install_tmp="/tmp/jellyfin"
 #
 if [[ ! -f /install/.jellyfin.lock ]]; then
+<<<<<<< HEAD
   echo "Jellyfin no aparece como instalado. Que intentas conseguir ejecutando este script?"
+=======
+  echo "Jellyfin doesn't appear to be installed. What do you hope to accomplish by running this script?"
+>>>>>>> master
   exit 1
 fi
 #
 # Stop the jellyfin service
+<<<<<<< HEAD
 service jellyfin stop
+=======
+systemctl stop jellyfin
+>>>>>>> master
 #
 # Create the required directories for this application.
 mkdir -p "$install_dir"
@@ -57,10 +72,18 @@ rm -rf "$install_tmp" > /dev/null 2>&1
 chown "${username}.${username}" -R "$install_dir"
 chown "${username}.${username}" -R "$install_ffmpeg"
 #
+<<<<<<< HEAD
 service jellyfin start
 #
 echo -e "\nActualización de Jellyfin upgrade completada y servicio reiniciado\n"
 #
 echo -e "Visita https://$ip_address/jellyfin\n"
+=======
+systemctl start jellyfin
+#
+echo -e "\nJellyfin upgrade completed and service restarted\n"
+#
+echo -e "Please visit https://$ip_address/jellyfin\n"
+>>>>>>> master
 #
 exit

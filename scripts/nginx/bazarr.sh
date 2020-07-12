@@ -1,8 +1,8 @@
 #!/bin/bash
 # Bazarr configuration for nginx
-# Author: liara
-# mod: ajvulcan
-# Copyright (C) 2019 Servidor HD
+# by ajvulcan
+# 
+# Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track

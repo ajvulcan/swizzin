@@ -1,12 +1,10 @@
 #!/bin/bash
 #
-# Tautulli installer
+# Tautulli installer para SERVIDOR HD
 #
-# Author             :   liara
-# Ported to swizzin by liara
-# Forked to Servidor HD by ajvulcan
+# by ajvulcan
 #
-# Servidor HD Copyright (C) 2019
+# Servidor HD 
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -15,31 +13,24 @@
 #   under the GPL along with build & install instructions.
 #
 if [[ -f /tmp/.install.lock ]]; then
-  OUTTO="/root/logs/install.log"
+  log="/root/logs/install.log"
 else
-  OUTTO="/root/logs/swizzin.log"
+  log="/root/logs/swizzin.log"
 fi
 MASTER=$(cut -d: -f1 < /root/.master.info)
 
-
-apt-get -y -q install python python-setuptools tzdata >>"${OUTTO}" 2>&1
+apt-get -y -q install python3 >>"${log}" 2>&1
 cd /opt
-#LATEST=$(curl -s https://api.github.com/repos/tautulli/tautulli/releases/latest | grep "\"name\":" | cut -d : -f 2 | tr -d \", | cut -d " " -f 3)
-echo "Downloading latest Tautulli version ${LATEST}" >>"${OUTTO}" 2>&1;
+echo "Clonando último repositorio de Tautulli"
 git clone https://github.com/Tautulli/Tautulli.git tautulli
-#mkdir -p /opt/tautulli
-#curl -s https://api.github.com/repos/tautulli/tautulli/releases/latest | grep "tarball" | cut -d : -f 2,3 | tr -d \", | wget -q -i- -O- | tar xz -C /opt/tautulli --strip-components 1
 
-echo "Adding user and setting up Tautulli" >>"${OUTTO}" 2>&1;
-adduser --system --no-create-home tautulli >>"${OUTTO}" 2>&1
+echo "Añadiendo usuario y configurando Tautulli"
+adduser --system --no-create-home tautulli >>"${log}" 2>&1
 
-echo "Adjusting permissions" >>"${OUTTO}" 2>&1;
+echo "Ajustando permisos"
 chown tautulli:nogroup -R /opt/tautulli
 
-
-
-
-echo "Enabling Tautulli Systemd configuration"
+echo "Habilitando la configuración en systemd de Tautulli"
 cat > /etc/systemd/system/tautulli.service <<PPY
 [Unit]
 Description=Tautulli - Stats for Plex Media Server usage
@@ -47,7 +38,7 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-ExecStart=/opt/tautulli/Tautulli.py --quiet --daemon --nolaunch --config /opt/tautulli/config.ini --datadir /opt/tautulli
+ExecStart=/usr/bin/python3 /opt/tautulli/Tautulli.py --quiet --daemon --nolaunch --config /opt/tautulli/config.ini --datadir /opt/tautulli
 GuessMainPID=no
 Type=forking
 User=tautulli
@@ -57,8 +48,7 @@ Group=nogroup
 WantedBy=multi-user.target
 PPY
 
-systemctl enable tautulli > /dev/null 2>&1
-systemctl start tautulli
+systemctl enable --now tautulli > /dev/null 2>&1
 
 if [[ -f /install/.nginx.lock ]]; then
   while [ ! -f /opt/tautulli/config.ini ]
@@ -66,12 +56,8 @@ if [[ -f /install/.nginx.lock ]]; then
     sleep 2
   done
   bash /usr/local/bin/swizzin/nginx/tautulli.sh
-  service nginx reload
+  systemctl reload nginx
 fi
 touch /install/.tautulli.lock
 
-echo "instalación de Tautulli completa!" >>"${OUTTO}" 2>&1;
-sleep 5
-echo >>"${OUTTO}" 2>&1;
-echo >>"${OUTTO}" 2>&1;
-echo "Cierra esta ventana para actualizar el explorador" >>"${OUTTO}" 2>&1;
+echo "instalación de Tautulli completa!"

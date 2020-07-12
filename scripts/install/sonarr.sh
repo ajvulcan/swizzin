@@ -2,9 +2,9 @@
 #
 # [Servidor HD :: Install Sonarr-NzbDrone package]
 #
-# Author             :   JMSolo
+# by Ajvulcan
 #
-# QuickBox Copyright (C) 2019
+# SERVIDOR HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -15,13 +15,13 @@
 #################################################################################
 
 function _installSonarrintro() {
-  echo "Sonarr will now be installed." >>"${log}" 2>&1;
-  echo "This process may take up to 2 minutes." >>"${log}" 2>&1;
-  echo "Please wait until install is completed." >>"${log}" 2>&1;
+  echo "Sonarr será instalado ahora." >>"${log}" 2>&1;
+  echo "Este proceso llevará hasta 2 minutos." >>"${log}" 2>&1;
+  echo "Por favor, espera hasta que se complete" >>"${log}" 2>&1;
   # output to box
-  echo "Sonarr will now be installed."
-  echo "This process may take up to 2 minutes."
-  echo "Please wait until install is completed."
+  echo "Sonarr será instalado ahora."
+  echo "Este proceso llevará hasta 2 minutos."
+  echo "Por favor, espera hasta que se complete."
   echo
 }
 
@@ -34,15 +34,11 @@ function _installSonarr2() {
   if [[ $distribution == "Ubuntu" ]]; then
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xA236C58F409091A18ACA53CBEBFF6B99D9B78493 >> ${log} 2>&1
   elif [[ $distribution == "Debian" ]]; then
-    if [[ $version == "jessie" ]]; then
-      apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0xA236C58F409091A18ACA53CBEBFF6B99D9B78493 >> ${log} 2>&1
-    else
-#buster friendly
-      apt-key --keyring /etc/apt/trusted.gpg.d/nzbdrone.gpg adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xA236C58F409091A18ACA53CBEBFF6B99D9B78493 >> ${log} 2>&1
-      #older style -- buster friendly should work on stretch
-      #gpg --keyserver http://keyserver.ubuntu.com --recv 0xA236C58F409091A18ACA53CBEBFF6B99D9B78493 >/dev/null 2>&1
-      #gpg --export 0xA236C58F409091A18ACA53CBEBFF6B99D9B78493 > /etc/apt/trusted.gpg.d/nzbdrone.gpg
-    fi
+    #buster friendly
+    apt-key --keyring /etc/apt/trusted.gpg.d/nzbdrone.gpg adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xA236C58F409091A18ACA53CBEBFF6B99D9B78493 >> ${log} 2>&1
+    #older style -- buster friendly should work on stretch
+    #gpg --keyserver http://keyserver.ubuntu.com --recv 0xA236C58F409091A18ACA53CBEBFF6B99D9B78493 >/dev/null 2>&1
+    #gpg --export 0xA236C58F409091A18ACA53CBEBFF6B99D9B78493 > /etc/apt/trusted.gpg.d/nzbdrone.gpg
   fi
   echo "deb https://apt.sonarr.tv/ master main" | tee /etc/apt/sources.list.d/sonarr.list >> ${log} 2>&1
 }
@@ -68,7 +64,6 @@ function _installSonarr6() {
 [Unit]
 Description=nzbdrone
 After=syslog.target network.target
-
 [Service]
 Type=forking
 KillMode=process
@@ -76,28 +71,26 @@ User=%i
 ExecStart=/usr/bin/screen -f -a -d -m -S nzbdrone mono /opt/NzbDrone/NzbDrone.exe
 ExecStop=-/bin/kill -HUP
 WorkingDirectory=/home/%i/
-
 [Install]
 WantedBy=multi-user.target
 SONARR
+
   systemctl enable --now sonarr@${username} >> ${log} 2>&1
   sleep 10
-
-
 
   if [[ -f /install/.nginx.lock ]]; then
     sleep 10
     bash /usr/local/bin/swizzin/nginx/sonarr.sh
-    service nginx reload
+    systemctl reload nginx
   fi
 }
-
 
 function _installSonarr9() {
   echo "Sonarr Install Complete!" >>"${log}" 2>&1;
   echo >>"${log}" 2>&1;
   echo >>"${log}" 2>&1;
-  echo "Close this dialog box to refresh your browser" >>"${log}" 2>&1;}
+  echo "Close this dialog box to refresh your browser" >>"${log}" 2>&1;
+}
 
 function _installSonarr10() {
   exit
@@ -115,9 +108,10 @@ version=$(lsb_release -cs)
 
 _installSonarrintro
 _installSonarr1
-echo "Adding source repositories for Sonarr-Nzbdrone ... " >>"${log}" 2>&1;_installSonarr2
-echo "Updating your system with new sources ... " >>"${log}" 2>&1;_installSonarr3
-echo "Installing Sonarr-Nzbdrone ... " >>"${log}" 2>&1;_installSonarr4
-echo "Setting permissions to ${username} ... " >>"${log}" 2>&1;_installSonarr5
-echo "Setting up Sonarr as a service and enabling ... " >>"${log}" 2>&1;_installSonarr6_installSonarr9
+echo "Añadiendo repositorios fuente para Sonarr-Nzbdrone ... " >>"${log}" 2>&1;_installSonarr2
+echo "Actualizando tu sistema con las nuevas fuentes ... " >>"${log}" 2>&1;_installSonarr3
+echo "Instalando Sonarr-Nzbdrone ... " >>"${log}" 2>&1;_installSonarr4
+echo "Configurando permisos para ${username} ... " >>"${log}" 2>&1;_installSonarr5
+echo "Configurando Sonarr como un servicio y habilitándolo ... " >>"${log}" 2>&1;_installSonarr6
+_installSonarr9
 _installSonarr10

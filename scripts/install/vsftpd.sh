@@ -1,7 +1,8 @@
 #!/bin/bash
-# vsftpd installer
-# Author: liara
-# Copyright (C) 2019 SERVIDOR HD
+# vsftpd installer for Servidor HD
+# by ajvulcan
+#
+# SERVIDOR HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -14,6 +15,8 @@ if [[ -f /tmp/.install.lock ]]; then
 else
   log="/root/logs/swizzin.log"
 fi
+
+. /etc/swizzin/sources/functions/letsencrypt
 
 apt-get -y update >> $log 2>&1
 apt-get -y install vsftpd ssl-cert>> $log 2>&1
@@ -76,12 +79,7 @@ setproctitle_enable=YES
 VSC
 
 # Check for LE cert, and copy it if available.
-chkhost="$(find /etc/nginx/ssl/* -maxdepth 1 -type d | cut -f 5 -d '/')"
-if [[ -n $chkhost ]]; then
-    defaulthost=$(grep -m1 "server_name" /etc/nginx/sites-enabled/default | awk '{print $2}' | sed 's/;//g')
-    sed -i "s#rsa_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem#rsa_cert_file=/etc/nginx/ssl/${defaulthost}/fullchain.pem#g" /etc/vsftpd.conf
-    sed -i "s#rsa_private_key_file=/etc/ssl/private/ssl-cert-snakeoil.key#rsa_private_key_file=/etc/nginx/ssl/${defaulthost}/key.pem#g" /etc/vsftpd.conf
-fi
+le_vsftpd_hook
 
 systemctl restart vsftpd
 

@@ -1,10 +1,19 @@
 #!/bin/bash
+<<<<<<< HEAD
 # Librespeed installer for Servidor HD
 # Author: hwcltjn
 # Forked by Ajvulcan
 #
 if [[ ! -f /install/.nginx.lock ]]; then
   echo "ERROR: Servidor Web no detectado. Por favor, instala nginx y reinicia la instalación de panel."
+=======
+# Librespeed installer for SERVIDOR HD
+# Author: hwcltjn
+# Adaptado por Ajvulcan para SERVIDOR HD
+
+if [[ ! -f /install/.nginx.lock ]]; then
+  echo "ERROR: Servidor Web no detectado. Por favor, instala nginx antes."
+>>>>>>> master
   exit 1
 fi
 
@@ -40,14 +49,24 @@ function _installLibreSpeed2() {
 function _installLibreSpeed3() {
   if [[ -f /install/.nginx.lock ]]; then
     bash /usr/local/bin/swizzin/nginx/librespeed.sh
+<<<<<<< HEAD
     service nginx reload
+=======
+    systemctl reload nginx
+>>>>>>> master
   fi
 }
 
 function _installLibreSpeed4() {
+<<<<<<< HEAD
     echo "¡Instalación de LibreSpeed completada!" >>"${OUTTO}" 2>&1;
     sleep 5
     service nginx reload
+=======
+    echo "Instalación de LibreSpeed completada!" >>"${OUTTO}" 2>&1;
+    sleep 5
+    systemctl reload nginx
+>>>>>>> master
 }
 
 function _installLibreSpeed5() {
@@ -55,8 +74,16 @@ function _installLibreSpeed5() {
 }
 
 echo "Instalando LibreSpeed ... " >>"${OUTTO}" 2>&1;_installLibreSpeed1
+<<<<<<< HEAD
 echo "Configurando permisos LibreSpeed ... " >>"${OUTTO}" 2>&1;_installLibreSpeed2
 echo "Configurando nginx para LibreSpeed ... " >>"${OUTTO}" 2>&1;_installLibreSpeed3
 echo "Recargando nginx ... " >>"${OUTTO}" 2>&1;_installLibreSpeed4
 
 _installLibreSpeed5 
+=======
+echo "Configurando los permisos de LibreSpeed ... " >>"${OUTTO}" 2>&1;_installLibreSpeed2
+echo "Configurando nginx para LibreSpeed ... " >>"${OUTTO}" 2>&1;_installLibreSpeed3
+echo "Reiniciando nginx ... " >>"${OUTTO}" 2>&1;_installLibreSpeed4
+
+_installLibreSpeed5 
+>>>>>>> master

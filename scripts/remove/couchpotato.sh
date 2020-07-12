@@ -13,16 +13,15 @@
 #   under the GPL along with build & install instructions.
 #
 
-MASTER=$(cut -d: -f1 < /root/.master.info)
-  systemctl disable couchpotato@*
-  systemctl stop couchpotato@*
-  rm /etc/systemd/system/couchpotato@.service
-if [[ -f /etc/init.d/couchpotato ]]; then
-  service couchpotato stop
-  rm /etc/init.d/couchpotato
-  rm /etc/default/couchpotato
+user=$(cut -d: -f1 < /root/.master.info)
+systemctl disable --now couchpotato > /dev/null 2>&1
+rm /etc/systemd/system/couchpotato.service
+rm -rf /opt/couchpotato
+rm -rf /home/${user}/.config/couchpotato
+rm -rf /opt/.venv/couchpotato
+if [ -z "$(ls -A /opt/.venv)" ]; then
+   rm -rf  /opt/.venv
 fi
-rm -rf /home/${MASTER}/.couchpotato
 rm -f /etc/nginx/apps/couchpotato.conf
-service nginx reload
+systemctl reload nginx
 rm /install/.couchpotato.lock

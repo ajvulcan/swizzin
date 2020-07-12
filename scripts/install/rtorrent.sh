@@ -1,8 +1,7 @@
 #!/bin/bash
 # rTorrent installer
-# Author: liara
-# modified by ajvulcan
-# Copyright (C) 2019 Servidor HD
+# by ajvulcan
+# -- Servidor HD --
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -52,10 +51,13 @@ execute = {sh,-c,/usr/bin/php /srv/rutorrent/php/initplugins.php ${user} &}
 
 # -- END HERE --
 EOF
+
 chown ${user}.${user} -R /home/${user}/.rtorrent.rc
 chmod 444 /home/${user}/.rtorrent.rc
+
 }
 
+#Directorios usados por rtorrent
 function _makedirs() {
 	mkdir -p /home/${user}/DESCARGAS 2>> $log
 	mkdir -p /home/${user}/.sessions
@@ -65,6 +67,7 @@ function _makedirs() {
 	usermod -a -G ${user} www-data 2>> $log
 }
 
+#Servicio de rtorrent
 _systemd() {
 cat >/etc/systemd/system/rtorrent@.service<<EOF
 [Unit]
@@ -85,8 +88,8 @@ RestartSec=10
 [Install]
 WantedBy=multi-user.target
 EOF
-systemctl enable rtorrent@${user} 2>> $log
-service rtorrent@${user} start
+
+systemctl enable --now rtorrent@${user} 2>> $log
 }
 
 export DEBIAN_FRONTEND=noninteractive
@@ -97,8 +100,6 @@ else
   log="/root/logs/swizzin.log"
 fi
 . /etc/swizzin/sources/functions/rtorrent
-whiptail_rtorrent
-
 noexec=$(grep "/tmp" /etc/fstab | grep noexec)
 user=$(cut -d: -f1 < /root/.master.info)
 rutorrent="/srv/rutorrent/"
@@ -112,10 +113,15 @@ if [[ -n $1 ]]; then
 	exit 0
 fi
 
+whiptail_rtorrent
+
 if [[ -n $noexec ]]; then
 	mount -o remount,exec /tmp
 	noexec=1
 fi
+
+echo "Instalando dependencias de rTorrent ... ";depends_rtorrent
+
 		if [[ ! $rtorrentver == repo ]]; then
 			echo "Compilando xmlrpc-c desde fuente ...";build_xmlrpc-c
 			echo "Compilando libtorrent desde fuente ... ";build_libtorrent_rakshasa
@@ -123,7 +129,7 @@ fi
 		else
 			echo "Instalando rtorrent con apt-get ... ";rtorrent_apt
 		fi		
-		echo "Compilando rtorrent desde fuente ... ";build_rtorrent
+		#echo "Compilando rtorrent desde fuente ... ";build_rtorrent
 		echo "Montando estructura de directorios de ${user} ... ";_makedirs
 		echo "Configurando rtorrent.rc ... ";_rconf;_systemd
 

@@ -39,7 +39,6 @@ rm -f "/home/${username}/filebrowser.tar.gz" > /dev/null 2>&1
 # Perform some bootstrapping commands on filebrowser to create the database settings we desire.
 #
 # Create a self signed cert in the config directory to use with filebrowser.
-#openssl req -x509 -newkey rsa:2048 -keyout "/home/${username}/.config/Filebrowser/key.pem" -out "/home/${username}/.config/Filebrowser/cert.pem" -days 365 -subj "/C=/ST=/L=/O=/OU=/CN=" -nodes > /dev/null 2>&1
 . /etc/swizzin/sources/functions/ssl
 create_self_ssl ${username}
 #
@@ -61,12 +60,10 @@ cat > "/etc/systemd/system/filebrowser.service" <<-SERVICE
 [Unit]
 Description=filebrowser
 After=network.target
-
 [Service]
 User=${username}
 Group=${username}
 UMask=002
-
 Type=simple
 WorkingDirectory=/home/${username}
 ExecStart=/home/${username}/bin/filebrowser -d /home/${username}/.config/Filebrowser/filebrowser.db
@@ -74,7 +71,6 @@ TimeoutStopSec=20
 KillMode=process
 Restart=always
 RestartSec=2
-
 [Install]
 WantedBy=multi-user.target
 SERVICE
@@ -82,7 +78,7 @@ SERVICE
 # Configure the nginx proxypass using positional parameters.
 if [[ -f /install/.nginx.lock ]]; then
     bash "/usr/local/bin/swizzin/nginx/filebrowser.sh" "${app_port_http}"
-    service nginx reload
+    systemctl reload nginx
 fi
 #
 # Start the filebrowser service.

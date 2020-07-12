@@ -2,12 +2,18 @@
 #
 # authors: liara userdocs
 #
+<<<<<<< HEAD
+=======
+# adapted for SERVIDOR HD by ajvulcan
+#
+>>>>>>> master
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 ########
 ######## Variables Start
 ########
 #
+<<<<<<< HEAD
 # Get our main user credentials.
 username="$(cat /root/.master.info | cut -d: -f1)"
 password="$(cat /root/.master.info | cut -d: -f2)"
@@ -26,6 +32,26 @@ install_dir="/opt/jellyfin"
 install_ffmpeg="/opt/ffmpeg"
 #
 # Set an installation temporay directory.
+=======
+# Obtiene las credenciales de usuario principal.
+username="$(cat /root/.master.info | cut -d: -f1)"
+password="$(cat /root/.master.info | cut -d: -f2)"
+#
+# Generamos puertos aleatorios entre el 10001 y el 32001.
+app_port_http="$(shuf -i 10001-32001 -n 1)" && while [[ "$(ss -ln | grep -co ''"${app_port_http}"'')" -ge "1" ]]; do app_port_http="$(shuf -i 10001-32001 -n 1)"; done
+app_port_https="$(shuf -i 10001-32001 -n 1)" && while [[ "$(ss -ln | grep -co ''"${app_port_https}"'')" -ge "1" ]]; do app_port_https="$(shuf -i 10001-32001 -n 1)"; done
+#
+# Obtengo la ipV4 externa.
+ip_address="$(curl -s4 icanhazip.com)"
+#
+#  Ruta de instalación
+install_dir="/opt/jellyfin"
+#
+# Ruta donde instalar ffmpeg.
+install_ffmpeg="/opt/ffmpeg"
+#
+# Directorio temporal de instalación.
+>>>>>>> master
 install_tmp="/tmp/jellyfin"
 #
 ########
@@ -36,6 +62,7 @@ install_tmp="/tmp/jellyfin"
 ######## Application script starts.
 ########
 #
+<<<<<<< HEAD
 # Source the global functions we require for this script.
 . /etc/swizzin/sources/functions/ssl
 #
@@ -46,11 +73,24 @@ create_self_ssl "${username}"
 openssl pkcs12 -export -nodes -out "/home/${username}/.ssl/${username}-self-signed.pfx" -inkey "/home/${username}/.ssl/${username}-self-signed.key" -in "/home/${username}/.ssl/${username}-self-signed.crt" -passout pass:
 #
 # Create the required directories for this application.
+=======
+# Incluye las funciones globales requeridas para el script.
+. /etc/swizzin/sources/functions/ssl
+#
+# Genera los certificados ssl usando la función importada.
+create_self_ssl "${username}"
+#
+# Generamos el certificado ssl especifico para mono dede los certificados por defecto creados anteriormente.
+openssl pkcs12 -export -nodes -out "/home/${username}/.ssl/${username}-self-signed.pfx" -inkey "/home/${username}/.ssl/${username}-self-signed.key" -in "/home/${username}/.ssl/${username}-self-signed.crt" -passout pass:
+#
+# Creamos los directorios
+>>>>>>> master
 mkdir -p "$install_dir"
 mkdir -p "$install_ffmpeg"
 mkdir -p "$install_tmp"
 mkdir -p "/home/${username}/.config/Jellyfin/config"
 #
+<<<<<<< HEAD
 # Download and extract the files to the defined location.
 wget -qO "$install_tmp/jellyfin.tar.gz" "$(curl -s https://api.github.com/repos/jellyfin/jellyfin/releases/latest | grep -Po 'ht(.*)linux-amd64(.*)gz')" > /dev/null 2>&1
 tar -xvzf "$install_tmp/jellyfin.tar.gz" --strip-components=1 -C "$install_dir" > /dev/null 2>&1
@@ -79,6 +119,36 @@ rm -rf "$install_tmp" > /dev/null 2>&1
 ## Create the configuration files
 #
 # Create the encoding.xml so that we can define the custom ffmpeg provided.
+=======
+# Descarga y extracción de los datos.
+wget -qO "$install_tmp/jellyfin.tar.gz" "$(curl -s https://api.github.com/repos/jellyfin/jellyfin/releases/latest | grep -Po 'ht(.*)linux-amd64(.*)gz')" > /dev/null 2>&1
+tar -xvzf "$install_tmp/jellyfin.tar.gz" --strip-components=1 -C "$install_dir" > /dev/null 2>&1
+#
+# Descarga de FFmpeg prebuilt binary al directorio temporal
+wget -qO "$install_tmp/ffmpeg.tar.xz" "https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz"
+#
+# Guardamos el directorio para usarlo más adelante en los comandos
+ffmpeg_dir_name="$(tar tf "$install_tmp/ffmpeg.tar.xz" | head -1 | cut -f1 -d"/")"
+#
+# Extraemos el paquete al directorio temporal
+tar xf "$install_tmp/ffmpeg.tar.xz" -C "$install_tmp"
+#
+# Borramos ficheros no necesarios.
+rm -rf "$install_tmp/$ffmpeg_dir_name"/{manpages,model,GPLv3.txt,readme.txt}
+#
+# Copiamos los binarios requeridos.
+cp "$install_tmp/$ffmpeg_dir_name"/* "$install_ffmpeg"
+#
+# Permisos
+chmod -R 700 "$install_ffmpeg"
+#
+# Borramos directorio temporal no necesario ya.
+rm -rf "$install_tmp" > /dev/null 2>&1
+#
+## Creación de ficheros de configuración
+#
+# Crear encoding.xml para definir el ffmpeg customizado.
+>>>>>>> master
 cat > "/home/${username}/.config/Jellyfin/config/encoding.xml" <<-CONFIG
 <?xml version="1.0"?>
 <EncodingOptions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -88,7 +158,11 @@ cat > "/home/${username}/.config/Jellyfin/config/encoding.xml" <<-CONFIG
 </EncodingOptions>
 CONFIG
 #
+<<<<<<< HEAD
 # Create the dnla.xml so that we can Disable DNLA
+=======
+# Crear dnla.xml para desabilitar DLNA
+>>>>>>> master
 cat > "/home/${username}/.config/Jellyfin/config/dlna.xml" <<-CONFIG
 <?xml version="1.0"?>
 <DlnaOptions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -102,7 +176,11 @@ cat > "/home/${username}/.config/Jellyfin/config/dlna.xml" <<-CONFIG
 </DlnaOptions>
 CONFIG
 #
+<<<<<<< HEAD
 # Create the system.xml. This is the applications main configuration file.
+=======
+# Crea system.xml. Fichero principal de configuración.
+>>>>>>> master
 cat > "/home/${username}/.config/Jellyfin/config/system.xml" <<-CONFIG
 <?xml version="1.0"?>
 <ServerConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -281,7 +359,11 @@ cat > "/home/${username}/.config/Jellyfin/config/system.xml" <<-CONFIG
 </ServerConfiguration>
 CONFIG
 #
+<<<<<<< HEAD
 # Create the service file that will start and stop jellyfin.
+=======
+# Crea fichero que lanza y para el servicio de jellyfin.
+>>>>>>> master
 cat > "/etc/systemd/system/jellyfin.service" <<-SERVICE
 [Unit]
 Description=Jellyfin
@@ -301,6 +383,7 @@ RestartSec=2
 WantedBy=multi-user.target
 SERVICE
 #
+<<<<<<< HEAD
 # Configure the nginx proxypass using positional parameters.
 if [[ -f /install/.nginx.lock ]]; then
     bash "/usr/local/bin/swizzin/nginx/jellyfin.sh" "${app_port_http}" "${app_port_https}"
@@ -308,11 +391,21 @@ if [[ -f /install/.nginx.lock ]]; then
 fi
 #
 # Set the correct and required permissions of any directories we created or modified.
+=======
+# Configura el proxypass de nginx usando parametros posicionales.
+if [[ -f /install/.nginx.lock ]]; then
+    bash "/usr/local/bin/swizzin/nginx/jellyfin.sh" "${app_port_http}" "${app_port_https}"
+    systemctl reload nginx
+fi
+#
+# Configura correctamente los permisos requeridos de cualquier directorio que hayamos creado o modificado.
+>>>>>>> master
 chown "${username}.${username}" -R "$install_dir"
 chown "${username}.${username}" -R "$install_ffmpeg"
 chown "${username}.${username}" -R "/home/${username}/.config"
 chown "${username}.${username}" -R "/home/${username}/.ssl"
 #
+<<<<<<< HEAD
 # Enable and start the jellyfin service.
 systemctl daemon-reload
 systemctl enable --now "jellyfin.service" >> /dev/null 2>&1
@@ -321,13 +414,31 @@ systemctl enable --now "jellyfin.service" >> /dev/null 2>&1
 touch "/install/.jellyfin.lock"
 #
 # A helpful echo to the terminal.
+=======
+# Habilita y ejecuta el servicio de Jellyfin.
+systemctl daemon-reload
+systemctl enable --now "jellyfin.service" >> /dev/null 2>&1
+#
+# Fichero creado después de la instalación para prevenir la reinstalación. Deberías de desinstalar la aplicación primero que borra este fichero.
+touch "/install/.jellyfin.lock"
+#
+# Info al terminal.
+>>>>>>> master
 echo -e "\nLa instalación de Jellyfin se ha completado\n"
 #
 if [[ ! -f /install/.nginx.lock ]]; then
     echo -e "Jellyfin está disponible en: https://$(curl -s4 icanhazip.com):${app_port_https}\n"
 else
+<<<<<<< HEAD
     echo -e "Jellyfin ya está disponible en el panel\n"
     echo -e "Por favor, visita https://$ip_address/jellyfin\n"
 fi
 #
 exit 
+=======
+    echo -e "Jellyfin está ya disponible en el panel\n"
+    echo -e "Por favor, visita https://$ip_address/jellyfin\n"
+fi
+#
+exit 
+>>>>>>> master

@@ -1,10 +1,10 @@
 #!/bin/bash
 #################################################################################
 # Installation script for servidor HD
-# Many credits to QuickBox for the package repo
+# Many credits to QuickBox and specially swizzin for the package repo
 #
 # Package installers copyright Servidor HD (2019) where applicable.
-# All other work copyright Swizzin (2017)
+#
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -22,11 +22,11 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 if [[ ! $(uname -m) == "x86_64" ]]; then
-  echo -e "\033[0;31mUnsupported architecture ($(uname -m)) detected! \033[0m"
+  echo -e "\033[0;31mArquitectura no soportada ($(uname -m)) detectada! \033[0m"
   echo
-  echo "Setup will not be blocked; however, none of the scripts have been written with alternative archtectures in mind, nor will they be. Things may work, things may not work. Do not open issues on github if they do not."
+  echo "Setup no será bloqueado; however, ningún scripts ha sido escrito para arquitecturas alternativas, ni lo serán. Algunas cosas funcionarán, otras no. Por supuesto, no tendrá soporte."
   echo
-  read -rep 'By pressing enter to continue, you agree to the above statement. Press control-c to quit.'
+  read -rep 'Presionando enter declaras estar de acuerdo con lo anterior. Presiona control + c para salir.'
 fi
 
 _os() {
@@ -42,7 +42,7 @@ _os() {
     if [[ ! $distribution =~ ("Debian"|"Ubuntu") ]]; then
       echo "Tu distribución ($distribution) no es compatible. Servidor HD requires Ubuntu o Debian." && exit 1
     fi
-    if [[ ! $codename =~ ("xenial"|"bionic"|"jessie"|"stretch"|"buster") ]]; then
+    if [[ ! $codename =~ ("xenial"|"bionic"|"stretch"|"buster"|"focal") ]]; then
       echo "Tu versión ($codename) de $distribution no es compatible." && exit 1
     fi
   echo "He detectado que estás usando: $distribution $release."
@@ -62,8 +62,12 @@ function _preparation() {
   fi
   apt-get -q -y update >> ${log} 2>&1
   apt-get -q -y upgrade >> ${log} 2>&1
+
   echo "Instalando aplicaciones básicas que serán usadas (quizás tarde bastante tiempo, por favor, espere)."
-  apt-get install whiptail git sudo curl wget lsof fail2ban apache2-utils vnstat tcl tcl-dev build-essential dirmngr apt-transport-https python-pip nano iotop nload htop hdparm acl smartmontools >> ${log} 2>&1
+  apt-get -y install whiptail git sudo curl wget lsof fail2ban apache2-utils vnstat tcl tcl-dev build-essential dirmngr apt-transport-https >> ${log} 2>&1
+  #Paquetes extras necesarios
+  apt-get -y install python-pip nano iotop nload htop hdparm acl smartmontools >> ${log} 2>&1
+
   nofile=$(grep "DefaultLimitNOFILE=500000" /etc/systemd/system.conf)
   if [[ ! "$nofile" ]]; then echo "DefaultLimitNOFILE=500000" >> /etc/systemd/system.conf; fi
   echo "Clonando Servidor HD al equipo ..."
@@ -102,10 +106,10 @@ function _nukeovh() {
   fi
 }
 
-function _skel() {
-  rm -rf /etc/skel
-  cp -R /etc/swizzin/sources/skel /etc/skel
-}
+# function _skel() {
+#   rm -rf /etc/skel
+#   cp -R /etc/swizzin/sources/skel /etc/skel
+# }
 
 function _intro() {
   whiptail --title "Instalador de Servidor HD" --msgbox "¡Bienvenido!" 15 50
@@ -113,7 +117,7 @@ function _intro() {
 
 function _adduser() {
   while [[ -z $user ]]; do
-    user=$(whiptail --inputbox "Introduce nombre de usuario" 9 30 3>&1 1>&2 2>&3); exitstatus=$?; if [ "$exitstatus" = 1 ]; then exit 0; fi
+    user=$(whiptail --inputbox "Introduce nombre de usuario" 9 40 3>&1 1>&2 2>&3); exitstatus=$?; if [ "$exitstatus" = 1 ]; then exit 0; fi
     if [[ $user =~ [A-Z] ]]; then
       read -n 1 -s -r -p "Los nombres de usuario no pueden contener mayúsculas. Pulsa enter para probar otra vez."
       printf "\n"
@@ -121,7 +125,7 @@ function _adduser() {
     fi
   done
   while [[ -z "${pass}" ]]; do
-    pass=$(whiptail --inputbox "Introduce contraseña de usuario. Déjalo vacío para generar una." 9 30 3>&1 1>&2 2>&3); exitstatus=$?; if [ "$exitstatus" = 1 ]; then exit 0; fi
+    pass=$(whiptail --inputbox "Introduce contraseña de usuario. Déjalo vacío para generar una." 9 40 3>&1 1>&2 2>&3); exitstatus=$?; if [ "$exitstatus" = 1 ]; then exit 0; fi
     if [[ -z "${pass}" ]]; then
       pass="$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c16)"
     fi
@@ -142,9 +146,6 @@ function _adduser() {
   echo "$user:$pass" > /root/.master.info
   if [[ -d /home/"$user" ]]; then
     echo "El directorio de usuario ya existe ... "
-    #_skel
-    #cd /etc/skel
-    #cp -R * /home/$user/
     echo "Cambiando contraseña a una nueva"
     chpasswd<<<"${user}:${pass}"
     htpasswd -b -c /etc/htpasswd $user $pass
@@ -162,7 +163,8 @@ function _adduser() {
   fi
 
   if grep ${user} /etc/sudoers.d/swizzin >/dev/null 2>&1 ; then echo "Sin modificación a sudoers ... " ; else	echo "${user}	ALL=(ALL:ALL) ALL" >> /etc/sudoers.d/swizzin ; fi
-  echo "D /var/run/${user} 0750 ${user} ${user} -" >> /etc/tmpfiles.d/${user}.conf
+   
+  echo "D /run/${user} 0750 ${user} ${user} -" >> /etc/tmpfiles.d/${user}.conf  
   systemd-tmpfiles /etc/tmpfiles.d/${user}.conf --create
 
   chmod 750 /home/${user}
@@ -352,7 +354,7 @@ service ssh restart
 _os
 _preparation
 _nukeovh
-_skel
+#_skel
 _intro
 _adduser
 _choices

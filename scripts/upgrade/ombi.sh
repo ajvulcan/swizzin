@@ -1,6 +1,6 @@
 #!/bin/bash
 # Upgrade ombi
-# Author liara
+# by ajvulcan
 #
 # SERVIDOR HD
 
@@ -44,7 +44,6 @@ else
 [Unit]
 Description=Ombi - PMS Requests System
 After=network-online.target
-
 [Service]
 User=ombi
 Group=nogroup
@@ -54,14 +53,13 @@ Type=simple
 TimeoutStopSec=30
 Restart=on-failure
 RestartSec=5
-
 [Install]
 WantedBy=multi-user.target
 OMB
 
   if [[ -f /install/.nginx.lock ]]; then
     bash /usr/local/bin/swizzin/nginx/ombi.sh
-    service nginx reload
+    systemctl reload nginx
   fi
 fi
 

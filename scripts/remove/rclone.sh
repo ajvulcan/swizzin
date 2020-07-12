@@ -17,7 +17,3 @@ MASTER=$(cut -d: -f1 < /root/.master.info)
   rm -f  /usr/sbin/rclone
   rm -f /usr/bin/rclone
   rm -f /install/.rclone.lock
-
-#eliminamos fuse que ya no es necesario
-  apt-get purge -y fuse >> /etc/null
-

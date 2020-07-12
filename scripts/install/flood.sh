@@ -1,12 +1,11 @@
 #!/bin/bash
-# Flood for rtorrent installation script for swizzin
-# Author: liara
-# Modified by: ajvulcan
+# Flood para rtorrent installation script 
+# by Ajvulcan
 #
 #  SERVIDOR HD
 
 if [[ ! -f /install/.rtorrent.lock ]]; then
-  echo "Flood is a GUI for rTorrent, which doesn't appear to be installed. Exiting."
+  echo "Flood es una interfaz para rTorrent, el cual no está instalado. Saliendo..."
   exit 1
 fi
 
@@ -41,7 +40,7 @@ SYSDF
 
 users=($(cut -d: -f1 < /etc/htpasswd))
 for u in "${users[@]}"; do
-  if [[ ! -d /home/$u/.flood ]]; then
+  if [[ ! -d /home/$u/.flood ]]; then    
     salt=$(tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 32 | head -n 1)
     port=$(shuf -i 3501-4500 -n 1)
     cd /home/$u
@@ -56,13 +55,13 @@ for u in "${users[@]}"; do
     if [[ ! -f /install/.nginx.lock ]]; then
       sed -i "s/floodServerHost: '127.0.0.1'/floodServerHost: '0.0.0.0'/g" config.js
     fi
-    echo "Building Flood for $u. This might take some time..."
+    echo "Montando Flood para $u. Esto podría llevar algún tiempo..."
     echo ""
     su - $u -c "cd /home/$u/.flood; npm install" >> $log 2>&1
     if [[ ! -f /install/.nginx.lock ]]; then
       su - $u -c "cd /home/$u/.flood; npm run build" >> $log 2>&1
       systemctl start flood@$u
-      echo "Flood port for $u is $port"
+      echo "El puerto Flood para $u es: $port"
     elif [[ -f /install/.nginx.lock ]]; then    
       bash /usr/local/bin/swizzin/nginx/flood.sh $u
       systemctl start flood@$u
@@ -70,7 +69,5 @@ for u in "${users[@]}"; do
     systemctl enable flood@$u > /dev/null 2>&1
   fi
 done
-
-
 
 touch /install/.flood.lock

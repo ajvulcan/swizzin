@@ -1,6 +1,6 @@
 #!/bin/bash
 # NZBGet installer for servidor HD
-# Author: liara
+# by ajvulcan
 # 
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #

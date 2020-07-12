@@ -13,13 +13,14 @@ export DEBIAN_FRONTEND=noninteractive
 if [[ -f /tmp/.install.lock ]]; then
   export log="/root/logs/install.log"
 else
-  export log="/dev/null"
+  export log="/root/logs/swizzin.log"
 fi
 . /etc/swizzin/sources/functions/rtorrent
 whiptail_rtorrent
 
 user=$(cut -d: -f1 < /root/.master.info)
 rutorrent="/srv/rutorrent/"
+
 users=($(cut -d: -f1 < /etc/htpasswd))
 
 if [[ -n $noexec ]]; then

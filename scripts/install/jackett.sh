@@ -2,10 +2,9 @@
 #
 # [Servidor HD :: Install Jackett package]
 #
-# Author             :   d2dyno
-# Mod: ajvulcan
+# by Ajvulcan
 #
-# Servidor HD Copyright (C) 2019 SERVIDOR HD
+# -- SERVIDOR HD --
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -62,7 +61,7 @@ while pgrep -u ${user} JackettUpdater > /dev/null ; do
 done
 echo "Jackett update complete"
 JL
-  chmod +x /home/${username}/Jackett/jackett_launcher.sh
+chmod +x /home/${username}/Jackett/jackett_launcher.sh
 fi
 
 mkdir -p /home/${username}/.config/Jackett
@@ -92,7 +91,7 @@ chown ${username}.${username} -R /home/${username}/.config/Jackett
 
 if [[ -f /install/.nginx.lock ]]; then
   bash /usr/local/bin/swizzin/nginx/jackett.sh
-  service nginx reload
+  systemctl reload nginx
 fi
 
 systemctl enable --now jackett@${username} >/dev/null 2>&1
@@ -101,7 +100,6 @@ sleep 10
 
 cookie=$(curl -v 127.0.0.1:9117/jackett/UI/Dashboard -L 2>&1 | grep -m1 Set-Cookie | awk '{printf $3}' | sed 's/;//g')
 curl http://127.0.0.1:9117/jackett/api/v2.0/server/adminpassword -H 'Content-Type: application/json' -H 'Cookie: '${cookie}'' --data-binary '"'${password}'"'
-
 
 
 touch /install/.jackett.lock

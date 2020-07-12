@@ -1,33 +1,17 @@
 #!/bin/bash
 #
-# [Servidor HD :: Remove nzbhydra package]
-#
-# Author             :   liara
-#
-# Servidor HD Copyright (C) 2019
-# Licensed under GNU General Public License v3.0 GPL-3 (in short)
-#
-#   You may copy, distribute and modify the software as long as you track
-#   changes/dates in source files. Any modifications to our software
-#   including (via compiler) GPL-licensed code must also be made available
-#   under the GPL along with build & install instructions.
-#
+# SERVIDOR HD
 
-MASTER=$(cut -d: -f1 < /root/.master.info)
-  systemctl stop nzbhydra@${MASTER}
-  systemctl disable nzbhydra@${MASTER}
-  rm /etc/systemd/system/nzbhydra@.service
-if [[ -f /etc/init.d/nzbhydra ]]; then
-  service nzbhydra stop
-  rm /etc/init.d/nzbhydra
-  rm /etc/default/nzbhydra
+user=$(cut -d: -f1 < /root/.master.info)
+systemctl disable --now nzbhydra
+rm -rf /opt/nzbhydra
+rm -rf /home/${user}/.config/nzbhydra
+rm -rf /opt/.venv/nzbhydra
+if [ -z "$(ls -A /opt/.venv)" ]; then
+   rm -rf  /opt/.venv
 fi
-rm -rf /home/${MASTER}/nzbhydra
+
+rm /etc/systemd/system/nzbhydra.service
 rm -f /etc/nginx/apps/nzbhydra.conf
 rm /install/.nzbhydra.lock
-service nginx reload
-  echo -n "Verifying nzbhydra removal from /home/$MASTER."
-  echo ""
-  echo "NZBhydra Uninstall Complete. App data is not removed. To remove run the following command: rm -rf /home/$MASTER/.nzbhyra."
-  echo ""
-  echo "You may reinstall at any time by running [installpackage-nzbhydra]."
+systemctl reload nginx

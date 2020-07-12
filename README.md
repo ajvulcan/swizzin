@@ -23,8 +23,8 @@ sudo -H su -c 'bash <(wget -O- -q https://raw.githubusercontent.com/ajvulcan/swi
 #### Soporte
 
 Solo para versiones LTS:
-* Ubuntu 16.04/18.04
-* Debian 8/9/10 (No testeado)
+* Ubuntu 16.04/18.04/20.04
+* Debian 9/10 (No testeado)
 
 ### Es una versión propia de quickbox/swizzin con las siguientes funciones
 

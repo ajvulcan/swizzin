@@ -2,9 +2,9 @@
 #
 # [Servidor HD :: Install syncthing]
 #
-# Author             :   liara
+# by ajvulcan
 #
-# Servidor HD Copyright (C) 2019
+# Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -45,16 +45,17 @@ RestartForceExitStatus=3 4
 [Install]
 WantedBy=multi-user.target
 SYNC
+
 systemctl enable syncthing@${MASTER} > /dev/null 2>&1
 systemctl start syncthing@${MASTER} > /dev/null 2>&1
 
 if [[ -f /install/.nginx.lock ]]; then
   bash /usr/local/bin/swizzin/nginx/syncthing.sh
-  service nginx reload
+  systemctl reload nginx
 fi
 
 touch /install/.syncthing.lock
-echo "Instalación deSyncthing completada!" >>"${OUTTO}" 2>&1
+echo "Instalación de Syncthing completada!" >>"${OUTTO}" 2>&1
 echo >>"${OUTTO}" 2>&1
 echo >>"${OUTTO}" 2>&1
 echo "Cierra esta ventana para actualizar tu explorador" >>"${OUTTO}" 2>&1

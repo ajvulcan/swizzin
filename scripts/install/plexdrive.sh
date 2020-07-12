@@ -4,7 +4,7 @@
 #
 # Author   : ajvulcan
 #
-# Servidor HD Copyright (C) 2019
+# Servidor HD Copyright (C)
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -17,7 +17,7 @@ if [[ -f /tmp/.install.lock ]]; then
 elif [[ -f /install/.panel.lock ]]; then
   OUTTO="/srv/panel/db/output.log"
 else
-  OUTTO="/dev/null"
+  OUTTO="/root/logs/swizzin.log"
 fi
 
 #necesitamos la librería de fuse (si no está instalada)

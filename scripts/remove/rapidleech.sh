@@ -2,9 +2,9 @@
 #
 # [Servidor HD :: Uninstaller for Rapidleech package]
 #
-# Author             :   QuickBox.IO
+# by ajvulcan
 #
-# Servidor HD Copyright (C) 2019
+# Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -19,7 +19,7 @@ function _removeRapidleech() {
   sudo rm -r  /home/"${MASTER}"/rapidleech
   sudo rm /etc/nginx/apps/rapidleech.conf
   sudo rm /install/.rapidleech.lock
-  service nginx reload
+  systemctl reload nginx
 }
 
 _removeRapidleech

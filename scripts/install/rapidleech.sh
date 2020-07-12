@@ -2,9 +2,9 @@
 #
 # [Servidor HD :: Install Rapidleech package]
 #
-# Author             :  JMSolo
+# by Ajvulcan
 #
-# Servidor HD Copyright (C) 2019
+# -- Servidor HD --
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -14,7 +14,7 @@
 #
 
 if [[ ! -f /install/.nginx.lock ]]; then
-  echo "ERROR: Web server not detected. Please install nginx and restart panel install."
+  echo "ERROR:servidor web no detectado. Instala nginx y reinicia el panel, por favor."
   exit 1
 fi
 MASTER=$(cut -d: -f1 < /root/.master.info)
@@ -33,27 +33,27 @@ function _installRapidleech2() {
 function _installRapidleech3() {
   if [[ -f /install/.nginx.lock ]]; then
     bash /usr/local/bin/swizzin/nginx/rapidleech.sh
-    service nginx reload
+    systemctl reload nginx
   fi
 }
 function _installRapidleech4() {
-  service nginx reload
+  systemctl reload nginx
 }
 function _installRapidleech5() {
-    echo "Rapidleech Install Complete!" >>"${OUTTO}" 2>&1;
+    echo "¡Instalación de rapidleech completada!" >>"${OUTTO}" 2>&1;
     sleep 5
     echo >>"${OUTTO}" 2>&1;
     echo >>"${OUTTO}" 2>&1;
-    echo "Close this dialog box to refresh your browser" >>"${OUTTO}" 2>&1;
-    service nginx reload
+    echo "Cierra para refrescar el navegador" >>"${OUTTO}" 2>&1;
+    systemctl reload nginx
 }
 function _installRapidleech6() {
     exit
 }
 
-echo "Installing rapidleech ... " >>"${OUTTO}" 2>&1;_installRapidleech1
-echo "Setting up rapidleech permissions ... " >>"${OUTTO}" 2>&1;_installRapidleech2
-echo "Setting up rapidleech apache configuration ... " >>"${OUTTO}" 2>&1;_installRapidleech3
-echo "Reloading apache ... " >>"${OUTTO}" 2>&1;_installRapidleech4
+echo "Instalando rapidleech ... " >>"${OUTTO}" 2>&1;_installRapidleech1
+echo "Consigurando permisos de rapidleech ... " >>"${OUTTO}" 2>&1;_installRapidleech2
+echo "Configurando servidor web para rapidleech ... " >>"${OUTTO}" 2>&1;_installRapidleech3
+echo "Recargando servidor web ... " >>"${OUTTO}" 2>&1;_installRapidleech4
 _installRapidleech5
 _installRapidleech6

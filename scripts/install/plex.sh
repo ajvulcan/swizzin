@@ -2,11 +2,9 @@
 #
 # [Servidor HD :: Install plexmediaserver package]
 #
-# Originally authored by: JMSolo for QuickBox
-# Modifications to QuickBox package by: liara / PastaGringo
 # Maintained and updated for servidor HD by: ajvulcan
 #
-# Servidor HD Copyright (C) 2019 Servidor HD
+# Servidor HD 
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -54,7 +52,7 @@ if [[ -n $claim ]]; then
   claimPlex ${claim}
 fi
 
-    service plexmediaserver restart >/dev/null 2>&1
+    systemctl restart plexmediaserver >/dev/null 2>&1
 
     touch /install/.plex.lock
     echo

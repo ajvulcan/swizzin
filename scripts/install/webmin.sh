@@ -13,42 +13,41 @@
 #   under the GPL along with build & install instructions.
 
 if [[ -f /tmp/.install.lock ]]; then
-  OUTTO="/root/logs/install.log"
-elif [[ -f /install/.panel.lock ]]; then
-  OUTTO="/srv/panel/db/output.log"
+  log="/root/logs/install.log"
 else
-  OUTTO="/dev/null"
+  log="/root/logs/swizzin.log"
 fi
 
-#Instalando webmin
-echo ''
-echo 'Añadiendo repositorios ...'
-echo ''
+_instalar_webmin () {
+  #Instalando webmin
+  echo 'Añadiendo repositorios ...'
+  echo "deb https://download.webmin.com/download/repository sarge contrib" > /etc/apt/sources.list.d/webmin.list
 
-cat >> /etc/apt/sources.list <<EOF
-#webmin
-deb https://download.webmin.com/download/repository sarge contrib
-EOF
+  #Añadimos claves
+  cd /root
+  wget http://www.webmin.com/jcameron-key.asc >> $log 2>&1
+  sudo apt-key add jcameron-key.asc >> $log 2>&1
+  rm jcameron-key.asc
 
-#Añadimos claves
-cd /root
-wget http://www.webmin.com/jcameron-key.asc >> $OUTTO 2>&1
-apt-key add jcameron-key.asc >> $OUTTO 2>&1
+  #Actualizamos base de datos e instalamos
+  echo "Instalando webmin, espere ..."
 
-#Actualizamos base de datos e instalamos
-echo ""
-echo "Instalando webmin, espere ..."
-echo ""
+  apt-get update >> $log 2>&1
+  apt-get -y install apt-transport-https >> $OUTTO 2>&1
+  apt-get install webmin -yq >> $log 2>&1
 
-apt-get -y update >> $OUTTO 2>&1
-apt-get -y install apt-transport-https >> $OUTTO 2>&1
-apt-get -y install webmin >> $OUTTO 2>&1
-rm jcameron-key.asc
+  #Instalación completa
+  touch /install/.webmin.lock
+  echo
+  echo "Webmin instalado." 
+}
 
-#Configuramos webmin para que lo muestre en nuestro dashboard
-echo "no_frame_options=1" >> /etc/webmin/config
+_instalar_webmin
 
-#Instalación completa
-touch /install/.webmin.lock
-echo ""
-echo "Webmin instalado." >> $OUTTO 2>&1
+if [[ -f /install/.nginx.lock ]]; then
+  bash /etc/swizzin/scripts/nginx/webmin.sh
+fi
+
+
+
+

@@ -2,9 +2,9 @@
 #
 # [Servidor HD :: Install sabnzbd]
 #
-# Author             :   kclawl
+# by ajvulcan
 #
-# Servidor HD Copyright (C) 2019
+# Servidor HD 
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -12,84 +12,95 @@
 #   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
 
-username=$(cut -d: -f1 < /root/.master.info)
-DISTRO=$(lsb_release -is)
-RELEASE=$(lsb_release -cs)
-PUBLICIP=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
+user=$(cut -d: -f1 < /root/.master.info)
+password=$(cut -d: -f2 < /root/.master.info)
+distribution=$(lsb_release -is)
+codename=$(lsb_release -cs)
+latest=$(curl -s https://sabnzbd.org/downloads | grep Linux | grep download-link-src | grep -oP "href=\"\K[^\"]+")
+. /etc/swizzin/sources/functions/pyenv
+. /etc/swizzin/sources/functions/utils
+
 if [[ -f /tmp/.install.lock ]]; then
-  OUTTO="/root/logs/install.log"
+    log="/root/logs/install.log"
 else
-  OUTTO="/root/logs/swizzin.log"
+    log="/root/logs/swizzin.log"
 fi
 
-function _rar() {
-	cd /tmp
-  	wget -q http://www.rarlab.com/rar/rarlinux-x64-5.5.0.tar.gz
-  	tar -xzf rarlinux-x64-5.5.0.tar.gz >/dev/null 2>&1
-  	cp rar/*rar /bin >/dev/null 2>&1
-  	rm -rf rarlinux*.tar.gz >/dev/null 2>&1
-  	rm -rf /tmp/rar >/dev/null 2>&1
-}
-
-#apt-get -y install software-properties-common >/dev/null 2>&1
-
-#if [[ $DISTRO == "Debian" ]]; then
-#  gpg --keyserver http://keyserver.ubuntu.com --recv  F13930B14BB9F05F
-#  gpg --export F13930B14BB9F05F > /etc/apt/trusted.gpg.d/jcfp_ubuntu_sab-addons.gpg
-#  if [[ $RELEASE = "stretch" ]]; then
-#    echo "deb http://ppa.launchpad.net/jcfp/ppa/ubuntu xenial main" > /etc/apt/sources.list.d/sab-addons.list
-#  elif [[ $RELEASE = "jessie" ]]; then
-#    echo "deb http://ppa.launchpad.net/jcfp/ppa/ubuntu precise main" > /etc/apt/sources.list.d/sab-addons.list
-#  fi
-#else
-#  add-apt-repository -y ppa:jcfp/sab-addons >/dev/null 2>&1
-#fi
-
-apt-get update >/dev/null 2>&1
-apt-get -y install par2 python-configobj python-dbus python-feedparser python-gi python-libxml2 \
-  python-utidylib python-yenc python-cheetah python-openssl screen > /dev/null 2>&1
-
-if [[ -z $(which rar) ]]; then
-  if [[ $DISTRO == "Debian" ]]; then
-    _rar
-  else
-    apt-get -y install rar unrar >>/dev/null 2>&1 || { echo "INFO: Could not find rar/unrar in the repositories. It is likely you do not have the multiverse repo enabled. Installing directly."; _rar; }
-  fi
+if [[ $codename =~ ("xenial"|"stretch"|"buster"|"bionic") ]]; then
+  LIST='par2 p7zip-full python2.7-dev python-pip virtualenv python-virtualenv libglib2.0-dev libdbus-1-dev'
+else
+  LIST='par2 p7zip-full python2.7-dev libxml2-dev libxslt1-dev libglib2.0-dev libdbus-1-dev'
 fi
-cd /home/${username}/
-#wget -qO SABnzbd.tar.gz https://github.com/sabnzbd/sabnzbd/releases/download/1.1.1/SABnzbd-1.1.1-src.tar.gz
-#tar xf SABnzbd.tar.gz >/dev/null 2>&1
-#mv SABnzbd-* SABnzbd
-git clone -b 2.3.x https://github.com/sabnzbd/sabnzbd.git /home/${username}/SABnzbd >/dev/null 2>&1
-chown ${username}.${username} -R SABnzbd
-#rm SABnzbd.tar.gz
-pip install http://www.golug.it/pub/yenc/yenc-0.4.0.tar.gz >/dev/null 2>&1
-apt-get install p7zip-full -y >/dev/null 2>&1
-touch /install/.sabnzbd.lock
 
-cat >/etc/systemd/system/sabnzbd@.service<<EOF
+apt-get -y update >>"${log}" 2>&1
+for depend in $LIST; do
+  apt-get -qq -y install $depend >>"${log}" 2>&1 || { echo "ERROR: APT-GET no pudo instalar un paquete necesario: ${depend}. Mal rollo..."; }
+done
+
+if [[ ! $codename =~ ("xenial"|"stretch"|"buster"|"bionic") ]]; then
+  python_getpip
+fi
+
+python2_venv ${user} sabnzbd
+
+PIP='wheel setuptools dbus-python configobj feedparser pgi lxml utidylib yenc sabyenc cheetah pyOpenSSL'
+/opt/.venv/sabnzbd/bin/pip install $PIP >>"${log}" 2>&1
+chown -R ${user}: /opt/.venv/sabnzbd
+
+install_rar
+
+cd /opt
+mkdir -p /opt/sabnzbd
+wget -q -O sabnzbd.tar.gz $latest
+tar xzf sabnzbd.tar.gz --strip-components=1 -C /opt/sabnzbd >> ${log} 2>&1
+rm -rf sabnzbd.tar.gz
+mkdir -p /home/${user}/.config/sabnzbd
+mkdir -p /home/${user}/Downloads/{complete,incomplete}
+chown -R ${user}: /opt/sabnzbd
+chown ${user}: /home/${user}/.config
+chown -R ${user}: /home/${user}/.config/sabnzbd
+chown ${user}: /home/${user}/Downloads
+chown ${user}: /home/${user}/Downloads/{complete,incomplete}
+
+cat >/etc/systemd/system/sabnzbd.service<<SABSD
 [Unit]
-Description=sabnzbd
-After=network.target
+Description=Sabnzbd
+Wants=network-online.target
+After=network-online.target
 
 [Service]
-Type=forking
-KillMode=process
-User=%i
-ExecStart=/usr/bin/screen -f -a -d -m -S sabnzbd python SABnzbd/SABnzbd.py --browser 0 --server 127.0.0.1:65080 --https 65443
-ExecStop=/usr/bin/screen -X -S sabnzbd quit
-WorkingDirectory=/home/%i/
+User=${user}
+ExecStart=/opt/.venv/sabnzbd/bin/python2 /opt/sabnzbd/SABnzbd.py --config-file /home/${user}/.config/sabnzbd/sabnzbd.ini --logging 1
+WorkingDirectory=/opt/sabnzbd
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
 
-EOF
+SABSD
 
-systemctl daemon-reload >/dev/null 2>&1
-systemctl enable sabnzbd@${username}.service >/dev/null 2>&1
-systemctl start sabnzbd@${username}.service >/dev/null 2>&1
+systemctl enable --now sabnzbd >> ${log} 2>&1
+sleep 2
+echo "Configurando SABnzbd ... "
+systemctl stop sabnzbd
+sed -i "s/host_whitelist = .*/host_whitelist = $(hostname -f), $(hostname)/g" /home/${user}/.config/sabnzbd/sabnzbd.ini
+sed -i "s|^host = .*|host = 0.0.0.0|g" /home/${user}/.config/sabnzbd/sabnzbd.ini
+sed -i "0,/^port = /s/^port = .*/port = 65080/" /home/${user}/.config/sabnzbd/sabnzbd.ini
+sed -i "s|^download_dir = .*|download_dir = ~/Downloads/incomplete|g" /home/${user}/.config/sabnzbd/sabnzbd.ini
+sed -i "s|^complete_dir = .*|complete_dir = ~/Downloads/complete|g" /home/${user}/.config/sabnzbd/sabnzbd.ini
+#sed -i "s|^ionice = .*|ionice = -c2 -n5|g" /home/${user}/.config/sabnzbd/sabnzbd.ini
+#sed -i "s|^par_option = .*|par_option = -t4|g" /home/${user}/.config/sabnzbd/sabnzbd.ini
+#sed -i "s|^nice = .*|nice = -n10|g" /home/${user}/.config/sabnzbd/sabnzbd.ini
+#sed -i "s|^pause_on_post_processing = .*|pause_on_post_processing = 1|g" /home/${user}/.config/sabnzbd/sabnzbd.ini
+#sed -i "s|^enable_all_par = .*|enable_all_par = 1|g" /home/${user}/.config/sabnzbd/sabnzbd.ini
+#sed -i "s|^direct_unpack_threads = .*|direct_unpack_threads = 1|g" /home/${user}/.config/sabnzbd/sabnzbd.ini
+sed -i "0,/password = /s/password = .*/password = ${password}/" /home/${user}/.config/sabnzbd/sabnzbd.ini
+sed -i "0,/username = /s/username = .*/username = ${user}/" /home/${user}/.config/sabnzbd/sabnzbd.ini
+systemctl restart sabnzbd >> ${log} 2>&1
 
 if [[ -f /install/.nginx.lock ]]; then
   bash /usr/local/bin/swizzin/nginx/sabnzbd.sh
-  service nginx reload
+  systemctl reload nginx
 fi
+
+touch /install/.sabnzbd.lock

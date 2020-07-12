@@ -25,7 +25,7 @@ function _installautodl() {
   APT='irssi screen unzip libarchive-zip-perl libnet-ssleay-perl libhtml-parser-perl
 	libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl'
   for depends in $APT; do
-    apt-get -y -q install "$depends" >> ${OUTTO} 2>&1 || { echo "ERROR: APT-GET could not find the required dependency: ${depends}. Script Ending."; exit 1; }
+    apt-get -y -q install "$depends" >> ${OUTTO} 2>&1 || { echo "ERROR: APT-GET no pudo encontrar la dependencia requerida: ${depends}. Cerrando script..."; exit 1; }
   done
 }
 
