@@ -1,7 +1,6 @@
 #!/bin/bash
 # ruTorrent upgrade wrapper
-# Author: liara
-# Does not update from git remote at this time...
+# by ajvulcan
 #
 # servidor HD
 
@@ -15,4 +14,4 @@ if [[ ! -f /install/.rutorrent.lock ]]; then
 fi
 
 bash /usr/local/bin/swizzin/nginx/rutorrent.sh
-systemctl force-reload nginx
+systemctl reload nginx

@@ -1,5 +1,7 @@
 #!/bin/bash
 # Nginx configuration for The Lounge
+#
+# servidor hd
 
 isactive=$(systemctl is-active lounge)
 

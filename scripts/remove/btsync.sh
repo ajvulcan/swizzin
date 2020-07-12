@@ -15,14 +15,12 @@
 MASTER=$(cut -d: -f1 < /root/.master.info)
 if [[ -f /tmp/.install.lock ]]; then
   OUTTO="/root/logs/install.log"
-elif [[ -f /install/.panel.lock ]]; then
-  OUTTO="/srv/panel/db/output.log"
 else
-  OUTTO="/dev/null"
+  OUTTO="/root/logs/swizzin.log"
 fi
 
 function _removeBTSync() {
-  sudo service resilio-sync stop
+  systemctl stop resilio-sync
   sudo apt-get -y remove --purge resilio-sync* >>"${OUTTO}" 2>&1
   deluser rslsync >>"${OUTTO}" 2>&1
   delgroup rslsync >>"${OUTTO}" 2>&1

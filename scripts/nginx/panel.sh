@@ -1,7 +1,7 @@
 #!/bin/bash
-# QuickBox dashboard installer for Swizzin
-# Author: liara
-# Copyright (C) 2019 Servidor HD
+# QuickBox dashboard installer for SERVIDOR HD
+# by ajvulcan
+# Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -14,7 +14,7 @@ user=$(cut -d: -f1 < /root/.master.info)
 if [[ -f /tmp/.install.lock ]]; then
   log="/root/logs/install.log"
 else
-  log="/dev/null"
+  log="/root/logs/swizzin.log"
 fi
 
 cd /srv/
@@ -80,4 +80,3 @@ www-data     ALL = (ALL) NOPASSWD: CLEANMEM, SYSCMNDS, GENERALCMNDS
 
 SUD
 service nginx force-reload
-

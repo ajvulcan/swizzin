@@ -1,13 +1,15 @@
 #!/bin/bash
 # Nginx configuration for Deluge
-# Author: liara
-# Copyright (C) 2019 Servidor HD
+# by ajvulcan
+# Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
 #   changes/dates in source files. Any modifications to our software
 #   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
+users=($(cut -d: -f1 < /etc/htpasswd))
+
 users=($(cut -d: -f1 < /etc/htpasswd))
 
 if [[ -n $1 ]]; then
@@ -21,9 +23,7 @@ location /deluge.downloads {
   include /etc/nginx/snippets/fancyindex.conf;
   auth_basic "What's the password?";
   auth_basic_user_file /etc/htpasswd;
-
   location ~* \.php$ {
-
   } 
 }
 DIN
@@ -58,7 +58,6 @@ DUPS
 location /deluge {
   return 301 /deluge/;
 }
-
 location /deluge/ {
   include /etc/nginx/snippets/proxy.conf;
   auth_basic "What's the password?";

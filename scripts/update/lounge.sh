@@ -3,27 +3,23 @@
 #  SERVIDOR HD
 
 function _uplounge () {
-
 active=$(systemctl is-active lounge)
 
 if [[ $active == "active" ]]; then
     systemctl stop lounge
 fi
-
 npm install -g thelounge@latest >> /dev/null 2>&1
 sudo -u lounge bash -c "thelounge install thelounge-theme-zenburn" >> /dev/null 2>&1
     if [[ ! -d /home/lounge/.thelounge ]]; then
         mv /home/lounge/.lounge /home/lounge/.thelounge
         sed -i 's|theme: "zenburn"|theme: "thelounge-theme-zenburn"|g' /home/lounge/.thelounge/config.js
     fi
-
 if [[ $active == "active" ]]; then
     systemctl start lounge
 fi
-
 }
 
-if [[ -f /install/.lounge.sh ]]; then
+if [[ -f /install/.lounge.lock ]]; then
     if grep -q "/usr/bin/lounge" /etc/systemd/system/lounge.service; then
         sed -i "s/ExecStart=\/usr\/bin\/lounge/ExecStart=\/usr\/bin\/thelounge/g" /etc/systemd/system/lounge.service
         systemctl daemon-reload
@@ -46,6 +42,3 @@ if [[ -f /install/.lounge.sh ]]; then
     fi
 
 fi
-
-
-    

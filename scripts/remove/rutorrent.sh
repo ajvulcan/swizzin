@@ -1,6 +1,6 @@
 #!/bin/bash
 # ruTorrent removal
-# Author: liara
+# by ajvulcan
 #
 # SERVIDOR HD 
 

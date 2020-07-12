@@ -1,7 +1,8 @@
 #!/bin/bash
 # Nginx Configuration for Emby
-# Author: liara
-# Copyright (C) 2019 Servidor HD
+# by ajvulcan Author: liara
+#
+# -- Servidor HD --
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track

@@ -2,9 +2,9 @@
 #
 # [Servidor HD :: Remove quotas]
 #
-# Author             :   liara
+# by ajvulcan
 #
-# Servidor HD Copyright (C) 2019
+# Servidor HD 
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -13,8 +13,10 @@
 #   under the GPL along with build & install instructions.
 #
 #################################################################################
+
 username=$(cut -d: -f1 < /root/.master.info)
 
 sed -i 's/,usrjquota=aquota.user,jqfmt=vfsv1//g' /etc/fstab
 apt-get remove -y -q quota >/dev/null 2>&1
+rm /etc/sudoers.d/quota
 rm /install/.quota.lock

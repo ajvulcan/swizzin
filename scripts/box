@@ -122,7 +122,9 @@ case $respuesta in
           git reset --hard origin/master;
           #git pull;
           chmod -R 700 /etc/swizzin/scripts;
-          for f in /etc/swizzin/scripts/update/*; do . $f; done ;
+          for f in /etc/swizzin/scripts/update/*; do 
+            bash "$f"; 
+          done          
           echo "Actualización finalizada."
           ;;
   * ) echo "Actualización cancelada";;
@@ -252,10 +254,15 @@ function _adduser {
   mkdir -p /etc/htpasswd.d/
   htpasswd -b -c /etc/htpasswd.d/htpasswd.${user} $user $pass
   chmod 550 /home/${user}
+
+  if [[ -f /install/.quota.lock ]]; then 
+    setdisk "$user"
+  fi
+
   echo "D /var/run/${user} 0750 ${user} ${user} -" >> /etc/tmpfiles.d/${user}.conf
   systemd-tmpfiles /etc/tmpfiles.d/${user}.conf --create
 
-  for app in rtorrent rutorrent deluge autodl flood nzbget lounge; do
+  for app in rtorrent rutorrent deluge autodl flood nzbget lounge transmission organizr; do
     if [[ $app = "rutorrent" ]]; then
       if [[ -d /srv/rutorrent ]]; then
         if [[ ! -f /install/.rutorrent.lock ]]; then touch /install/.rutorrent.lock; fi
@@ -272,7 +279,7 @@ function _adduser {
           app="{deluged,deluge-web}"
           eval systemctl enable ${app}@${user}
           eval systemctl start ${app}@${user}
-        elif [[ $app =~ ("rutorrent"|"lounge") ]]; then
+        elif [[ $app =~ ("rutorrent"|"lounge"|"organizr") ]]; then
           :
         else
           if [[ $app = "autodl" ]]; then app=irssi; fi
@@ -404,7 +411,7 @@ function _deluser {
 
   read -rep 'La eliminación empezará tan pronto como confirmes este mensaje. Presiona enter para continuar.'
 
-  for app in rtorrent rutorrent deluge autodl flood nzbget lounge; do
+  for app in rtorrent rutorrent deluge autodl flood nzbget lounge organizr transmission; do
     if [[ $app = "rutorrent" ]]; then
       if [[ -d /srv/rutorrent ]]; then
         if [[ ! -f /install/.rutorrent.lock ]]; then touch /install/.rutorrent.lock; fi
@@ -417,12 +424,18 @@ function _deluser {
         rm -rf /srv/rutorrent/share/users/${user}
         rm -f /etc/nginx/apps/${user}*
       elif [[ $app = "lounge" ]]; then
-        rm -f /home/lounge/.lounge/users/${user}.json
+        #rm -f /home/lounge/.lounge/users/${user}.json
+        su -s /bin/sh lounge -c "thelounge remove ${user}" > /dev/null
       elif [[ $app = "deluge" ]]; then
         app="{deluged,deluge-web}"
         rm -rf /etc/nginx/conf.d/${user}.deluge.conf
         eval systemctl disable ${app}@${user}
         eval systemctl stop ${app}@${user}
+      elif [[ $app == "organizr" ]]; then
+        #TODO automatizar pasos de borrado
+        echo "¡Recuerda borrar manualmente la cuenta de organizr!"
+      elif [[ $app == "autodl" ]]; then
+        systemctl disable --now irssi@${user}
       else
         systemctl disable ${app}@${user}
         systemctl stop ${app}@${user}
@@ -450,10 +463,11 @@ function _deluser {
   rm -f /etc/tmpfiles.d/${user}.conf
   rm -f /etc/nginx/conf.d/${user}*
   rm -f /etc/sudoers.d/${user}
+  rm -rf /run/screen/S-${user}
   rm -rf /var/run/${user}
   rm -rf /home/${user}
   rm /root/${user}.info
-  service nginx reload
+  systemctl reload nginx
 
   #Elimino el usuario de emby
   sed -i '/'${user}'/d' /etc/htpasswd.d/htpasswd.emby
@@ -502,7 +516,7 @@ function _chpasswd {
     systemctl stop deluged@${user}
     systemctl stop deluge-web@${user}
     DWSALT=$(tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 32 | head -n 1)
-    DWP=$(python /usr/local/bin/swizzin/deluge.Userpass.py ${pass} ${DWSALT})
+    DWP=$(python2 /usr/local/bin/swizzin/deluge.Userpass.py ${pass} ${DWSALT})
     sed -i "s/.*${user}.*/${user}:${pass}:10/" /home/$user/.config/deluge/auth
     sed -i "s/.*pwd_salt.*/  \"pwd_salt\": \"${DWSALT}\",/" /home/$user/.config/deluge/web.conf
     sed -i "s/.*pwd_sha1.*/  \"pwd_sha1\": \"${DWP}\",/" /home/$user/.config/deluge/web.conf
@@ -510,6 +524,22 @@ function _chpasswd {
     systemctl start deluged@${user}
     systemctl start deluge-web@${user}
   fi
+  #Borrado de usuario en transmission
+  if [[ -e /install/.transmission.lock ]]; then 
+    systemctl stop transmission@${user}
+    sed -i "s/.*rpc-password.*/  \"rpc-password\": \"${pass}\",/" /home/$user/.config/transmission-daemon/settings.json
+    systemctl start transmission@${user}
+  fi
+  #Borrado de usuario en lounge
+  if [[ -f /install/.lounge.lock ]]; then 
+    su -s /bin/sh lounge -c "thelounge reset $user " <<< "${pass}" > /dev/null
+  fi
+  #Borrado de usuario en organizr
+  if [[ -f /install/.organizr.lock ]]; then 
+    #TODO arreglarlo cuando la API lo permita
+    echo "¡Recuerda cambiar manualmente la contraseña del organizr!"
+  fi
+
 }
 
 function _panel () {
@@ -556,6 +586,8 @@ function _nukeovh() {
 normal=$(tput sgr0)
 yellow=$(tput setaf 3)
 bold=$(tput bold)
+
+#SELECCIONADOR DE PARÁMETROS DE ENTRADA
 
 case "$1" in
   "")

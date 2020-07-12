@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0]
+
+### 12 JULIO 2020
+
+### Cambios
+- Soporte para ubuntu 20.04.
+- Jellyfin media server
+- Librespeed
+- pyLoad
+- python 3
+
 ## [1.7.0]
 
 ### 10 Febrero 2020

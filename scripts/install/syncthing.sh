@@ -2,9 +2,9 @@
 #
 # [Servidor HD :: Install syncthing]
 #
-# Author             :   liara
+# by ajvulcan
 #
-# Servidor HD Copyright (C) 2019
+# Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -17,7 +17,7 @@ if [[ -f /tmp/.install.lock ]]; then
 elif [[ -f /install/.panel.lock ]]; then
   OUTTO="/srv/panel/db/output.log"
 else
-  OUTTO="/dev/null"
+  OUTTO="/root/logs/swizzin.log"
 fi
 MASTER=$(cut -d: -f1 < /root/.master.info)
 
@@ -32,7 +32,7 @@ sudo apt-get -qy install syncthing > /dev/null 2>&1
 echo "Configurando Syncthing & comenzando ... " >>"${OUTTO}" 2>&1;
 cat > /etc/systemd/system/syncthing@.service <<SYNC
 [Unit]
-Description=Syncthing - Open Source Continuous File Synchronization for %I
+Description=Syncthing - Open Source Continuous File Synchronization for %i
 Documentation=man:syncthing(1)
 After=network.target
 Wants=syncthing-inotify@.service
@@ -47,16 +47,17 @@ RestartForceExitStatus=3 4
 [Install]
 WantedBy=multi-user.target
 SYNC
+
 systemctl enable syncthing@${MASTER} > /dev/null 2>&1
 systemctl start syncthing@${MASTER} > /dev/null 2>&1
 
 if [[ -f /install/.nginx.lock ]]; then
   bash /usr/local/bin/swizzin/nginx/syncthing.sh
-  service nginx reload
+  systemctl reload nginx
 fi
 
 touch /install/.syncthing.lock
-echo "Instalación deSyncthing completada!" >>"${OUTTO}" 2>&1
+echo "Instalación de Syncthing completada!" >>"${OUTTO}" 2>&1
 echo >>"${OUTTO}" 2>&1
 echo >>"${OUTTO}" 2>&1
 echo "Cierra esta ventana para actualizar tu explorador" >>"${OUTTO}" 2>&1

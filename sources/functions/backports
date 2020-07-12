@@ -1,4 +1,5 @@
 #!/bin/bash
+#
 # SERVIDOR HD
 
 function check_debian_backports () {

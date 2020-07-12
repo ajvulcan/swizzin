@@ -1,24 +1,22 @@
 #!/bin/bash
 # Lidarr installer for Servidor HD
-# Author: liara
-# Copyright (C) 2019 Servidor HD
+# by ajvulcan
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
 #   changes/dates in source files. Any modifications to our software
 #   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
+
 user=$(cut -d: -f1 < /root/.master.info )
 ip=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
 distribution=$(lsb_release -is)
 version=$(lsb_release -cs)
 . /etc/swizzin/sources/functions/mono
 
-
 mono_repo_setup
 
 apt-get install -y libmono-cil-dev >/dev/null 2>&1
-
 
 cd /home/${user}/
 wget -O lidarr.tar.gz -q $( curl -s https://api.github.com/repos/Lidarr/Lidarr/releases | grep linux.tar.gz | grep browser_download_url | head -1 | cut -d \" -f 4 )
@@ -61,7 +59,6 @@ LID
     bash /usr/local/bin/swizzin/nginx/lidarr.sh
     service nginx reload
   fi
-
 
 systemctl enable --now lidarr
 

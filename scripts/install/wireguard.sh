@@ -1,7 +1,9 @@
 #!/bin/bash
 # Guard yer wires with wireguard vpn
-# Author: liara
-# Servidor HD Copyright (C) 2019
+# 
+# by ajvulcan
+#
+# Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -11,12 +13,13 @@
 
 if [[ -f /tmp/.install.lock ]]; then
   OUTTO="/root/logs/install.log"
-elif [[ -f /install/.panel.lock ]]; then
-  OUTTO="/srv/panel/db/output.log"
 else
-  OUTTO="/dev/null"
+  OUTTO="/root/logs/swizzin.log"
 fi
+
 distribution=$(lsb_release -is)
+codename=$(lsb_release -cs)
+
 ip=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
 u=$(cut -d: -f1 < /root/.master.info)
 IFACE=($(ip link show|grep -i broadcast|grep -m1 UP |cut -d: -f 2|cut -d@ -f 1|sed -e 's/ //g'))
@@ -28,6 +31,14 @@ else
   iface=${IFACE[0]}
 fi
 
+echo "Se ha detectado que $iface es tu interfaz principal, ¿es correcto?"
+  select yn in "si" "no"; do
+    case $yn in
+        si ) break;;
+        no ) _selectiface; break;;
+    esac
+done
+
 function _selectiface () {
   echo "Por favor, selecciona el interfaz correcto de la lista siguiente:"
   select seliface in "${IFACE[@]}"; do
@@ -38,20 +49,12 @@ function _selectiface () {
   echo "Tu interfaz se ha establecido como $iface"
 }
 
-echo "El instalador ha detectado que $iface es tu interfaz principal, ¿es correcto?"
-  select yn in "yes" "no"; do
-    case $yn in
-        yes ) break;;
-        no ) _selectiface; break;;
-    esac
-done
-
 echo "Perfecto. Espera un poco a que Wireguard se instale ..."
 
 if [[ $distribution == "Debian" ]]; then
     echo "deb http://deb.debian.org/debian/ unstable main" > /etc/apt/sources.list.d/unstable.list
     printf 'Package: *\nPin: release a=unstable\nPin-Priority: 150\n\nPackage: *\nPin: release a=stretch-backports\nPin-Priority: 250' > /etc/apt/preferences.d/limit-unstable
-elif [[ $distribution == "Ubuntu" ]]; then
+elif [[ $codename =~ ("bionic"|"xenial") ]]; then
     add-apt-repository -y ppa:wireguard/wireguard >> $OUTTO 2>&1
 fi
 
@@ -59,7 +62,6 @@ fi
 apt-get -q update >> $OUTTO 2>&1
 apt-get install linux-headers-$(uname -r)
 apt-get -y install wireguard qrencode >> $OUTTO 2>&1
-
 
 if [[ ! -d /etc/wireguard ]]; then
     mkdir /etc/wireguard

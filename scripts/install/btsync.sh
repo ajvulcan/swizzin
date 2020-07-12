@@ -4,8 +4,8 @@
 #
 # LOCAL REPOS
 # Author             :   JMSolo
+# Mod: ajulcan
 #
-# QuickBox Copyright (C) 2019 Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -17,10 +17,8 @@ MASTER=$(cut -d: -f1 < /root/.master.info)
 BTSYNCIP=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
 if [[ -f /tmp/.install.lock ]]; then
   OUTTO="/root/logs/install.log"
-elif [[ -f /install/.panel.lock ]]; then
-  OUTTO="/srv/panel/db/output.log"
 else
-  OUTTO="/dev/null"
+  OUTTO="/root/logs/swizzin.log"
 fi
 
 function _installBTSync1() {

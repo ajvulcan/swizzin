@@ -1,17 +1,18 @@
 #!/bin/bash
 # Nginx configuration for sickchill
-# Author: liara
-# Copyright (C) 2019 Servidor HD
+# by ajvulcan
+# Servidor HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
 #   changes/dates in source files. Any modifications to our software
 #   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
+
 user=$(cut -d: -f1 < /root/.master.info)
-isactive=$(systemctl is-active sickchill@$user)
+isactive=$(systemctl is-active sickchill)
 if [[ $isactive == "active" ]]; then
-  systemctl stop sickchill@${user}
+  systemctl stop sickchill
 fi
 
 if [[ ! -f /etc/nginx/apps/sickchill.conf ]]; then
@@ -24,8 +25,8 @@ location /sickchill {
 }
 SRC
 fi
-sed -i "s/web_root.*/web_root = \/sickchill/g" /home/${user}/.sickchill/config.ini
-sed -i "s/web_host.*/web_host = 127.0.0.1/g" /home/${user}/.sickchill/config.ini
+sed -i "s/web_root.*/web_root = \/sickchill/g" /opt/sickchill/config.ini
+sed -i "s/web_host.*/web_host = 127.0.0.1/g" /opt/sickchill/config.ini
 if [[ $isactive == "active" ]]; then
-  systemctl start sickchill@${user}
+  systemctl start sickchill
 fi

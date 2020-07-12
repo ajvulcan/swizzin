@@ -2,10 +2,9 @@
 #
 # Ombi installer
 #
-# Author:  liara
-# Forked for Servidor HD by ajvulcan
+# by Ajvulcan
 #
-# Servidor HD Copyright (C) 2019
+# -- Servidor HD --
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -60,7 +59,7 @@ OMB
   touch /install/.ombi.lock
   if [[ -f /install/.nginx.lock ]]; then
     bash /usr/local/bin/swizzin/nginx/ombi.sh
-    service nginx reload
+    systemctl reload nginx
   fi
   systemctl enable ombi >/dev/null 2>&1
   systemctl restart ombi
@@ -72,17 +71,17 @@ if [[ -f /tmp/.install.lock ]]; then
 elif [[ -f /install/.panel.lock ]]; then
   OUTTO="/srv/panel/db/output.log"
 else
-  OUTTO="/dev/null"
+  OUTTO="/root/logs/swizzin.log"
 fi
 distribution=$(lsb_release -is)
 user=$(cut -d: -f1 < /root/.master.info)
 
-echo -ne "Initializing plex ... $i\033[0K\r"
+echo -ne "Inicializando plex ... $i\033[0K\r"
 
-echo -en "\rUpdating dependencies ... \033[0K\r";_depends
-echo -en "\rInstalling Ombi ... \033[0K\r";_install
-echo -en "\rInitializing Ombi service ... \033[0K\r";_services
-echo -e "\rOmbi Installation Complete!\033[0K\r"
+echo -en "\rActualizando dependencias ... \033[0K\r";_depends
+echo -en "\rInstalando Ombi ... \033[0K\r";_install
+echo -en "\rInicializando el servicio de Ombi ... \033[0K\r";_services
+echo -e "\rOmbi ¡Instalación completada!\033[0K\r"
   sleep 5
 echo >>"${OUTTO}" 2>&1;
 echo >>"${OUTTO}" 2>&1;

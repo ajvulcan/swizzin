@@ -2,7 +2,7 @@
 #
 # [Servidor HD :: Remove AutoDL-IRSSI package]
 #
-# Servidor HD Copyright (C) 2019
+# Servidor HD 
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track

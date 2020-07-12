@@ -1,21 +1,22 @@
 #!/bin/bash
 #
 # Swizzin :: Shellinabox installer
-# Author: liara
+# 
+# by Ajvulcan
 #
-# Copyright (C) 2017 Swizzin
+# SERVIDOR HD
 # Licensed under GNU General Public License v3.0 GPL-3
 #################################################################################
 
 apt-get -y -q update > /dev/null 2>&1
 apt-get -y install shellinabox > /dev/null 2>&1
 
-service shellinabox stop > /dev/null 2>&1
+systemctl stop shellinabox > /dev/null 2>&1
 rm -rf /etc/init.d/shellinabox
 
 cat > /etc/systemd/system/shellinabox.service <<SIAB
 [Unit]
-Description=Shell in a Box service
+Description=Shell in a Box servicio
 After=sshd.service
 
 [Service]
@@ -38,7 +39,5 @@ systemctl start shellinabox
 if [[ -f /install/.nginx.lock ]]; then
     bash /usr/local/bin/swizzin/nginx/shellinabox.sh
 fi
-
-
 
 touch /install/.shellinabox.lock

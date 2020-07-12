@@ -4,7 +4,7 @@
 # Author: liara 
 # Modificado por: ajvulcan
 #
-# Copyright (C) 2019 Servidor HD
+# -- Servidor HD --
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -25,8 +25,8 @@ function _dconf {
   DPORT=$((n%59000+10024))
   DWSALT=$(tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 32 | head -n 1)
   localpass=$(tr -dc 'a-f0-9' < /dev/urandom | fold -w 40 | head -n 1)
-  DWP=$(python ${local_packages}/deluge.Userpass.py ${pass} ${DWSALT})
-  DUDID=$(python ${local_packages}/deluge.addHost.py)
+  DWP=$(python2 ${local_packages}/deluge.Userpass.py ${pass} ${DWSALT})
+  DUDID=$(python2 ${local_packages}/deluge.addHost.py)
   # -- Secondary awk command -- #
   #DPORT=$(awk -v min=59000 -v max=69024 'BEGIN{srand(); print int(min+rand()*(max-min+1))}')
   DWPORT=$(shuf -i 10001-11000 -n 1)
@@ -187,6 +187,7 @@ cat > /home/${u}/.config/deluge/hostlist.conf${SUFFIX} <<DHL
 }
 DHL
 
+#CREACIÓN DE CARPETAS ESPECÍFICAS E INDEPENDIENTES PARA DELUGE Y USUARIO.
   echo "${u}:${pass}:10" > /home/${u}/.config/deluge/auth
   echo "localclient:${localpass}:10" >> /home/${u}/.config/deluge/auth
   chmod 600 /home/${u}/.config/deluge/auth
@@ -194,9 +195,12 @@ DHL
   mkdir /home/${u}/dwatch
   chown ${u}: /home/${u}/dwatch
   mkdir -p /home/${u}/torrents/deluge
-  chown ${u}: /home/${u}/torrents/deluge
+  chown ${u}: /home/${u}/torrents
+  chown ${u}: /home/${u}/torrents/deluge  
+  usermod -a -G ${user} www-data 2>> $log
 done
 }
+
 function _dservice {
   if [[ ! -f /etc/systemd/system/deluged@.service ]]; then
     dvermajor=$(deluged -v | grep deluged | grep -oP '\d+\.\d+\.\d+' | cut -d. -f1)
@@ -208,7 +212,7 @@ After=network.target
 
 [Service]
 Type=simple
-User=%I
+User=%i
 
 ExecStart=/usr/bin/deluged -d
 ExecStop=/usr/bin/killall -w -s 9 /usr/bin/deluged
@@ -227,7 +231,7 @@ After=network.target
 
 [Service]
 Type=simple
-User=%I
+User=%i
 
 ExecStart=/usr/bin/deluge-web${args}
 ExecStop=/usr/bin/killall -w -s 9 /usr/bin/deluge-web
@@ -247,16 +251,17 @@ done
 
 if [[ -f /install/.nginx.lock ]]; then
   bash /usr/local/bin/swizzin/nginx/deluge.sh
-  service nginx reload
+  systemctl reload nginx
 fi
 
   touch /install/.deluge.lock
+  touch /install/.delugeweb.lock
 }
 
 if [[ -f /tmp/.install.lock ]]; then
   export log="/root/logs/install.log"
 else
-  export log="/dev/null"
+  export log="/root/logs/swizzin.log"
 fi
 local_packages=/usr/local/bin/swizzin
 users=($(cut -d: -f1 < /etc/htpasswd))

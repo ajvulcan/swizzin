@@ -37,14 +37,12 @@ if [[ -f /install/.quota.lock ]] && { ! grep -q "/usr/bin/quota -wu" /srv/rutorr
   cat > /srv/rutorrent/plugins/diskspace/action.php <<'DSKSP'
 <?php
 #################################################################################
-##  [Quick Box - action.php modified for quota systems use]
+##  [SERVIDOR HD - action.php modified for quota systems use]
 #################################################################################
 # QUICKLAB REPOS
 # QuickLab _ packages:   https://github.com/QuickBox/quickbox_rutorrent-plugins
 # LOCAL REPOS
 # Local _ packages   :   ~/QuickBox/rtplugins
-# Author             :   QuickBox.IO
-# URL                :   https://plaza.quickbox.io
 #
 #################################################################################
   require_once( '../../php/util.php' );

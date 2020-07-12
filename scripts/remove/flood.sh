@@ -1,6 +1,6 @@
 #!/bin/bash
 # Flood uninstaller
-# Author: liara
+# by ajvulcan
 #
 # Servidor HD
 

@@ -1,15 +1,9 @@
 #!/bin/bash
 #
-# [Quick Box :: Remove plexmediaserver package]
+# eliminador de plex para SERVIDOR HD
+# by ajvulcan
 #
-# GITHUB REPOS
-# GitHub _ packages  :   https://github.com/QuickBox/quickbox_packages
-# LOCAL REPOS
-# Local _ packages   :   /etc/QuickBox/packages
-# Author             :   QuickBox.IO
-# URL                :   https://quickbox.io
-#
-# QuickBox Copyright (C) 2017 QuickBox.io
+# SERVIDOR HD
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track

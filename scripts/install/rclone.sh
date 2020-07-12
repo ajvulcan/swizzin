@@ -2,9 +2,9 @@
 #
 # [Servidor HD :: Install rclone]
 #
-# Author             :   DedSec | d2dyno | ajvulcan
+# by Ajvulcan
 #
-# Servidor HD Copyright (C) 2019
+#  -- Servidor HD --
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -17,7 +17,7 @@ if [[ -f /tmp/.install.lock ]]; then
 elif [[ -f /install/.panel.lock ]]; then
   OUTTO="/srv/panel/db/output.log"
 else
-  OUTTO="/dev/null"
+  OUTTO="/root/logs/swizzin.log"
 fi
 MASTER=$(cut -d: -f1 < /root/.master.info)
 
@@ -27,10 +27,10 @@ echo "Descargando e instalando rclone ..." >>"${OUTTO}" 2>&1;
 apt-get -y update >> $OUTTO 2>&1
 apt-get -y install fuse >> $OUTTO 2>&1
 
-# One-liner to check arch/os type, as well as download latest rclone for relevant system.
+# Comprueba sistema operativo y descarga el último rclone para el mismo.
 curl https://rclone.org/install.sh | sudo bash
 
-# Make sure rclone downloads and installs without error before proceeding
+# Asegurarse que descarga e instala sin error antes de proceder.
 if [ $? -eq 0 ]; then
     echo "Añadiendo servicio de montaje de rclone..." >>"${OUTTO}" 2>&1;
 
@@ -41,12 +41,12 @@ After=network.target
 
 [Service]
 Type=simple
-User=%I
-Group=%I
-ExecStartPre=/bin/mkdir -p /home/%I/NUBE/GDRIVE
-ExecStart=/usr/bin/rclone mount --allow-other %I: /home/%I/NUBE/GDRIVE
-ExecStop=/bin/fusermount -u /home/%I/NUBE/GDRIVE
-ExecStop=/bin/rmdir /home/%I/NUBE/GDRIVE
+User=%i
+Group=%i
+ExecStartPre=/bin/mkdir -p /home/%i/NUBE/GDRIVE
+ExecStart=/usr/bin/rclone mount --allow-other %i: /home/%i/NUBE/GDRIVE
+ExecStop=/bin/fusermount -u /home/%i/NUBE/GDRIVE
+ExecStop=/bin/rmdir /home/%i/NUBE/GDRIVE
 Restart=on-failure
 RestartSec=30
 StartLimitInterval=60s

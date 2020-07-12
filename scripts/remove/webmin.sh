@@ -13,12 +13,24 @@
 #
 
 #Simplemente lo desinstalamos.
-apt-get purge -y webmin >> /etc/null
-echo ""
-apt autoremove
+if [[ -f /tmp/.install.lock ]]; then
+  log="/root/logs/install.log"
+else
+  log="/root/logs/swizzin.log"
+fi
+
+apt-get remove webmin -yq >> $log 2>&1
+rm -rf /etc/webmin
+
 #Eliminamos la fuente
 sed -i '/.*webmin.*/d' /etc/apt/sources.list >> /etc/null
+rm /etc/apt/sources.list.d/webmin.list
+
+if [[ -f /install/.nginx.lock ]]; then 
+    rm /etc/nginx/apps/webmin.conf
+    systemctl reload nginx
+fi
 
 rm /install/.webmin.lock
 
-echo ""
+echo "Webmin desinstalado"

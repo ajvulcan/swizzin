@@ -3,18 +3,19 @@
 # SERVIDOR HD
 #
 
-users=($(cut -d: -f1 < /etc/htpasswd))
+user=$(cut -d: -f1 < /root/.master.info)
 
-for u in "${users[@]}"; do
-  #autodl2.cfg has been deprecated
-  if [[ -f /home/${u}/.autodl/autodl2.cfg ]]; then
-    mv "/home/${u}/.autodl/autodl.cfg" "/home/${u}/.autodl/autodl.bak"
-    mv "/home/${u}/.autodl/autodl2.cfg" "/home/${u}/.autodl/autodl.cfg"
-    cat "/home/${u}/.autodl/autodl.bak" >> "/home/${u}/.autodl/autodl.cfg"
-    rm "/home/${u}/.autodl/autodl.bak"
-    chown -R $u: /home/${u}/.autodl/
-    chown -R $u: /home/${u}/.irssi/
-  fi
-done
-
-/usr/local/bin/swizzin/php-fpm-cli -r 'opcache_reset();'
+if [[ -d /home/${user}/.venv ]]; then
+    mv /home/${user}/.venv /opt
+    envs=($(ls /opt/.venv))
+    for app in ${envs[@]}; do
+        mv /home/${user}/${app} /opt
+        sed -i "s|/home/${user}|/opt|g" /etc/systemd/system/${app}.service
+        sed -i "s|/opt/.config|/home/${user}/.config|g" /etc/systemd/system/${app}.service
+        if [[ $app == "pyload" ]]; then
+            echo "/opt/pyload" > /opt/pyload/module/config/configdir
+        fi
+        systemctl daemon-reload
+        systemctl try-restart $app
+    done
+fi

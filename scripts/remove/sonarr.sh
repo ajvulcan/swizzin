@@ -2,9 +2,9 @@
 #
 # [Servidor HD :: Remove Sonarr-NzbDrone package]
 #
-# Author             :   JMSolo
+# by ajvulcan
 #
-# Servidor Copyright (C) 2019
+# Servidor
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -28,7 +28,7 @@ function _removeSonarr() {
     sudo rm /etc/init.d/sonarr
   fi
     sudo rm /install/.sonarr.lock
-    service nginx reload
+    systemctl reload nginx
 }
 
 _removeSonarr

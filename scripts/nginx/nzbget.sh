@@ -1,6 +1,6 @@
 #!/bin/bash
 # Nginx Configurator for nzbget
-# Author: liara
+# by ajvulcan
 #
 # SERVIDOR HD
 #

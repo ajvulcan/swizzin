@@ -2,11 +2,9 @@
 #
 # [Servidor HD :: Install plexmediaserver package]
 #
-# Originally authored by: JMSolo for QuickBox
-# Modifications to QuickBox package by: liara / PastaGringo
 # Maintained and updated for servidor HD by: ajvulcan
 #
-# Servidor HD Copyright (C) 2019 Servidor HD
+# Servidor HD 
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -19,7 +17,7 @@ if [[ -f /tmp/.install.lock ]]; then
 elif [[ -f /install/.panel.lock ]]; then
   log="/srv/panel/db/output.log"
 else
-  log="/dev/null"
+  log="/root/logs/swizzin.log"
 fi
 echo "Por favor, visita https://www.plex.tv/claim, logeate, copia tu token de reclamación al portapapeles y pégalo ahí. Esto automaticamente reclamará tu server. Alternativamente,puedes dejar esto en blanco y hacer un tunel al puerto."; read 'claim'
 master=$(cut -d: -f1 < /root/.master.info)
@@ -56,7 +54,7 @@ if [[ -n $claim ]]; then
   claimPlex ${claim}
 fi
 
-    service plexmediaserver restart >/dev/null 2>&1
+    systemctl restart plexmediaserver >/dev/null 2>&1
 
     touch /install/.plex.lock
     echo

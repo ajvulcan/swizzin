@@ -1,7 +1,8 @@
 #!/bin/bash
 # nginx installer
-# Author: liara
-# Copyright (C) 2017 Swizzin
+#   by ajvulcan
+#
+# -- SERVIDOR HD --
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
 #
 #   You may copy, distribute and modify the software as long as you track
@@ -15,56 +16,43 @@ codename=$(lsb_release -cs)
 if [[ -f /tmp/.install.lock ]]; then
   log="/root/logs/install.log"
 else
-  log="/dev/null"
+  log="/root/logs/swizzin.log"
 fi
 
 if [[ -n $(pidof apache2) ]]; then
   if [[ -z $apache2 ]]; then
-    if (whiptail --title "apache2 conflict" --yesno --yes-button "Purge it!" --no-button "Disable it" "WARNING: The installer has detected that apache2 is already installed. To continue, the installer must either purge apache2 or disable it." 8 78) then
+    if (whiptail --title "apache2 conflicto" --yesno --yes-button "¡Púrgalo insensato!" --no-button "Deshabilitalo" "ADVERTENCIA: Se ha detectado apache2. Para continuar o purgas o deshabilitas apache2, decide." 8 78) then
       apache2=purge
     else
       apache2=disable
     fi
   fi
   if [[ $apache2 == "purge" ]]; then
-    echo "Purging apache2 ... "
+    echo "Purgando apache2 ... "
     systemctl disable apache2 >> /dev/null 2>&1
     systemctl stop apache2
     apt-get -y -q purge apache2 >> ${log} 2>&1
   elif [[ $apache2 == "disable" ]]; then
-    echo "Disabling apache2 ... "
+    echo "Deshabilitando apache2 ... "
     systemctl disable apache2 >> /dev/null 2>&1
     systemctl stop apache2
   fi
 fi
 
-if [[ $codename == "jessie" ]]; then
-  echo "deb http://packages.dotdeb.org $(lsb_release -sc) all" > /etc/apt/sources.list.d/dotdeb-php7-$(lsb_release -sc).list
-  echo "deb-src http://packages.dotdeb.org $(lsb_release -sc) all" >> /etc/apt/sources.list.d/dotdeb-php7-$(lsb_release -sc).list
-wget -q -O- https://www.dotdeb.org/dotdeb.gpg | apt-key add - >> /dev/null 2>&1
-#  cat > /etc/apt/preferences.d/ssl <<EOP
-#Package: *libssl*
-#Pin: release o=debian
-#Pin-Priority: 1000
-#
-#Package: *openssl*
-#Pin: release o=debian
-#Pin-Priority: 1000
-#EOP
-  geoip=php7.0-geoip
-  apt-get -y -qq update
-else
-  geoip=php-geoip
-fi
-
-if [[ $codename =~ ("bionic"|"buster") ]]; then
-  mcrypt=
-else
+if [[ $codename =~ ("xenial"|"stretch") ]]; then
   mcrypt=php-mcrypt
+else
+  mcrypt=
 fi
 
 apt-get -y -qq update
-APT='nginx-extras subversion ssl-cert php-fpm libfcgi0ldbl php-cli php-dev php-xml php-curl php-xmlrpc php-json '"${mcrypt}"' php-mbstring php-opcache '"${geoip}"' php-xml'
+
+if [[ $codename == "xenial" ]]; then
+  APT="nginx-extras subversion ssl-cert php-fpm libfcgi0ldbl php-cli php-dev php-xml php-curl php-xmlrpc php-json ${mcrypt} php-mbstring php-opcache php-geoip php-xml"
+else
+  APT="nginx libnginx-mod-http-fancyindex subversion ssl-cert php-fpm libfcgi0ldbl php-cli php-dev php-xml php-curl php-xmlrpc php-json ${mcrypt} php-mbstring php-opcache php-geoip php-xml"
+fi
+
 for depends in $APT; do
 apt-get -y install "$depends" >> $log 2>&1 || { echo "ERROR: APT-GET could not install a required package: ${depends}. That's probably not good..."; }
 done
@@ -84,15 +72,14 @@ for version in $phpv; do
   phpenmod -v $version opcache
 done
 
-if [[ -f /lib/systemd/system/php7.3-fpm.service ]]; then
-  sock=php7.3-fpm
-elif [[ -f /lib/systemd/system/php7.2-fpm.service ]]; then
-  sock=php7.2-fpm
-elif [[ -f /lib/systemd/system/php7.1-fpm.service ]]; then
-  sock=php7.1-fpm
-else
-  sock=php7.0-fpm
+if [[ ! -f /etc/nginx/modules-enabled/50-mod-http-fancyindex.conf ]]; then
+  ln -s /usr/share/nginx/modules-available/mod-http-fancyindex.conf /etc/nginx/modules-enabled/50-mod-http-fancyindex.conf
 fi
+
+. /etc/swizzin/sources/functions/php
+phpversion=$(php_service_version)
+sock="php${phpversion}-fpm"
+echo "Usando ${sock} en la configuracion nginx"
 
 rm -rf /etc/nginx/sites-enabled/default
 cat > /etc/nginx/sites-enabled/default <<NGC
@@ -270,8 +257,8 @@ locks=($(find /usr/local/bin/swizzin/nginx -type f -printf "%f\n" | cut -d "." -
 for i in "${locks[@]}"; do
   app=${i}
   if [[ -f /install/.$app.lock ]]; then
-    echo "Installing nginx config for $app"
-    /usr/local/bin/swizzin/nginx/$app.sh
+    echo "Instalando configuración nginx para $app"
+    bash /usr/local/bin/swizzin/nginx/$app.sh
   fi
 done
 

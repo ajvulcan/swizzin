@@ -1,62 +1,69 @@
 #!/bin/bash
 # SickChill installer for Servidor HD
-# Author: liara
+# by ajvulcan
 
 user=$(cut -d: -f1 < /root/.master.info)
+codename=$(lsb_release -cs)
+. /etc/swizzin/sources/functions/pyenv
+. /etc/swizzin/sources/functions/utils
+
 if [[ -f /tmp/.install.lock ]]; then
   log="/root/logs/install.log"
 else
-  log="/dev/null"
+  log="/root/logs/swizzin.log"
 fi
 
-if [[ $(systemctl is-active medusa@${user}) == "active" ]]; then
+if [[ $(systemctl is-active medusa) == "active" ]]; then
   active=medusa
 fi
 
-if [[ $(systemctl is-active sickgear@${user}) == "active" ]]; then
+if [[ $(systemctl is-active sickgear) == "active" ]]; then
   active=sickgear
 fi
 
 if [[ -n $active ]]; then
-  echo "SickChill and Medusa and Sickgear cannot be active at the same time."
-  echo "Do you want to disable $active and continue with the installation?"
-  echo "Don't worry, your install will remain at /home/${user}/.$active"
+  echo "SickChill, Medusa y Sickgear no pueden estar activos al mismo tiempo."
+  echo "¿Quieres desabilitar $active y continuar con la instalación?"
+  echo "No te preocupes, tu instalación continuará en /opt/$active"
   while true; do
-  read -p "Do you want to disable $active? " yn
+  read -p "¿Quieres desabilitar $active? " yn
       case "$yn" in
           [Yy]|[Yy][Ee][Ss]) disable=yes; break;;
           [Nn]|[Nn][Oo]) disable=; break;;
-          *) echo "Please answer yes or no.";;
+          *) echo "Por favor, contesta (s)i o (n)o.";;
       esac
   done
   if [[ $disable == "yes" ]]; then
-    systemctl disable ${active}@${user}
-    systemctl stop ${active}@${user}
+    systemctl disable --now ${active}
   else
     exit 1
   fi
 fi
 
-apt-get -y -q update >> $log 2>&1
-apt-get -y -q install git-core openssl libssl-dev python2.7 >> $log 2>&1
-
-function _rar () {
-  cd /tmp
-  wget -q http://www.rarlab.com/rar/rarlinux-x64-5.5.0.tar.gz
-  tar -xzf rarlinux-x64-5.5.0.tar.gz >/dev/null 2>&1
-  cp rar/*rar /bin >/dev/null 2>&1
-  rm -rf rarlinux*.tar.gz >/dev/null 2>&1
-  rm -rf /tmp/rar >/dev/null 2>&1
-}
-
-if [[ -z $(which rar) ]]; then
-  apt-get -y install rar unrar >>$log 2>&1 || { echo "INFO: Could not find rar/unrar in the repositories. It is likely you do not have the multiverse repo enabled. Installing directly."; _rar; }
+if [[ $codename =~ ("xenial"|"stretch"|"buster"|"bionic") ]]; then
+    LIST='git python2.7-dev virtualenv python-virtualenv python-pip'
+else
+    LIST='git python2.7-dev'
 fi
-sudo git clone https://github.com/SickChill/SickChill.git  /home/$user/.sickchill >/dev/null 2>&1
 
-chown -R $user:$user /home/$user/.sickchill
+apt-get -y -q update >> $log 2>&1
 
-cat > /etc/systemd/system/sickchill@.service <<SSS
+for depend in $LIST; do
+  apt-get -qq -y install $depend >>"${log}" 2>&1 || { echo "ERROR: APT-GET no pudo instalar un paquete requerido: ${depend}. Mal rollo..."; }
+done
+
+if [[ ! $codename =~ ("xenial"|"stretch"|"buster"|"bionic") ]]; then
+  python_getpip
+fi
+
+python2_venv ${user} sickchill
+
+git clone https://github.com/SickChill/SickChill.git  /opt/sickchill >> ${log} 2>&1
+chown -R $user: /opt/sickchill
+
+install_rar
+
+cat > /etc/systemd/system/sickchill.service <<SCSD
 [Unit]
 Description=SickChill
 After=syslog.target network.target
@@ -64,21 +71,19 @@ After=syslog.target network.target
 [Service]
 Type=forking
 GuessMainPID=no
-User=%I
-Group=%I
-ExecStart=/usr/bin/python /home/%I/.sickchill/SickBeard.py -q --daemon --nolaunch --datadir=/home/%I/.sickchill
-
+User=${user}
+Group=${user}
+ExecStart=/opt/.venv/sickchill/bin/python /opt/sickchill/SickBeard.py -q --daemon --nolaunch --datadir=/opt/sickchill
 
 [Install]
 WantedBy=multi-user.target
-SSS
+SCSD
 
-  systemctl enable sickchill@$user > /dev/null 2>&1
-  systemctl start sickchill@$user
+systemctl enable --now sickchill >> ${log} 2>&1
 
 if [[ -f /install/.nginx.lock ]]; then
   bash /usr/local/bin/swizzin/nginx/sickchill.sh
-  service nginx reload
+  systemctl reload nginx
 fi
 
 touch /install/.sickchill.lock
