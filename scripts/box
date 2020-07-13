@@ -259,6 +259,7 @@ function _adduser {
     setdisk "$user"
   fi
 
+  if [[ -f /install/.panel.lock ]]; then setfacl -m g:swizzin:rx /home/${user}; fi
   echo "D /var/run/${user} 0750 ${user} ${user} -" >> /etc/tmpfiles.d/${user}.conf
   systemd-tmpfiles /etc/tmpfiles.d/${user}.conf --create
 

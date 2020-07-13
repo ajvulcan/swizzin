@@ -9,7 +9,7 @@ master=$(cut -d: -f1 < /root/.master.info)
 apt-get -y -q install python3-venv git acl > /dev/null 2>&1
 mkdir -p /opt/swizzin/
 python3 -m venv /opt/swizzin/venv
-git clone https://github.com/ajvulcan/swizzin_dashboard.git /opt/swizzin/swizzin > /dev/null 2>&1
+git clone https://github.com/liaralabs/swizzin_dashboard.git /opt/swizzin/swizzin > /dev/null 2>&1
 /opt/swizzin/venv/bin/pip install -r /opt/swizzin/swizzin/requirements.txt > /dev/null 2>&1
 useradd -r swizzin > /dev/null 2>&1
 chown -R swizzin: /opt/swizzin
@@ -20,11 +20,13 @@ if [[ -f /install/.deluge.lock ]]; then
   touch /install/.delugeweb.lock
 fi
 
+
 if [[ $master == $(id -nu 1000) ]]; then
   :
 else
   echo "ADMIN_USER = '$master'" >> /opt/swizzin/swizzin/swizzin.cfg
 fi
+
 
 if [[ -f /install/.nginx.lock ]]; then
   echo "HOST = '127.0.0.1'" >> /opt/swizzin/swizzin/swizzin.cfg
@@ -50,7 +52,7 @@ fi
 
 cat > /etc/systemd/system/panel.service <<EOS
 [Unit]
-Description=Servidor HD panel service
+Description=swizzin panel service
 After=nginx.service
 [Service]
 Type=simple
@@ -77,8 +79,8 @@ rm -f /etc/cron.d/set_interface
 
 systemctl enable --now panel
 
- else
-    echo "Actualizando panel a la última versión..."
+  else
+    echo "Updating panel to latest version"
     bash /usr/local/bin/swizzin/upgrade/panel.sh
   fi
 fi

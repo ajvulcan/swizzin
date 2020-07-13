@@ -8,17 +8,17 @@ else
 fi
 
 if [[ ! -f /install/.nginx.lock ]]; then
-  echo "¡Este paquete requiere nginx para su instalación!"
-  read -p "Presiona la tecla enter para proceder con la instalación de nginx antes de la de panel."
+  echo "This package requires nginx to be installed!"
+  read -p "Press enter to proceed with installing nginx before the panel."
   bash /usr/local/bin/swizzin/install/nginx.sh
 fi
 
 master=$(cut -d: -f1 < /root/.master.info)
 
-apt-get -y -q install python3-venv git acl > /dev/null 2>&1
+apt-get -y -q install python3-pip python3-venv git acl > /dev/null 2>&1
 mkdir -p /opt/swizzin/
 python3 -m venv /opt/swizzin/venv
-git clone https://github.com/ajvulcan/swizzin_dashboard.git /opt/swizzin/swizzin >> ${log} 2>&1
+git clone https://github.com/liaralabs/swizzin_dashboard.git /opt/swizzin/swizzin >> ${log} 2>&1
 /opt/swizzin/venv/bin/pip install -r /opt/swizzin/swizzin/requirements.txt >> ${log} 2>&1
 useradd -r swizzin > /dev/null 2>&1
 chown -R swizzin: /opt/swizzin
@@ -29,11 +29,13 @@ if [[ -f /install/.deluge.lock ]]; then
   touch /install/.delugeweb.lock
 fi
 
+
 if [[ $master == $(id -nu 1000) ]]; then
   :
 else
   echo "ADMIN_USER = '$master'" >> /opt/swizzin/swizzin/swizzin.cfg
 fi
+
 
 if [[ -f /install/.nginx.lock ]]; then
   bash /usr/local/bin/swizzin/nginx/panel.sh
@@ -42,7 +44,7 @@ fi
 
 cat > /etc/systemd/system/panel.service <<EOS
 [Unit]
-Description=Servidor HD panel service
+Description=swizzin panel service
 After=nginx.service
 [Service]
 Type=simple
