@@ -289,15 +289,15 @@ if [[ -n $noexec ]]; then
 fi
 
 if [[ ! -f /install/.libtorrent.lock ]]; then
-  echo "Building libtorrent-rasterbar"; build_libtorrent_rasterbar
+  echo "Compilando libtorrent-rasterbar"; build_libtorrent_rasterbar
 fi
 
-echo "Building Deluge"; build_deluge
+echo "Compilando Deluge"; build_deluge
 
 if [[ -n $noexec ]]; then
 	mount -o remount,noexec /tmp
 fi
 
-echo "Configuring Deluge"
+echo "Configurando Deluge"
 _dconf
 _dservice

@@ -26,9 +26,9 @@ function whiptail_deluge () {
       dverup=$(echo "$function" | sed 's|Deluge ||g' | cut -d. -f1)
       dvercurmajor=$(deluged -v | grep deluged | grep -oP '\d+\.\d+\.\d+' | cut -d. -f1)
       if [[ $dverup -lt $dvercurmajor ]]; then
-        message="You have chosen to perform a major version DOWNGRADE to $function. Please be advised that this will downgrade your Deluge binaries to an older version which is not compatible with the new version state.\n\nIf you have never had $function installed, you will not have a backup to restore. NO TORRENTS WILL BE LOADED. This is an unsupported action and you will receive **ABSOLUTELY ZERO** support if you decide to continue.\n\nI hope you know what you're doing."
+        message="Has elegido un downgrade de versión a $function. TEnga en cuenta que esto hará un downgrade a tus binarios de deluge a una versión más antigua que no es compatible con la nueva verisón.\n\nSi nunca has tenido $function instalada, no tendrás un backup para restaurar. LOS TORRENTS NO SE CARGARÁN. Es una acción sin el más mínimo soporte.\n\nEspero que sepas lo que estás haciendo."
       elif [[ $dverup -gt $dvercurmajor ]]; then
-        message="You have chosen to perform a major version UPGRADE to $function. Please be advised that this will upgrade your Deluge binaries to a newer version which is not compatible with the old version.\n\nA backup of your current config will be created; however, if you wish to downgrade back to the old version, you will need to restore the backup to reload your torrents. Torrents you may have added since upgrading will not be preserved.\n\nDowngrading (while possible and not disabled) is an unsupported action and you will receive **ABSOLUTELY ZERO** support if you decide to go back to the previous branch."
+        message="Has elegido un upgrade a $function. Tenga en cuenta que esto hará un upgrade a los binarios de deluge a una versión más moderna que no es compatible con la antigua.\n\nSe creará un backup de tu configuración actual; Sin embargo, si quieres hacer un downgrade a la versión antigua, necesitarás restaurar el backup para recargar tus torrents. Los torrents que hayas añadido desde el upgrade no serán preservados.\n\nDescargando (mientras sea posible y no deshabilitado) es una acción completamente no soportada si decides volver a la antigua rama."
       fi
       if [[ -n $message ]]; then
         if ! whiptail --yesno "${message}" --yes-button "I agree" --no-button "Oh heck, nvm" --title "WARNING!!" --scrolltext 18 78; then
@@ -159,7 +159,7 @@ function build_libtorrent_rasterbar () {
       LIST="build-essential autoconf automake libtool libboost-system-dev libboost-python-dev libssl-dev libgeoip-dev libboost-chrono-dev libboost-random-dev geoip-database ${pythonapt} python-setuptools"
     fi
     for depend in $LIST; do
-      apt-get -qq -y install $depend >>"${log}" 2>&1 || { echo "ERROR: APT-GET could not install a required package: ${depend}. That's probably not good..."; }
+      apt-get -qq -y install $depend >>"${log}" 2>&1 || { echo "ERROR: APT-GET no pudo instalar un paquete requerido: ${depend}. Esto no mola nada..."; }
     done
       apt-get -y -q autoremove >>"${log}" 2>&1
     install_fpm
@@ -182,7 +182,7 @@ function build_libtorrent_rasterbar () {
     . /etc/swizzin/sources/functions/utils
     rm_if_exists "/tmp/libtorrent"
 
-    git clone -b ${LTRC} https://github.com/arvidn/libtorrent.git >>"${log}" 2>&1 || { echo "ERROR: git could not clone the libtorrent repository"; exit 1; }
+    git clone -b ${LTRC} https://github.com/arvidn/libtorrent.git >>"${log}" 2>&1 || { echo "ERROR: git no pudo clonar el repositorio libtorrent"; exit 1; }
     cd libtorrent
     ./autotool.sh >>"${log}" 2>&1
     ./configure --with-lib-geoip --with-libiconv >>"${log}" 2>&1
@@ -201,7 +201,7 @@ function build_libtorrent_rasterbar () {
     fpm -f -C /tmp/dist/libtorrent -p /root/dist/libtorrent-rasterbar_VERSION.deb -s dir -t deb -n libtorrent-rasterbar --version ${VERSION} --description "Libtorrent rasterbar compiled by swizzin" > /dev/null 2>&1
     dpkg -i /root/dist/libtorrent-rasterbar_${VERSION}.deb
     if [[ -n $deluge ]]; then
-      echo "Building python binding ..."
+      echo "Compilando python binding ..."
       PYTHON=${pythonbin} ./configure --enable-python-binding --with-libiconv ${configure_args} >>"${log}" 2>&1
       fpm --verbose --python-bin=${pythonbin} --python-package-name-prefix=${python} -n ${python}-libtorrent -f -p /root/dist/${python}-libtorrent_VERSION.deb --version ${VERSION} --description "Libtorrent rasterbar python bindings compiled by swizzin" -s python -t deb /tmp/libtorrent/bindings/python/setup.py >> $log 2>&1
       dpkg -i /root/dist/${python}-libtorrent_${VERSION}.deb
@@ -244,7 +244,7 @@ function build_deluge () {
       ;;
     esac
     for depend in $LIST; do
-      apt-get -qq -y install $depend >>"${log}" 2>&1 || { echo "ERROR: APT-GET could not install a required package: ${depend}. That's probably not good..."; }
+      apt-get -qq -y install $depend >>"${log}" 2>&1 || { echo "ERROR: APT-GET no pudo instalar un paquete requerido: ${depend}. Mal rollo..."; }
     done
     if [[ -n $PIP ]]; then
       . /etc/swizzin/sources/functions/pyenv
@@ -265,7 +265,7 @@ function build_deluge () {
             packages=(setuptools pycparser asn1crypto cffi constantly incremental attrs automat idna hyperlink pyhamcrest cryptography pyopenssl service_identity zope.interface twisted)
             mkdir -p /root/dist/python3
             for depend in $LIST; do
-              apt-get -qq -y install $depend >>"${log}" 2>&1 || { echo "ERROR: APT-GET could not install a required package: ${depend}. That's probably not good..."; }
+              apt-get -qq -y install $depend >>"${log}" 2>&1 || { echo "ERROR: APT-GET cno pudo instalar un paquete requerido: ${depend}. Esto no mola..."; }
             done
             for d in ${packages[@]}; do
               fpm -s python -t deb --python-pip=pip3 --python-bin=${pythonver} --python-package-name-prefix=${pythonver} -f -p /root/dist/python3/python3-$d.deb $d >> ${log} 2>&1
@@ -277,14 +277,14 @@ function build_deluge () {
             check_debian_backports
             LIST='python3-twisted'
             for depend in $LIST; do
-              apt-get -qq -y install -t stretch-backports $depend >>"${log}" 2>&1 || { echo "ERROR: APT-GET could not install a required package: ${depend}. That's probably not good..."; }
+              apt-get -qq -y install -t stretch-backports $depend >>"${log}" 2>&1 || { echo "ERROR: APT-GET cno pudo instalar un paquete requerido: ${depend}. Esto no mola..."; }
             done
           ;;
         esac
       fi
     fi
     cd /tmp
-    git clone -b ${deluge} git://deluge-torrent.org/deluge.git >>"${log}" 2>&1 || { echo "WARN: Cloning Deluge from deluge-torrent.org failed, attempting github backup."; git clone -b ${deluge} https://github.com/deluge-torrent/deluge/ >>"${log}" 2>&1 || { echo "ERROR: Cloning Deluge from github failed"; exit 1; } ; }
+    git clone -b ${deluge} git://deluge-torrent.org/deluge.git >>"${log}" 2>&1 || { echo "ADVERTENCIA: Clonado de Deluge desde deluge-torrent.org falló, intentando github backup."; git clone -b ${deluge} https://github.com/deluge-torrent/deluge/ >>"${log}" 2>&1 || { echo "ERROR: Cloning Deluge from github failed"; exit 1; } ; }
     cd deluge
     VERSION=$(git describe | cut -d- -f2)
     sed -i 's/-dev//g' setup.cfg
@@ -383,7 +383,7 @@ function cleanup_deluge () {
   toclean=(deluge-common deluge-web deluged deluge-console)
   for p in ${toclean[@]}; do
     if dpkg -l | grep $p > /dev/null 2>&1; then
-      echo "Cleaning package: $p. Removing."
+      echo "Limpiando el paquete: $p. Borrando."
       dpkg -r $p > /dev/null 2>&1
     fi
   done
