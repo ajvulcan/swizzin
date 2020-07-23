@@ -20,15 +20,15 @@ function _intro() {
 
 function _function() {
   function=$(whiptail --title "Servidor HD" --menu "Elige una opción:" --ok-button "Continuar" --nocancel 12 50 3 \
-               Install "packages" \
-               Remove "packages" \
-               Exit "" 3>&1 1>&2 2>&3)
+               Instalar "paquetes" \
+               Borrar "paquetes" \
+               Salir "" 3>&1 1>&2 2>&3)
 
-    if [[ $function == Install ]]; then
+    if [[ $function == Instalar ]]; then
       _install
-    elif [[ $function == Remove ]]; then
+    elif [[ $function == Borrar ]]; then
       _remove
-    elif [[ $function == Exit ]]; then
+    elif [[ $function == Salir ]]; then
       exit 0
     fi
 }
