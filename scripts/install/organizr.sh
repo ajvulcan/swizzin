@@ -82,7 +82,7 @@ function organizr_setup() {
     hash_key="$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c16)"
     reg_pass="$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c16)"
 
-    cat > /root/.organizr << EOF
+cat > /root/.organizr << EOF
 API key = $api_key
 Hash key = $hash_key
 Registration pass = $reg_pass
