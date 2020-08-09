@@ -33,7 +33,7 @@ _instalar_webmin () {
   echo "Instalando webmin, espere ..."
 
   apt-get update >> $log 2>&1
-  apt-get -y install apt-transport-https >> $OUTTO 2>&1
+  apt-get -y install apt-transport-https >> $log 2>&1
   apt-get install webmin -yq >> $log 2>&1
 
   #Instalación completa
