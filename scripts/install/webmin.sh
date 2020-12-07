@@ -45,9 +45,6 @@ _instalar_webmin () {
 _instalar_webmin
 
 if [[ -f /install/.nginx.lock ]]; then
-  bash /etc/swizzin/scripts/nginx/webmin.sh
+	echo "Configurando nginx"
+	bash /etc/swizzin/scripts/nginx/webmin.sh
 fi
-
-
-
-
