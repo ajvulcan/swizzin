@@ -143,6 +143,45 @@ if [[ -f /install/.vsftpd.lock ]]; then
   systemctl restart vsftpd
 fi
 
+
+if [[ -f /install/.webmin.lock ]]; then
+#Actualiza la configuración de webmin.
+
+# Webmin nginx installer
+# by ajvulcan for SERVIDOR HD
+
+MASTER=$(cut -d: -f1 < /root/.master.info)
+
+cat > /etc/nginx/apps/webmin.conf <<WEBC
+location /webmin/ {
+    include /etc/nginx/snippets/proxy.conf;
+    # Tell nginx that we want to proxy everything here to the local webmin server
+    # Last slash is important
+    proxy_pass https://127.0.0.1:10000/;
+    proxy_redirect https://${hostname} /webmin;
+    proxy_set_header Host ${hostname}:10000;
+    auth_basic "What's the password?";
+    auth_basic_user_file /etc/htpasswd.d/htpasswd.${MASTER};
+}
+WEBC
+
+sed -i '/referers/d' /etc/webmin/config
+sed -i '/webprefix/d' /etc/webmin/config
+sed -i '/no_frame_options/d' /etc/webmin/config
+
+cat >> /etc/webmin/config << EOF
+webprefix=/webmin
+webprefixnoredir=1
+referers=${hostname}
+no_frame_options=1
+EOF
+
+#Reiniciamos servicios.
+systemctl reload webmin
+
+echo 'RECUERDA actualizar la configuración de encriptación SSL en WEBMIN'
+fi
+
 systemctl reload nginx
 
 #Crea fichero para configurar servicios de streaming
