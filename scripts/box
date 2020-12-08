@@ -303,6 +303,7 @@ fi
 
 #Enlace a carpeta de descargas central
 administrador="$(awk '{print $1; exit}' /etc/sudoers.d/swizzin)"
+#administrador=$(cut -d: -f1 < /root/.master.info)
 echo "/home/${administrador}/DESCARGAS  /home/${user}/DESCARGAS   none    bind    0       0" >> /etc/fstab
 
 #Crea carpeta personal de usuario
