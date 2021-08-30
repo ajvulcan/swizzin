@@ -27,15 +27,16 @@ else
     hostname=$LE_HOSTNAME
 fi
 
-if [[ -z $LE_DEFAULTCONF ]]; then
-    if ask "¿Quieres aplicar este certificado a tu configuración de servidor HD por defecto? (s/n)"; then
-        main=yes
-    else
-        main=no
-    fi
-else
-    main=$LE_DEFAULTCONF
-fi
+read -p "¿Quieres aplicar este certificado a tu configuración de servidor HD por defecto? (s/n) " yn
+case $yn in
+  [Ss] )
+      main=yes
+      ;;
+  [Nn] )
+      main=no
+      ;;
+  * ) echo "Por favor, responde (s)i o (n)o.";;
+esac
 
 if [[ $main == yes ]]; then
   sed -i "s/server_name .*;/server_name $hostname;/g" /etc/nginx/sites-enabled/default
@@ -45,16 +46,16 @@ if [[ -n $LE_CF_API ]] || [[ -n $LE_CF_EMAIL ]] || [[ -n $LE_CF_ZONE ]]; then
     LE_BOOL_CF=yes
 fi
 
-if [[ -z $LE_BOOL_CF ]]; then
-    if ask "¿Está tu DNS gestionada por CloudFlare? (s/n)"; then
-        cf=yes
-    else
-        cf=no
-    fi
-else
-    [[ $LE_BOOL_CF = "yes" ]] && cf=yes
-    [[ $LE_BOOL_CF = "no" ]] && cf=no
-fi
+read -p "¿Está tu DNS gestionada por CloudFlare? (s/n) " yn
+case $yn in
+  [Ss] )
+      cf=yes
+      ;;
+  [Nn] )
+      cf=no
+      ;;
+  * ) echo "Por favor, responde (s)i o (n)o.";;
+esac
 
 if [[ ${cf} == yes ]]; then
 
@@ -68,11 +69,18 @@ if [[ ${cf} == yes ]]; then
   fi
   
   if [[ -z $LE_CF_ZONEEXISTS ]]; then
-     if ask "¿Existe ya el registro para este subdominio? (s/n)"; then
-         main=yes
-     else
-         main=no
-     fi
+     read -p "¿Existe ya el registro para este subdominio? (s/n) " yn
+    case $yn in
+      [Ss] )
+      record=yes
+      ;;
+      [Nn] )
+      record=no
+      ;;
+      * )
+      echo "Por favor, responde (s)i o (n)o."
+      ;;
+    esac
   else
       [[ $LE_CF_ZONEEXISTS = "yes" ]] && zone=yes
       [[ $LE_CF_ZONEEXISTS = "no" ]] && zone=no
