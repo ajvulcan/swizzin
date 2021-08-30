@@ -13,7 +13,7 @@
 #
 
 if [[ ! -f /install/.nginx.lock ]]; then
-    echo_error "Este script está diseñado para ser usado en conjunción con nginx, pero no está instalado. Por favor, instálelo primero."
+    echo "Este script está diseñado para ser usado en conjunción con nginx, pero no está instalado. Por favor, instálelo primero."
     exit 1
 fi    
 
@@ -21,7 +21,7 @@ fi
 ip=$(ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
 
 if [[ -z $LE_HOSTNAME ]]; then
-    echo_query "Introduce el nombre de dominio a vincular con LE"
+    echo -e "Introduce el nombre de dominio a vincular con LE"
     read -e hostname
 else
     hostname=$LE_HOSTNAME
@@ -59,7 +59,7 @@ fi
 if [[ ${cf} == yes ]]; then
 
   if [[ $hostname =~ (\.cf$|\.ga$|\.gq$|\.ml$|\.tk$) ]]; then
-    echo_error "ERROR Cloudflare no soporta llamadas API para los siguientes TLDs: cf, .ga, .gq, .ml, or .tk"
+    echo "ERROR Cloudflare no soporta llamadas API para los siguientes TLDs: cf, .ga, .gq, .ml, or .tk"
     exit 1
   fi
   
@@ -79,14 +79,14 @@ if [[ ${cf} == yes ]]; then
   fi
   
       if [[ -z $LE_CF_API ]]; then
-        echo_query "Introduce la key de API de CF"
+        echo -e "Introduce la key de API de CF"
         read -e api
     else
         api=$LE_CF_API
     fi
 
     if [[ -z $LE_CF_EMAIL ]]; then
-        echo_query "CF Email"
+        echo -e "CF Email"
         read -e email
     else
         api=$LE_CF_EMAIL
@@ -98,14 +98,14 @@ if [[ ${cf} == yes ]]; then
   valid=$(curl -X GET "https://api.cloudflare.com/client/v4/user" -H "X-Auth-Email: $email" -H "X-Auth-Key: $api" -H "Content-Type: application/json")
   if [[ $valid == *"\"success\":false"* ]]; then
     message="LA LLAMADA A LA API HA FALLADO. INCLUYENDO RESULTADOS:\n$valid"
-    echo_error "$message"
+    echo -e "$message"
     exit 1
   fi
 
   if [[ ${record} == no ]]; then
   
       if [[ -z $LE_CF_ZONE ]]; then
-          echo_query "Nombre de zona (example.com)"
+          echo "Nombre de zona (example.com)"
           read -e zone
       else
           zone=$LE_CF_ZONE
@@ -115,11 +115,11 @@ if [[ ${cf} == yes ]]; then
     addrecord=$(curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$zoneid/dns_records" -H "X-Auth-Email: $email" -H "X-Auth-Key: $api" -H "Content-Type: application/json" --data "{\"id\":\"$zoneid\",\"type\":\"A\",\"name\":\"$hostname\",\"content\":\"$ip\",\"proxied\":true}")
     if [[ $addrecord == *"\"success\":false"* ]]; then
       message="LA ACTUALIZACIÓN DE API HA FALLADO. INCLUYENDO RESULTADOS:\n$addrecord"
-      echo_error "$message"
+      echo -e "$message"
       exit 1
     else
       message="Registro DNS añadido para $hostname en $ip"
-      echo_info "$message"
+      echo "$message"
     fi
   fi
 fi
@@ -127,28 +127,28 @@ fi
 apt-get -y -q install socat > /dev/null 2>&1
 
 if [[ ! -f /root/.acme.sh/acme.sh ]]; then
-    echo_progress_start "Instalando script ACME"
+    echo "Instalando script ACME"
     curl https://get.acme.sh | sh >> $log 2>&1
-    echo_progress_done
+    echo "hecho"
 fi
 
 mkdir -p /etc/nginx/ssl/${hostname}
 chmod 700 /etc/nginx/ssl
 
 /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt >> $log 2>&1 || {
-    echo_warn "No se pudo establecer el certificado de autoridad por defecto a Let's Encrypt. Actualizando acme.sh para reintentar."
+    echo "No se pudo establecer el certificado de autoridad por defecto a Let's Encrypt. Actualizando acme.sh para reintentar."
     /root/.acme.sh/acme.sh --upgrade >> $log 2>&1 || {
-        echo_error "No se pudo actualizar acme.sh."
+        echo -e "No se pudo actualizar acme.sh."
         exit 1
     }
     /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt >> $log 2>&1 || {
-        echo_error "No se pudo establecer el certificado de autoridad por defecto a Let's Encrypt"
+        echo -e "No se pudo establecer el certificado de autoridad por defecto a Let's Encrypt"
         exit 1
     }
-    echo_info "acme.sh se ha actualizado con éxito."
+    echo "acme.sh se ha actualizado con éxito."
 }
 
-echo_progress_start "Registrando certificados"
+echo "Registrando certificados"
 if [[ ${cf} == yes ]]; then
   /root/.acme.sh/acme.sh --force --issue --dns dns_cf -d ${hostname} >> $log 2>&1 || { 
     echo "ERROR: No se pudo obtener el certificado. Por favior, comprueba tu info y prueba de nuevo"; 
@@ -170,15 +170,15 @@ else
     systemctl start nginx
   fi
 fi
-echo_progress_done "Certificado adquirido"
+echo "Certificado adquirido"
 
-echo_progress_start "Instalando certificado"
+echo "Instalando certificado"
 /root/.acme.sh/acme.sh --force --install-cert -d ${hostname} --key-file /etc/nginx/ssl/${hostname}/key.pem --fullchain-file /etc/nginx/ssl/${hostname}/fullchain.pem --ca-file /etc/nginx/ssl/${hostname}/chain.pem --reloadcmd "systemctl reload nginx"
 if [[ $main == yes ]]; then
   sed -i "s/ssl_certificate .*/ssl_certificate \/etc\/nginx\/ssl\/${hostname}\/fullchain.pem;/g" /etc/nginx/sites-enabled/default
   sed -i "s/ssl_certificate_key .*/ssl_certificate_key \/etc\/nginx\/ssl\/${hostname}\/key.pem;/g" /etc/nginx/sites-enabled/default
 fi
-echo_progress_done "Certificado instalado"
+echo "Certificado instalado"
 
 # Add LE certs to ZNC, if installed.
 if [[ -f /install/.znc.lock ]]; then
@@ -252,4 +252,4 @@ echo "Ruta: /usr/local/etc/streaming-cert.pkfx" >> /root/cert_streaming.info
 echo "clave de cifrado: ${str_pass}" >> /root/cert_streaming.info
 echo "Certificado de dominio personalizado, para plex :  https://${hostname}:32400, para otro simplemente usa ${hostname}" >> /root/cert_streaming.info
 
-echo_success "Letsencrypt instalado"
+echo "Letsencrypt instalado"
