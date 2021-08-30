@@ -143,13 +143,13 @@ fi
 mkdir -p /etc/nginx/ssl/${hostname}
 chmod 700 /etc/nginx/ssl
 
-/root/.acme.sh/acme.sh --set-default-ca --server letsencrypt >> $log 2>&1 || {
+/root/.acme.sh/acme.sh --set-default-ca --server letsencrypt || {
     echo "No se pudo establecer el certificado de autoridad por defecto a Let's Encrypt. Actualizando acme.sh para reintentar."
-    /root/.acme.sh/acme.sh --upgrade >> $log 2>&1 || {
+    /root/.acme.sh/acme.sh --upgrade || {
         echo -e "No se pudo actualizar acme.sh."
         exit 1
     }
-    /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt >> $log 2>&1 || {
+    /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt || {
         echo -e "No se pudo establecer el certificado de autoridad por defecto a Let's Encrypt"
         exit 1
     }
@@ -158,13 +158,13 @@ chmod 700 /etc/nginx/ssl
 
 echo "Registrando certificados"
 if [[ ${cf} == yes ]]; then
-  /root/.acme.sh/acme.sh --force --issue --dns dns_cf -d ${hostname} >> $log 2>&1 || { 
+  /root/.acme.sh/acme.sh --force --issue --dns dns_cf -d ${hostname} || { 
     echo "ERROR: No se pudo obtener el certificado. Por favior, comprueba tu info y prueba de nuevo"; 
     exit 1; 
     }
 else
   if [[ $main = yes ]]; then
-    /root/.acme.sh/acme.sh --force --issue --nginx -d ${hostname} >> $log 2>&1 || { 
+    /root/.acme.sh/acme.sh --force --issue --nginx -d ${hostname}|| { 
         echo "ERROR: No se pudo obtener el certificado. Por favior, comprueba tu info y prueba de nuevo"; 
         exit 1; 
       }
