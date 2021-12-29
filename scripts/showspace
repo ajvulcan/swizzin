@@ -59,9 +59,28 @@ do
 nombre=$(ls -1 /home/ | grep -v 'lost+found' | sed -n "$i"p)
 printf "\n -----USUARIO $nombre---------\n\n" >> $file
 sudo find /home/${nombre}/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=1 -h | sort | grep '[0-9]G\>' >> $file
-#tamaño total
-#printf "\n TAMAÑO TOTAL OCUPADO (GB): "
+
+#rm info
+printf "\n."
+done
+
+
+#TAMAÑO TOTAL
+printf "\n\n---TAMAÑO TOTAL OCUPADO (GB) POR LOS USUARIOS---\n" >> $file
+
+for ((i=1; i <= LIMITE ; i++))
+do
+nombre=$(ls -1 /home/ | grep -v 'lost+found' | sed -n "$i"p)
+
+printf "\n-USUARIO: ${nombre} \n\nCarpeta descargas: " >> $file
 #cut -d "G" -f1 | paste -sd+ | sed "s/,/./g" | bc >> $file 2>/dev/null
+sudo find /home/${nombre}/DESCARGAS/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=1 -h  \
+| sort | grep '[0-9]G\>' | cut -d "G" -f1 | paste -sd+ | sed "s/,/./g" | bc >> $file 2>/dev/null
+
+printf "\nCarpeta personal: " >> $file
+sudo find /home/${nombre}/PERSONAL/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=1 -h  \
+| sort | grep '[0-9]G\>' | cut -d "G" -f1 | paste -sd+ | sed "s/,/./g" | bc >> $file 2>/dev/null
+
 #rm info
 printf "\n."
 done
@@ -70,7 +89,7 @@ chmod 644 $file
 
 #printf "\nCOMPROBACIÓN FINALIZADA...\n\nTODOS LOS RESULTADOS HAN SIDO ALMACENADOS EN RESULTADOS_ANALISIS.TXT\nPOR FAVOR COMPRUEBE EL FICHERO EN SU CARPETA /ROOT/...\n"
 cat $file
-echo ""
+echo " "
 echo "RECUERDE: Puede consultar los resultados en el fichero resultado_analisis.txt de la carpeta /root"
 }
 
