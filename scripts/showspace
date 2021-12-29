@@ -51,6 +51,7 @@ printf "\n>>>>COMPRUEBA SI HAY FICHEROS EN LA PAPELERA DE RECICLAJE...\n\n" >> $
 sudo find / -path '/home/*/NUBE' -prune -o -type d -name '*Trash*' | sudo xargs du -h --exclude='/home/*/NUBE' | sort >> $file 2>/dev/null
 printf "\n\n>>>>VAMOS A VER CADA USUARIO CUANTO OCUPA EN DISCO DURO...\n    (FICHEROS Y CARPETAS DE MAS DE 1GB)\n" >> $file
 
+#USO POR USUARIO
 LIMITE=$(ls -1 /home/ | grep -v 'lost+found' |  wc -l)
 
 for ((i=1; i <= LIMITE ; i++))
@@ -58,7 +59,9 @@ do
 #nombre=$(cat /etc/passwd | cut -d":" -f1 | sed -n "$i"p)
 nombre=$(ls -1 /home/ | grep -v 'lost+found' | sed -n "$i"p)
 printf "\n -----USUARIO $nombre---------\n\n" >> $file
-sudo find /home/${nombre}/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=1 -h | sort | grep '[0-9]G\>' >> $file
+#sudo find /home/${nombre}/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=0 -h | sort | grep '[0-9]G\>' >> $file
+sudo find /home/${nombre}/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=0 --si | sort | grep '[0-9]G\>' >> $file
+sudo find /home/${nombre}/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=0 --si | sort | grep '[0-9]M\>' >> $file
 
 #rm info
 printf "\n."
@@ -66,7 +69,7 @@ done
 
 
 #TAMAÑO TOTAL
-printf "\n\n---TAMAÑO TOTAL OCUPADO (GB) POR LOS USUARIOS---\n" >> $file
+printf "\n\n---TAMAÑO TOTAL (GB) OCUPADO POR LOS USUARIOS---\n" >> $file
 
 for ((i=1; i <= LIMITE ; i++))
 do
@@ -74,12 +77,21 @@ nombre=$(ls -1 /home/ | grep -v 'lost+found' | sed -n "$i"p)
 
 printf "\n-USUARIO: ${nombre} \n\nCarpeta descargas: " >> $file
 #cut -d "G" -f1 | paste -sd+ | sed "s/,/./g" | bc >> $file 2>/dev/null
-sudo find /home/${nombre}/DESCARGAS/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=1 -h  \
-| sort | grep '[0-9]G\>' | cut -d "G" -f1 | paste -sd+ | sed "s/,/./g" | bc >> $file 2>/dev/null
 
-printf "\nCarpeta personal: " >> $file
-sudo find /home/${nombre}/PERSONAL/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=1 -h  \
-| sort | grep '[0-9]G\>' | cut -d "G" -f1 | paste -sd+ | sed "s/,/./g" | bc >> $file 2>/dev/null
+#sudo find /home/${nombre}/DESCARGAS/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=0 -h \
+#| sort | grep '[0-9]G\>' | cut -d "G" -f1 | paste -sd+ | sed "s/,/./g" | bc | xargs -0 echo '1000*' | bc >> $file 2>/dev/null
+#| xargs -0 echo '1000*' | bc | numfmt --to=si --format='%.2f'
+
+#sudo find /home/${nombre}/DESCARGAS/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=0  -si\
+#| sort | cut -d "G" -f1 | paste -sd+ | sed "s/,/./g" | bc >> $file 2>/dev/null
+
+sudo find /home/${nombre}/DESCARGAS/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=0  -sb\
+| sort | cut -f1 | paste -sd+ | bc | numfmt --to=si --format='%.2f' >> $file 2>/dev/null
+
+printf "Carpeta personal: " >> $file
+#sudo find /home/${nombre}/PERSONAL/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=0  --si\
+#| sort | cut -d "G" -f1 | paste -sd+ | sed "s/,/./g" | bc  >> $file 2>/dev/null
+du /home/${nombre}/PERSONAL --max-depth=0 --si | cut -f1 >> $file 2>/dev/null
 
 #rm info
 printf "\n."
