@@ -59,7 +59,6 @@ do
 #nombre=$(cat /etc/passwd | cut -d":" -f1 | sed -n "$i"p)
 nombre=$(ls -1 /home/ | grep -v 'lost+found' | sed -n "$i"p)
 printf "\n -----USUARIO $nombre---------\n\n" >> $file
-#sudo find /home/${nombre}/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=0 -h | sort | grep '[0-9]G\>' >> $file
 sudo find /home/${nombre}/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=0 --si | sort | grep '[0-9]G\>' >> $file
 sudo find /home/${nombre}/* -maxdepth 1 -path /home/${nombre}/NUBE -prune -o -user $nombre -print0 | sudo xargs -0 du --max-depth=0 --si | sort | grep '[0-9]M\>' >> $file
 
