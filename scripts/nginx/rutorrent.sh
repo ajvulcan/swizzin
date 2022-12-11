@@ -50,33 +50,7 @@ if [[ ! -d /srv/rutorrent/plugins/theme/themes/club-QuickBox ]]; then
 fi
 
 if [[ ! -d /srv/rutorrent/plugins/filemanager ]]; then
-  cd /srv/rutorrent/plugins/
-  svn co https://github.com/nelu/rutorrent-thirdparty-plugins/trunk/filemanager >>/dev/null 2>&1
-  chown -R www-data: /srv/rutorrent/plugins/filemanager
-  chmod -R +x /srv/rutorrent/plugins/filemanager/scripts
-
-cat >/srv/rutorrent/plugins/filemanager/conf.php<<FMCONF
-<?php
-
-\$fm['tempdir'] = '/tmp';
-\$fm['mkdperm'] = 755;
-
-// set with fullpath to binary or leave empty
-\$pathToExternals['rar'] = '$(which rar)';
-\$pathToExternals['zip'] = '$(which zip)';
-\$pathToExternals['unzip'] = '$(which unzip)';
-\$pathToExternals['tar'] = '$(which tar)';
-
-// archive mangling, see archiver man page before editing
-
-\$fm['archive']['types'] = array('rar', 'zip', 'tar', 'gzip', 'bzip2');
-
-\$fm['archive']['compress'][0] = range(0, 5);
-\$fm['archive']['compress'][1] = array('-0', '-1', '-9');
-\$fm['archive']['compress'][2] = \$fm['archive']['compress'][3] = \$fm['archive']['compress'][4] = array(0);
-
-?>
-FMCONF
+   git clone https://github.com/nelu/rutorrent-filemanager /srv/rutorrent/plugins/filemanager >> ${log} 2>&1 || { echo_error "git of autodl plugin to main plugins seems to have failed"; }
 fi
 
 if [[ ! -d /srv/rutorrent/plugins/ratiocolor ]]; then
