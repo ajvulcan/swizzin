@@ -50,7 +50,7 @@ if [[ ! -d /srv/rutorrent/plugins/theme/themes/club-QuickBox ]]; then
 fi
 
 if [[ ! -d /srv/rutorrent/plugins/filemanager ]]; then
-   git clone https://github.com/nelu/rutorrent-filemanager /srv/rutorrent/plugins/filemanager >> ${log} 2>&1 || { echo_error "git of autodl plugin to main plugins seems to have failed"; }
+   git clone https://github.com/nelu/rutorrent-filemanager /srv/rutorrent/plugins/filemanager >> ${log} 2>&1
 fi
 
 if [[ ! -d /srv/rutorrent/plugins/ratiocolor ]]; then
