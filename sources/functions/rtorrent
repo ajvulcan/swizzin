@@ -130,29 +130,26 @@ function build_libtorrent_rakshasa () {
 
     if [[ -f /root/libtorrent-rakshasa-${libtorrentver}.patch ]]; then
         patch -p1 < /root/libtorrent-rakshasa-${libtorrentver}.patch >> ${log} 2>&1 || {
-            echo _error "Something went wrong when patching libtorrent-rakshasa"
+            echo "Something went wrong when patching libtorrent-rakshasa"
             exit 1
         }
-        echo_info "Libtorrent-rakshasa patch found and applied!"
+        echo "Libtorrent-rakshasa patch found and applied!"
     else
-        echo_log_only "No libtorrent-rakshasa patch found at /root/libtorrent-rakshasa-${libtorrentver}.patch"
+        echo "No libtorrent-rakshasa patch found at /root/libtorrent-rakshasa-${libtorrentver}.patch"
     fi
-    if [[ ${libtorrentver} =~ ^("0.13.6"|"0.13.7")$ ]]; then
-        patch -p1 < /etc/swizzin/sources/patches/rtorrent/openssl.patch >> "$log" 2>&1
-        if pkg-config --atleast-version=1.14 cppunit && [[ ${libtorrentver} == 0.13.6 ]]; then
-            patch -p1 < /etc/swizzin/sources/patches/rtorrent/cppunit-libtorrent.patch >> "$log" 2>&1
-        fi
-        if [[ ${libtorrentver} == "0.13.6" ]]; then
-            patch -p1 < /etc/swizzin/sources/patches/rtorrent/bencode-libtorrent.patch >> "$log" 2>&1
-        fi
+    if [[ ${libtorrentver} =~ ("0.13.6"|"0.13.7") ]] && [[ ! ${codename} == "xenial" ]]; then
+		patch -p1 < /etc/swizzin/sources/openssl.patch >>"$log" 2>&1
+		if pkg-config --atleast-version=1.14 cppunit && [[ ${libtorrentver} == 0.13.6 ]]; then
+			patch -p1 < /etc/swizzin/sources/cppunit.patch >>"$log" 2>&1
+		fi
     fi
     ./autogen.sh >> $log 2>&1
     ./configure --prefix=/usr >> $log 2>&1 || {
-        echo_error "Something went wrong while configuring libtorrent"
+        echo "Something went wrong while configuring libtorrent"
         exit 1
     }
     make -j$(nproc) CXXFLAGS="-O2 -flto" >> $log 2>&1 || {
-        echo_error "Something went wrong while making libtorrent"
+        echo "Something went wrong while making libtorrent"
         exit 1
     }
     rm_if_exists "/tmp/dist/libtorrent-rakshasa"
@@ -177,28 +174,20 @@ function build_rtorrent () {
     cd /tmp/rtorrent
     if [[ -f /root/rtorrent-${rtorrentver}.patch ]]; then
         patch -p1 < /root/rtorrent-${rtorrentver}.patch >> ${log} 2>&1 || {
-            echo _error "Something went wrong when patching rTorrent"
+            echo "Something went wrong when patching rTorrent"
             exit 1
         }
-        echo_info "rTorrent patch found and applied!"
+        echo "rTorrent patch found and applied!"
     else
-        echo_log_only "No rTorrent patch found at /root/rtorrent-${rtorrentver}.patch"
-    fi
-    #apply xmlrpc-fix to all rtorrents
-    patch -p1 < /etc/swizzin/sources/patches/rtorrent/xmlrpc-fix.patch >> "$log" 2>&1
-    #use pkgconfig for cppunit if 0.9.6
-    stdc=
-    if [[ ${rtorrentver} == "0.9.6" ]]; then
-        patch -p1 < /etc/swizzin/sources/patches/rtorrent/rtorrent-0.9.6.patch >> "$log" 2>&1
-        stdc="-std=c++11"
+        echo "No rTorrent patch found at /root/rtorrent-${rtorrentver}.patch"
     fi
     ./autogen.sh >> $log 2>&1
     ./configure --prefix=/usr --with-xmlrpc-c >> $log 2>&1 || {
-        echo_error "Something went wrong while configuring rtorrent"
+        echo "Something went wrong while configuring rtorrent"
         exit 1
     }
     make -j$(nproc) CXXFLAGS="-O2 -flto ${stdc}" >> $log 2>&1 || {
-        echo_error "Something went wrong while making rtorrent"
+        echo "Something went wrong while making rtorrent"
         exit 1
     }
     rm_if_exists "/tmp/dist/rtorrent"
