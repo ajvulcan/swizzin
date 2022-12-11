@@ -89,7 +89,7 @@ RestartSec=10
 WantedBy=multi-user.target
 EOF
 
-systemctl enable --now rtorrent@${user} 2>> $log
+systemctl enable -q --now rtorrent@${user} 2>> $log
 }
 
 export DEBIAN_FRONTEND=noninteractive
