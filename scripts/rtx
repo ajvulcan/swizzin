@@ -97,7 +97,7 @@ function _itplugs() {
         fi
         ;;
         filemanager)
-         git clone https://github.com/nelu/rutorrent-filemanager /srv/rutorrent/plugins/filemanager >> ${log} 2>&1
+         git clone https://github.com/nelu/rutorrent-filemanager /srv/rutorrent/plugins/filemanager >> /dev/null 2>&1
         ;;
         fileshare)
         svn co https://github.com/nelu/rutorrent-thirdparty-plugins/trunk/fileshare >/dev/null 2>&1
