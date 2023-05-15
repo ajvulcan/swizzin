@@ -125,7 +125,7 @@ function build_libtorrent_rakshasa() {
     mkdir /tmp/libtorrent
     curl -sL ${libtorrentloc} -o /tmp/libtorrent-${libtorrentver}.tar.gz
     VERSION=$libtorrentver
-    tar -xf /tmp/libtorrent-${libtorrentver}.tar.gz -C /tmp/libtorrent --strip-components=1
+    tar -xf /tmp/libtorrent-${libtorrentver}.tar.gz -C /tmp/libtorrent --strip-components=1 >>$log 2>&1
     cd /tmp/libtorrent >> $log 2>&1        
     if [[ ${libtorrentver} =~ ("0.13.6"|"0.13.7") ]] && [[ ! ${codename} == "xenial" ]]; then
     	patch -p1 < /etc/swizzin/sources/openssl.patch >>"$log" 2>&1
@@ -133,13 +133,13 @@ function build_libtorrent_rakshasa() {
 		patch -p1 < /etc/swizzin/sources/cppunit.patch >>"$log" 2>&1
 	fi
     fi    
-    ./autogen.sh
-    ./configure --prefix=/usr
-    make -j$(nproc) 
-    rm_if_exists "/tmp/dist/libtorrent-rakshasa"
-    make DESTDIR=/tmp/dist/libtorrent-rakshasa install
+    ./autogen.sh >>$log 2>&1
+    ./configure --prefix=/usr >>$log 2>&1
+    make -j$(nproc)  >>$log 2>&1
+    rm_if_exists "/tmp/dist/libtorrent-rakshasa" >>$log 2>&1
+    make DESTDIR=/tmp/dist/libtorrent-rakshasa install >>$log 2>&1
     mkdir -p /root/dist
-    fpm -f -C /tmp/dist/libtorrent-rakshasa -p /root/dist/libtorrent-rakshasa_VERSION.deb -s dir -t deb -n libtorrent-rakshasa --version ${VERSION} --description "libtorrent-rakshasa compiled by SERVIDORHD"
+    fpm -f -C /tmp/dist/libtorrent-rakshasa -p /root/dist/libtorrent-rakshasa_VERSION.deb -s dir -t deb -n libtorrent-rakshasa --version ${VERSION} --description "libtorrent-rakshasa compiled by SERVIDORHD" > /dev/null 2>&1
     dpkg -i /root/dist/libtorrent-rakshasa_${VERSION}.deb
     cd /tmp
     rm -rf /tmp/dist/libtorrent-rakshasa
@@ -152,21 +152,21 @@ function build_rtorrent() {
     . /etc/swizzin/sources/functions/utils
     rm_if_exists "/tmp/rtorrent*"
     mkdir rtorrent
-    curl -sL ${rtorrentloc} -o /tmp/rtorrent-${rtorrentver}.tar.gz
+    curl -sL ${rtorrentloc} -o /tmp/rtorrent-${rtorrentver}.tar.gz >> $log 2>&1
     tar -xzf /tmp/rtorrent-${rtorrentver}.tar.gz -C /tmp/rtorrent --strip-components=1 >> $log 2>&1
     VERSION=$rtorrentver
     cd rtorrent
-    ./autogen.sh
-    ./configure --prefix=/usr --with-xmlrpc-c
-    make -j$(nproc)
+    ./autogen.sh >> $log 2>&1
+    ./configure --prefix=/usr --with-xmlrpc-c >> $log 2>&1
+    make -j$(nproc) >> $log 2>&1
     rm_if_exists "/tmp/dist/rtorrent"
-    make DESTDIR=/tmp/dist/rtorrent install
+    make DESTDIR=/tmp/dist/rtorrent install >> $log 2>&1
     mkdir -p /root/dist
-    fpm -f -C /tmp/dist/rtorrent -p /root/dist/rtorrent_VERSION.deb -s dir -t deb -n rtorrent --version ${VERSION} --description "rtorrent compiled by SERVIDORHD"
+    fpm -f -C /tmp/dist/rtorrent -p /root/dist/rtorrent_VERSION.deb -s dir -t deb -n rtorrent --version ${VERSION} --description "rtorrent compiled by SERVIDORHD" > /dev/null 2>&1
     dpkg -i /root/dist/rtorrent_${VERSION}.deb >> $log 2>&1
     cd "/tmp"
-    ldconfig
-    rm -rf rtorrent*
+    ldconfig >> $log 2>&1
+    rm -rf rtorrent* >> $log 2>&1
     rm -rf /tmp/dist/rtorrent
     apt-mark hold rtorrent
 }
