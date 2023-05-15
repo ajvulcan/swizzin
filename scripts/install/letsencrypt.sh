@@ -136,7 +136,7 @@ apt-get -y -q install socat > /dev/null 2>&1
 
 if [[ ! -f /root/.acme.sh/acme.sh ]]; then
     echo "Instalando script ACME"
-    curl https://get.acme.sh | sh >> $log 2>&1
+    curl https://get.acme.sh | sh >> /dev/null 2>&1
     echo "hecho"
 fi
 
@@ -170,7 +170,7 @@ else
       }
   else
     systemctl stop nginx
-    /root/.acme.sh/acme.sh --force --issue --standalone -d ${hostname} --pre-hook "systemctl stop nginx" --post-hook "systemctl start nginx" >> $log 2>&1 || { 
+    /root/.acme.sh/acme.sh --force --issue --standalone -d ${hostname} --pre-hook "systemctl stop nginx" --post-hook "systemctl start nginx" >> /dev/null 2>&1 || { 
         echo "ERROR: No se pudo obtener el certificado. Por favior, comprueba tu info y prueba de nuevo"; 
         exit 1; 
     }
