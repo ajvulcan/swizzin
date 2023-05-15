@@ -122,19 +122,19 @@ function build_libtorrent_rakshasa() {
     cd "/tmp"
     . /etc/swizzin/sources/functions/utils
     rm_if_exists "/tmp/libtorrent"
-    mkdir /tmp/libtorrent
-    curl -sL ${libtorrentloc} -o /tmp/libtorrent-${libtorrentver}.tar.gz
+    mkdir libtorrent
+    wget -q ${libtorrentloc}
     VERSION=$libtorrentver
-    tar -xf /tmp/libtorrent-${libtorrentver}.tar.gz -C /tmp/libtorrent --strip-components=1 >> $log 2>&1
-    cd /tmp/libtorrent >> $log 2>&1
+    tar -xvf libtorrent-${libtorrentver}.tar.gz -C /tmp/libtorrent --strip-components=1 >> $log 2>&1
+    cd libtorrent >> $log 2>&1
     ./autogen.sh >> $log 2>&1
     ./configure --prefix=/usr >> $log 2>&1 
-    make -j$(nproc) CXXFLAGS="-w ${rtorrentlevel} ${rtorrentflto} ${rtorrentpipe}" >> $log 2>&1
+    make -j$(nproc) >> $log 2>&1
     rm_if_exists "/tmp/dist/libtorrent-rakshasa"
     make DESTDIR=/tmp/dist/libtorrent-rakshasa install >> $log 2>&1
     mkdir -p /root/dist
     fpm -f -C /tmp/dist/libtorrent-rakshasa -p /root/dist/libtorrent-rakshasa_VERSION.deb -s dir -t deb -n libtorrent-rakshasa --version ${VERSION} --description "libtorrent-rakshasa compiled by SERVIDORHD" > /dev/null 2>&1
-    dpkg -i /root/dist/libtorrent-rakshasa_${VERSION}.deb >> $log 2>&1
+    dpkg -i /root/dist/libtorrent-rakshasa_${VERSION}.deb
     cd /tmp
     rm -rf /tmp/dist/libtorrent-rakshasa
     rm -rf libtorrent*
@@ -145,14 +145,14 @@ function build_rtorrent() {
     cd "/tmp"
     . /etc/swizzin/sources/functions/utils
     rm_if_exists "/tmp/rtorrent*"
-    mkdir /tmp/rtorrent
-    curl -sL ${rtorrentloc} -o /tmp/rtorrent-${rtorrentver}.tar.gz
-    tar -xzf /tmp/rtorrent-${rtorrentver}.tar.gz -C /tmp/rtorrent --strip-components=1 >> $log 2>&1
+    mkdir rtorrent
+    wget -q ${rtorrentloc}
+    tar -xzvf rtorrent-${rtorrentver}.tar.gz -C /tmp/rtorrent --strip-components=1 >> $log 2>&1
     VERSION=$rtorrentver
-    cd /tmp/rtorrent
+    cd rtorrent
     ./autogen.sh >> $log 2>&1
     ./configure --prefix=/usr --with-xmlrpc-c >> $log 2>&1
-    make -j$(nproc) CXXFLAGS="-w ${rtorrentlevel} ${rtorrentflto} ${rtorrentpipe} ${stdc}" >> $log 2>&1 
+    make -j$(nproc) >> $log 2>&1 
     rm_if_exists "/tmp/dist/rtorrent"
     make DESTDIR=/tmp/dist/rtorrent install >> $log 2>&1
     mkdir -p /root/dist
@@ -162,7 +162,7 @@ function build_rtorrent() {
     ldconfig >> $log 2>&1
     rm -rf rtorrent* >> $log 2>&1
     rm -rf /tmp/dist/rtorrent
-    apt-mark hold rtorrent >> ${log} 2>&1
+    apt-mark hold rtorrent
 }
 
 function rtorrent_apt () {
