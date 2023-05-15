@@ -127,13 +127,13 @@ function build_libtorrent_rakshasa() {
     VERSION=$libtorrentver
     tar -xf /tmp/libtorrent-${libtorrentver}.tar.gz -C /tmp/libtorrent --strip-components=1
     cd libtorrent >> $log 2>&1
-    ./autogen.sh >> $log 2>&1
-    ./configure --prefix=/usr >> $log 2>&1
-    make -j$(nproc) >> $log 2>&1
+    ./autogen.sh
+    ./configure --prefix=/usr
+    make -j$(nproc) 
     rm_if_exists "/tmp/dist/libtorrent-rakshasa"
-    make DESTDIR=/tmp/dist/libtorrent-rakshasa install >> $log 2>&1
+    make DESTDIR=/tmp/dist/libtorrent-rakshasa install
     mkdir -p /root/dist
-    fpm -f -C /tmp/dist/libtorrent-rakshasa -p /root/dist/libtorrent-rakshasa_VERSION.deb -s dir -t deb -n libtorrent-rakshasa --version ${VERSION} --description "libtorrent-rakshasa compiled by SERVIDORHD" > /dev/null 2>&1
+    fpm -f -C /tmp/dist/libtorrent-rakshasa -p /root/dist/libtorrent-rakshasa_VERSION.deb -s dir -t deb -n libtorrent-rakshasa --version ${VERSION} --description "libtorrent-rakshasa compiled by SERVIDORHD"
     dpkg -i /root/dist/libtorrent-rakshasa_${VERSION}.deb
     cd /tmp
     rm -rf /tmp/dist/libtorrent-rakshasa
