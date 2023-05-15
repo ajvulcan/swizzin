@@ -122,11 +122,17 @@ function build_libtorrent_rakshasa() {
     cd "/tmp"
     . /etc/swizzin/sources/functions/utils
     rm_if_exists "/tmp/libtorrent"
-    mkdir libtorrent
+    mkdir /tmp/libtorrent
     curl -sL ${libtorrentloc} -o /tmp/libtorrent-${libtorrentver}.tar.gz
     VERSION=$libtorrentver
     tar -xf /tmp/libtorrent-${libtorrentver}.tar.gz -C /tmp/libtorrent --strip-components=1
-    cd libtorrent >> $log 2>&1
+    cd /tmp/libtorrent >> $log 2>&1        
+    if [[ ${libtorrentver} =~ ("0.13.6"|"0.13.7") ]] && [[ ! ${codename} == "xenial" ]]; then
+    	patch -p1 < /etc/swizzin/sources/openssl.patch >>"$log" 2>&1
+	if pkg-config --atleast-version=1.14 cppunit && [[ ${libtorrentver} == 0.13.6 ]]; then
+		patch -p1 < /etc/swizzin/sources/cppunit.patch >>"$log" 2>&1
+	fi
+    fi    
     ./autogen.sh
     ./configure --prefix=/usr
     make -j$(nproc) 
