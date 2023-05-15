@@ -123,12 +123,12 @@ function build_libtorrent_rakshasa() {
     . /etc/swizzin/sources/functions/utils
     rm_if_exists "/tmp/libtorrent"
     mkdir libtorrent
-    wget -q ${libtorrentloc}
+    curl -sL ${libtorrentloc} -o /tmp/libtorrent-${libtorrentver}.tar.gz
     VERSION=$libtorrentver
-    tar -xvf libtorrent-${libtorrentver}.tar.gz -C /tmp/libtorrent --strip-components=1 >> $log 2>&1
+    tar -xf /tmp/libtorrent-${libtorrentver}.tar.gz -C /tmp/libtorrent --strip-components=1
     cd libtorrent >> $log 2>&1
     ./autogen.sh >> $log 2>&1
-    ./configure --prefix=/usr >> $log 2>&1 
+    ./configure --prefix=/usr >> $log 2>&1
     make -j$(nproc) >> $log 2>&1
     rm_if_exists "/tmp/dist/libtorrent-rakshasa"
     make DESTDIR=/tmp/dist/libtorrent-rakshasa install >> $log 2>&1
@@ -146,13 +146,13 @@ function build_rtorrent() {
     . /etc/swizzin/sources/functions/utils
     rm_if_exists "/tmp/rtorrent*"
     mkdir rtorrent
-    wget -q ${rtorrentloc}
-    tar -xzvf rtorrent-${rtorrentver}.tar.gz -C /tmp/rtorrent --strip-components=1 >> $log 2>&1
+    curl -sL ${rtorrentloc} -o /tmp/rtorrent-${rtorrentver}.tar.gz
+    tar -xzf /tmp/rtorrent-${rtorrentver}.tar.gz -C /tmp/rtorrent --strip-components=1 >> $log 2>&1
     VERSION=$rtorrentver
     cd rtorrent
     ./autogen.sh >> $log 2>&1
     ./configure --prefix=/usr --with-xmlrpc-c >> $log 2>&1
-    make -j$(nproc) >> $log 2>&1 
+    make -j$(nproc) >> $log 2>&1
     rm_if_exists "/tmp/dist/rtorrent"
     make DESTDIR=/tmp/dist/rtorrent install >> $log 2>&1
     mkdir -p /root/dist
