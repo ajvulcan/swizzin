@@ -128,14 +128,8 @@ function build_libtorrent_rakshasa() {
     tar -xf /tmp/libtorrent-${libtorrentver}.tar.gz -C /tmp/libtorrent --strip-components=1 >> $log 2>&1
     cd /tmp/libtorrent >> $log 2>&1
     ./autogen.sh >> $log 2>&1
-    ./configure --prefix=/usr >> $log 2>&1 || {
-        echo_error "Something went wrong while configuring libtorrent"
-        exit 1
-    }
-    make -j$(nproc) CXXFLAGS="-w ${rtorrentlevel} ${rtorrentflto} ${rtorrentpipe}" >> $log 2>&1 || {
-        echo_error "Something went wrong while making libtorrent"
-        exit 1
-    }
+    ./configure --prefix=/usr >> $log 2>&1 
+    make -j$(nproc) CXXFLAGS="-w ${rtorrentlevel} ${rtorrentflto} ${rtorrentpipe}" >> $log 2>&1
     rm_if_exists "/tmp/dist/libtorrent-rakshasa"
     make DESTDIR=/tmp/dist/libtorrent-rakshasa install >> $log 2>&1
     mkdir -p /root/dist
@@ -157,14 +151,8 @@ function build_rtorrent() {
     VERSION=$rtorrentver
     cd /tmp/rtorrent
     ./autogen.sh >> $log 2>&1
-    ./configure --prefix=/usr --with-xmlrpc-c >> $log 2>&1 || {
-        echo_error "Something went wrong while configuring rtorrent"
-        exit 1
-    }
-    make -j$(nproc) CXXFLAGS="-w ${rtorrentlevel} ${rtorrentflto} ${rtorrentpipe} ${stdc}" >> $log 2>&1 || {
-        echo_error "Something went wrong while making rtorrent"
-        exit 1
-    }
+    ./configure --prefix=/usr --with-xmlrpc-c >> $log 2>&1
+    make -j$(nproc) CXXFLAGS="-w ${rtorrentlevel} ${rtorrentflto} ${rtorrentpipe} ${stdc}" >> $log 2>&1 
     rm_if_exists "/tmp/dist/rtorrent"
     make DESTDIR=/tmp/dist/rtorrent install >> $log 2>&1
     mkdir -p /root/dist
