@@ -150,17 +150,17 @@ function build_rtorrent() {
     tar -xzf /tmp/rtorrent-${rtorrentver}.tar.gz -C /tmp/rtorrent --strip-components=1 >> $log 2>&1
     VERSION=$rtorrentver
     cd rtorrent
-    ./autogen.sh >> $log 2>&1
-    ./configure --prefix=/usr --with-xmlrpc-c >> $log 2>&1
-    make -j$(nproc) >> $log 2>&1
+    ./autogen.sh
+    ./configure --prefix=/usr --with-xmlrpc-c
+    make -j$(nproc)
     rm_if_exists "/tmp/dist/rtorrent"
-    make DESTDIR=/tmp/dist/rtorrent install >> $log 2>&1
+    make DESTDIR=/tmp/dist/rtorrent install
     mkdir -p /root/dist
-    fpm -f -C /tmp/dist/rtorrent -p /root/dist/rtorrent_VERSION.deb -s dir -t deb -n rtorrent --version ${VERSION} --description "rtorrent compiled by SERVIDORHD" > /dev/null 2>&1
+    fpm -f -C /tmp/dist/rtorrent -p /root/dist/rtorrent_VERSION.deb -s dir -t deb -n rtorrent --version ${VERSION} --description "rtorrent compiled by SERVIDORHD"
     dpkg -i /root/dist/rtorrent_${VERSION}.deb >> $log 2>&1
     cd "/tmp"
-    ldconfig >> $log 2>&1
-    rm -rf rtorrent* >> $log 2>&1
+    ldconfig
+    rm -rf rtorrent*
     rm -rf /tmp/dist/rtorrent
     apt-mark hold rtorrent
 }
