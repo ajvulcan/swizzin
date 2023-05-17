@@ -242,7 +242,12 @@ fi
 systemctl reload nginx
 
 #Crea fichero para configurar servicios de streaming
-cd ~/.acme.sh/${hostname}/
+if [[ -d /root/.acme.sh/${hostname}_ecc ]]; then
+        carpeta_hostname="${hostname}_ecc"
+    else
+        carpeta_hostname="${hostname}"
+fi
+cd ~/.acme.sh/${carpeta_hostname}/
 echo "Introduce una contraseña para el certificado de streaming:"
 read str_pass
 openssl pkcs12 -export -out streaming-cert.pkfx -inkey ${hostname}.key -in ${hostname}.cer -certfile fullchain.cer -passout pass:$str_pass
