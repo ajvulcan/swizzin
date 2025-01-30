@@ -55,7 +55,7 @@ fi
 
 if [[ ! -d /srv/rutorrent/plugins/ratiocolor ]]; then
   cd /srv/rutorrent/plugins
-  svn co https://github.com/Gyran/rutorrent-ratiocolor.git/trunk ratiocolor >>/dev/null 2>&1
+  git clone --depth=1 https://github.com/Gyran/rutorrent-ratiocolor.git ratiocolor >>/dev/null 2>&1
   sed -i "s/changeWhat = \"cell-background\";/changeWhat = \"font\";/g" /srv/rutorrent/plugins/ratiocolor/init.js
 fi
 
