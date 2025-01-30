@@ -102,7 +102,13 @@ function build_xmlrpc-c () {
   . /etc/swizzin/sources/functions/utils
   rm_if_exists "/tmp/xmlrpc-c"
   rm_if_exists "/tmp/dist/xmlrpc-c "
-	svn co https://svn.code.sf.net/p/xmlrpc-c/code/advanced xmlrpc-c >>$log 2>&1 || { svn co https://github.com/mirror/xmlrpc-c/trunk/advanced xmlrpc-c >>$log 2>&1; }
+
+	# Intentar con SVN desde SourceForge primero
+  	if ! svn co "$xmlrpc" xmlrpc-c >>$log 2>&1; then
+    		# Si falla, intentar con GitHub usando git clone
+    		git clone --depth=1 https://github.com/mirror/xmlrpc-c.git xmlrpc-c >>$log 2>&1 || { echo "Error: No se pudo descargar xmlrpc-c"; exit 1; }
+  	fi
+
 	cd xmlrpc-c
 	./configure --prefix=/usr --disable-cplusplus >>$log 2>&1
   source <(sed 's/ //g' version.mk)
