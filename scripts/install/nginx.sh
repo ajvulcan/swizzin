@@ -239,7 +239,7 @@ proxy_no_cache \$cookie_session;
 proxy_buffers 32 4k;
 PROX
 
-svn export https://github.com/ajvulcan/Nginx-Fancyindex-Theme/trunk /srv/fancyindex >> $log 2>&1
+git clone https://github.com/ajvulcan/Nginx-Fancyindex-Theme.git /srv/fancyindex >> $log 2>&1
 cat > /etc/nginx/snippets/fancyindex.conf <<FIC
 fancyindex on;
 fancyindex_localtime on;
