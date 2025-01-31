@@ -101,11 +101,10 @@ function _itplugs() {
         fi
         ;;
         filemanager)
-         git clone https://github.com/nelu/rutorrent-filemanager /srv/rutorrent/plugins/filemanager >> /dev/null 2>&1
+        git clone https://github.com/nelu/rutorrent-filemanager /srv/rutorrent/plugins/filemanager >> /dev/null 2>&1
         ;;
         fileshare)
-
-        # Descargar solo el plugin "fileshare"
+        
         curl -L -o rutorrent-plugins.zip "https://github.com/nelu/rutorrent-thirdparty-plugins/archive/refs/heads/master.zip" >/dev/null 2>&1
         unzip -q rutorrent-plugins.zip "rutorrent-thirdparty-plugins-master/fileshare/*"
         mv rutorrent-thirdparty-plugins-master/fileshare /srv/rutorrent/plugins/
@@ -116,11 +115,10 @@ function _itplugs() {
         ;;
         #fileupload)
 
-        # Descargar solo el plugin "fileupload"
-          curl -L -o rutorrent-plugins.zip "https://github.com/nelu/rutorrent-thirdparty-plugins/archive/refs/heads/master.zip" >/dev/null 2>&1
-          unzip -q rutorrent-plugins.zip "rutorrent-thirdparty-plugins-master/fileupload/*"
-          mv rutorrent-thirdparty-plugins-master/fileupload /srv/rutorrent/plugins/
-          rm -rf rutorrent-thirdparty-plugins-master rutorrent-plugins.zip
+        curl -L -o rutorrent-plugins.zip "https://github.com/nelu/rutorrent-thirdparty-plugins/archive/refs/heads/master.zip" >/dev/null 2>&1
+        unzip -q rutorrent-plugins.zip "rutorrent-thirdparty-plugins-master/fileupload/*"
+        mv rutorrent-thirdparty-plugins-master/fileupload /srv/rutorrent/plugins/
+        rm -rf rutorrent-thirdparty-plugins-master rutorrent-plugins.zip
 
         #;;
         logoff)
