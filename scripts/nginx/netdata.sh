@@ -38,7 +38,7 @@ location ~ /netdata/(?<ndpath>.*) {
 }
 NET
 fi
-sed -i "s/# bind to = \*/bind to = 127.0.0.1/g" /etc/netdata/netdata.conf
+sed -i "s/# bind to = \*/bind to = 127.0.0.1/g" /opt/netdata/etc/netdata/netdata.conf
 if [[ $isactive == "active" ]]; then
   systemctl restart netdata
 fi
