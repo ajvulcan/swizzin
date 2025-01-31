@@ -87,7 +87,11 @@ function _itplugs() {
                 continue
             fi
         fi
-        svn co https://github.com/Novik/ruTorrent.git/trunk/plugins/${result} ${result}
+
+        git clone --depth=1 https://github.com/Novik/ruTorrent.git
+        mv ruTorrent/plugins/${result} ${result}
+        rm -rf ruTorrent
+
         if [[ $result = "create" ]]; then
             sed -i 's/useExternal = false;/useExternal = "mktorrent";/' /srv/rutorrent/plugins/create/conf.php
             sed -i 's/pathToCreatetorrent = '\'\''/pathToCreatetorrent = '\''\/usr\/bin\/mktorrent'\''/' /srv/rutorrent/plugins/create/conf.php
@@ -100,12 +104,24 @@ function _itplugs() {
          git clone https://github.com/nelu/rutorrent-filemanager /srv/rutorrent/plugins/filemanager >> /dev/null 2>&1
         ;;
         fileshare)
-        svn co https://github.com/nelu/rutorrent-thirdparty-plugins/trunk/fileshare >/dev/null 2>&1
+
+        # Descargar solo el plugin "fileshare"
+        curl -L -o rutorrent-plugins.zip "https://github.com/nelu/rutorrent-thirdparty-plugins/archive/refs/heads/master.zip" >/dev/null 2>&1
+        unzip -q rutorrent-plugins.zip "rutorrent-thirdparty-plugins-master/fileshare/*"
+        mv rutorrent-thirdparty-plugins-master/fileshare /srv/rutorrent/plugins/
+        rm -rf rutorrent-thirdparty-plugins-master rutorrent-plugins.zip
+
         ln -s /srv/rutorrent/plugins/fileshare/share.php /srv/fancyindex/share.php >/dev/null 2>&1
         sed -i 's/$downloadpath .*/$downloadpath = $_SERVER['"'HTTP_HOST'"'] . '"'\/fancyindex\/share.php'"';/g' /srv/rutorrent/plugins/fileshare/conf.php
         ;;
         #fileupload)
-        #svn co https://github.com/nelu/rutorrent-thirdparty-plugins/trunk/fileupload >/dev/null 2>&1
+
+        # Descargar solo el plugin "fileupload"
+          curl -L -o rutorrent-plugins.zip "https://github.com/nelu/rutorrent-thirdparty-plugins/archive/refs/heads/master.zip" >/dev/null 2>&1
+          unzip -q rutorrent-plugins.zip "rutorrent-thirdparty-plugins-master/fileupload/*"
+          mv rutorrent-thirdparty-plugins-master/fileupload /srv/rutorrent/plugins/
+          rm -rf rutorrent-thirdparty-plugins-master rutorrent-plugins.zip
+
         #;;
         logoff)
         wget -q https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/rutorrent-logoff/logoff-1.3.tar.gz
@@ -120,7 +136,13 @@ function _itplugs() {
         git clone https://github.com/Gyran/rutorrent-pausewebui.git pausewebui >/dev/null 2>&1
         ;;
         ratiocolor)
-        svn co https://github.com/Gyran/rutorrent-ratiocolor.git/trunk ratiocolor >/dev/null 2>&1
+
+        # Descargar solo el plugin "ratiocolor"
+        curl -L -o ratiocolor.zip "https://github.com/Gyran/rutorrent-ratiocolor/archive/refs/heads/master.zip" >/dev/null 2>&1
+        unzip -q ratiocolor.zip
+        mv rutorrent-ratiocolor-master ratiocolor
+        rm -f ratiocolor.zip
+
         sed -i "s/changeWhat = \"cell-background\";/changeWhat = \"font\";/g" /srv/rutorrent/plugins/ratiocolor/init.js
         ;;
     esac
@@ -182,26 +204,37 @@ function _itthemes() {
     result=$(echo $i)
     echo -e "Installing ${result}"
     cd /srv/rutorrent/plugins/theme/themes
+
     case "$result" in
-        Acid|Blue|Dark|Excel|Oblivion)
-        svn co https://github.com/Novik/ruTorrent.git/trunk/plugins/theme/themes/${result} ${result} >/dev/null 2>&1
+    Acid|Blue|Dark|Excel|Oblivion)
+        curl -L -o themes.zip "https://github.com/Novik/ruTorrent/archive/refs/heads/master.zip" >/dev/null 2>&1
+        unzip -q themes.zip "ruTorrent-master/plugins/theme/themes/${result}/*"
+        mv ruTorrent-master/plugins/theme/themes/${result} ./
+        rm -rf ruTorrent-master themes.zip
         ;;
-        Agent*|OblivionBlue)
-        svn co https://github.com/ArtyumX/ruTorrent-Themes/trunk/${result} ${result} >/dev/null 2>&1
+    Agent*|OblivionBlue)
+        curl -L -o themes.zip "https://github.com/ArtyumX/ruTorrent-Themes/archive/refs/heads/master.zip" >/dev/null 2>&1
+        unzip -q themes.zip "ruTorrent-Themes-master/${result}/*"
+        mv ruTorrent-Themes-master/${result} ./
+        rm -rf ruTorrent-Themes-master themes.zip
         ;;
-        DarkBetter)
-        git clone https://github.com/chocolatkey/DarkBetter.git ${result} >/dev/null 2>&1
+    DarkBetter)
+        git clone https://github.com/chocolatkey/DarkBetter.git "${result}" >/dev/null 2>&1
         ;;
-        club-QuickBox)
-        git clone https://github.com/QuickBox/club-QuickBox.git ${result} >/dev/null 2>&1
+    club-QuickBox)
+        git clone https://github.com/QuickBox/club-QuickBox.git "${result}" >/dev/null 2>&1
         ;;
-        FlatUI*)
-        svn co https://github.com/exetico/FlatUI.git/trunk/${result} ${result} >/dev/null 2>&1
+    FlatUI*)
+        curl -L -o flatui.zip "https://github.com/exetico/FlatUI/archive/refs/heads/master.zip" >/dev/null 2>&1
+        unzip -q flatui.zip "FlatUI-master/${result}/*"
+        mv FlatUI-master/${result} ./
+        rm -rf FlatUI-master flatui.zip
         ;;
-        MaterialDesign)
-        git clone https://github.com/phlooo/ruTorrent-MaterialDesign.git ${result} >/dev/null 2>&1
+    MaterialDesign)
+        git clone https://github.com/phlooo/ruTorrent-MaterialDesign.git "${result}" >/dev/null 2>&1
         ;;
     esac
+
     done
     chown -R www-data: /srv/rutorrent/plugins
     /usr/local/bin/swizzin/php-fpm-cli -r 'opcache_reset();'
