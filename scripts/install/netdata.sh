@@ -10,7 +10,7 @@ else
   log="/root/logs/swizzin.log"
 fi
 
-bash <(wget https://my-netdata.io/kickstart.sh) --non-interactive >> $log 2>&1
+bash <(curl -LsS https://my-netdata.io/kickstart.sh) --non-interactive >> $log 2>&1
 
 if [[ -f /install/.nginx.lock ]]; then
   bash /usr/local/bin/swizzin/nginx/netdata.sh
