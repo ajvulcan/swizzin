@@ -31,7 +31,8 @@ pip install cloudscraper >> /dev/null 2>&1
 
 cd /srv
 if [[ ! -d /srv/rutorrent ]]; then
-  git clone --recurse-submodules https://github.com/Novik/ruTorrent.git rutorrent >>/dev/null 2>&1
+  #git clone --recurse-submodules https://github.com/Novik/ruTorrent.git rutorrent >>/dev/null 2>&1
+  git clone --branch v4.0.4 --single-branch --recurse-submodules https://github.com/Novik/ruTorrent.git rutorrent >>/dev/null 2>&1
   chown -R www-data:www-data rutorrent
   rm -rf /srv/rutorrent/plugins/throttle
   rm -rf /srv/rutorrent/plugins/extratio
