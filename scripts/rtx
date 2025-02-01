@@ -121,7 +121,7 @@ function _itplugs() {
         rm -rf logoff-1.3.tar.gz
         ;;
         mobile)
-        git clone https://github.com/xombiemp/rutorrentMobile.git mobile >/dev/null 2>&1
+        git clone https://github.com/ajvulcan/rutorrentMobile.git mobile >/dev/null 2>&1
         rm -r /srv/rutorrent/plugins/ipad
         ;;
         pausewebui)
