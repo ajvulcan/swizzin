@@ -175,7 +175,7 @@ function _rmplugs() {
 
 function _itthemes() {
   installa=()
-  themes=(Acid Agent34 Agent46 Blue club-QuickBox Dark DarkBetter Excel FlatUI_Dark FlatUI_Light FlatUI_Material MaterialDesign Oblivion OblivionBlue)
+  themes=(Acid Agent34 Agent46 Blue club-QuickBox Dark DarkBetter Excel FlatUI_Dark FlatUI_Light FlatUI_Material MaterialDesign Oblivion OblivionBlue rtModern-Remix)
   for i in "${themes[@]}"; do
     plug=${i}
     if [[ ! -d /srv/rutorrent/plugins/theme/themes/${i} ]]; then
@@ -214,6 +214,9 @@ function _itthemes() {
         MaterialDesign)
         git clone https://github.com/phlooo/ruTorrent-MaterialDesign.git ${result} >/dev/null 2>&1
         ;;
+        rtModern-Remix)
+        git clone https://github.com/ajvulcan/rtModern-Remix.git ${result} >/dev/null 2>&1
+        ;;
     esac
 
     done
@@ -225,7 +228,7 @@ function _itthemes() {
 
 function _rmthemes() {
   removea=()
-  themes=(Acid Agent34 Agent46 Blue club-QuickBox Dark Excel FlatUI_Dark FlatUI_Light FlatUI_Material MaterialDesign Oblivion OblivionBlue)
+  themes=(Acid Agent34 Agent46 Blue club-QuickBox Dark Excel FlatUI_Dark FlatUI_Light FlatUI_Material MaterialDesign Oblivion OblivionBlue rtModern-Remix)
   for i in "${themes[@]}"; do
     themes=${i}
     if [[ -d /srv/rutorrent/plugins/theme/themes/$i ]]; then
