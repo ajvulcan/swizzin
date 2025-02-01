@@ -51,7 +51,7 @@ if [[ ! -d /srv/rutorrent/plugins/theme/themes/club-QuickBox ]]; then
 fi
 
 if [[ ! -d /srv/rutorrent/plugins/filemanager ]]; then
-   git clone https://github.com/nelu/rutorrent-filemanager /srv/rutorrent/plugins/filemanager >> /dev/null 2>&1
+   git clone --branch v1.0 --depth 1 https://github.com/nelu/rutorrent-filemanager /srv/rutorrent/plugins/filemanager >> /dev/null 2>&1
 fi
 
 if [[ ! -d /srv/rutorrent/plugins/ratiocolor ]]; then
